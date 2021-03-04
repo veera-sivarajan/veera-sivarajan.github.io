@@ -62,8 +62,11 @@ for file_name in $posts; do
     post_link=$(get_link "${file_id%.*}" "$post_title" "$post_date")
     echo -ne "$post_link" >> ./index.html  # add post link to index
     id="${file_id%.*}" # file_name
-    post_html=$(lowdown "$file_path")
-    echo -e "$post_html" >> ./posts/"$id".html
+    # post_html=$(pandoc "$file_path")
+    echo -e "<!DOCTYPE html>" >> ./posts/"$id".html
+    echo -e "<link rel=\"stylesheet\" href=\"../style.css\">" >> ./posts/"$id".html
+    # echo -ne "$post_html" >> ./posts/"$id".html
+    pandoc "$file_path" >> ./posts/"$id".html
 
 done
 
