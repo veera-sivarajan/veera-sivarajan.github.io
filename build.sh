@@ -22,7 +22,7 @@ get_link () {
             <div class=\"date\">
                 $3
             </div>
-            <a href=\"./$1.html\" class=\"post-link\">
+            <a href=\"./posts/$1.html\" class=\"post-link\">
                 <span class=\"post-link\">$2</span>
             </a>
         </td>
@@ -30,8 +30,7 @@ get_link () {
     "
 }
 
-mkdir ./blog
-cat > ./blog/index.html << EOF
+cat > ./index.html << EOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,9 +48,10 @@ cat > ./blog/index.html << EOF
         <div class="posts">
 EOF
 
-echo -ne "$(intro)<table>" >> ./blog/index.html
+echo -ne "$(intro)<table>" >> ./index.html
 
 posts=$(ls -t ./write)
+mkdir ./posts
 
 for file_name in $posts; do
     file_path="./write/"$file_name
@@ -59,20 +59,20 @@ for file_name in $posts; do
     post_title=$(get_title "$file_name")
     post_date=$(date -r "$file_path" "+%b/%d - %Y")
     post_link=$(get_link "${file_id%.*}" "$post_title" "$post_date")
-    echo -ne "$post_link" >> ./blog/index.html  # add post link to index
+    echo -ne "$post_link" >> ./index.html  # add post link to index
     id="${file_id%.*}" # file_name
     post_html=$(lowdown "$file_path")
-    echo -e "$post_html" >> ./blog/"$id".html
+    echo -e "$post_html" >> ./posts/"$id".html
 
 done
 
-cat >> ./blog/index.html << EOF
+cat >> ./index.html << EOF
     </table>
     <div class="separator"></div>
     <div class="footer">
-        <a href="https://github.com/nerdypepper">Github</a>
-        <a href="mailto:nerdy@peppe.rs">Mail</a> 
-        <a href="https://linkedin.com/in/nerdypepper">LinkedIn</a>
+        <a href="https://github.com/veera-sivarajan">Github</a>
+        <a href="mailto:sveera.2001@gmail.com">Mail</a> 
+        <a href="https://linkedin.com/in/veera-sivarajan">LinkedIn</a>
     </div>
     </div>
 </div>
