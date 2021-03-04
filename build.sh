@@ -34,6 +34,7 @@ cat > ./index.html << EOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="./style.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="initial-scale=1">
 <meta name="HandheldFriendly" content="true">
@@ -51,7 +52,7 @@ EOF
 echo -ne "$(intro)<table>" >> ./index.html
 
 posts=$(ls -t ./write)
-mkdir ./posts
+mkdir -p ./posts
 
 for file_name in $posts; do
     file_path="./write/"$file_name
