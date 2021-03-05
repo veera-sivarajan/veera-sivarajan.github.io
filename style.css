@@ -75,7 +75,8 @@ pre code {
 }
 
 h1 {
-		line-height: 50px;
+		line-height: 20px;
+                text-align: center;
 }
 
 /******************************************************************************/
@@ -108,10 +109,9 @@ nav {
 		border: 3px solid gray;
 		font-weight: bold;
 		padding: 0 10px;
-		position: fixed;
-		right: 0;
-		top: 0;
-		text-align: right;
+		position: justify ;
+		top: 50;
+                text-align: center;
 }
 
 /*

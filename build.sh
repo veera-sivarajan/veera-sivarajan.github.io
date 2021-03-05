@@ -41,7 +41,7 @@ cat > ./index.html << EOF
 <meta property="og:description" content="Blog">
 <title>Veera's Blog</title>
 <body>
-        <h1 class="heading">Veera's Blog</h1>
+        <h1 class="heading">Core Dump</h1>
         <div class="posts">
         <div class="posts">
 <div class="intro">
