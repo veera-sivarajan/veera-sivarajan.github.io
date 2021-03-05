@@ -1,31 +1,223 @@
-html { margin: 1em auto; max-width: 40em; }
-body, h1, h2, h3 { font: 20px/1.6em monospace; text-transform: lowercase; }
-h1, h2, h3 { font-weight: bold; }
-h1 { margin-top: 3em; }
-h2 { margin-top: 2em; }
-h3, p { margin-top: 1em; }
-ol, ul { list-style-type: none; padding: 0; margin: 0; }
-li { padding: 0.125rem 0; }
-p img, table { max-width: 100%; }
-
-pre { font-size: 14px; overflow-x: auto; }
-pre i { font-style: normal; color: #888; }
-pre b { color: #000; }
-pre u { text-decoration: none; color: #333; background-color: #c0e0ee; }
-pre i::before { content: "> "; color: #aaa; }
-pre strong { background-color: #0000cc; color: #fff; }
-pre em { font-style: normal; background-color: #fda; }
-
-@media (prefers-color-scheme: dark) {
-a, a:link, a:visited { color: #fda; }
-html { background-color: #000; color: #aaa; }
-pre i { color: #333; }
-pre b { color: #fff; }
-pre u { color: #333; background-color: #222; }
-pre i::before { color: #222; }
-pre strong { background-color: #0000cc; color: #fff; }
-pre em { background-color: #444; }
+/******************************************************************************/
+a {
+		color: #08C;
 }
-.logo, .avatar { border-radius: 100%; width: 60px; }
-.logo { margin-bottom: 2em; }
-.link { text-decoration: none; }
+
+a:visited {
+		color: #B566FF;
+}
+
+blockquote {
+                background: #2b2a2a;
+		font-style: italic;
+                text-align: center;
+		margin: auto !important; /* "auto" for centering */
+		padding: 0 5px;
+                width: auto;
+                vertical-align: center !important;
+                position: relative;
+}
+
+blockquote p {
+		margin: 0;
+}
+
+body {
+		background: #111111;
+		color: #dddddd;
+		font-family: "Deja Vu Sans", Sans-Serif;
+		line-height: 1.5em;
+		margin: 40px auto; /* "auto" for centering */
+		padding: 0 10px;
+		max-width: 50ch;
+}
+
+code {
+                background: #2b2a2a;
+		border-radius: 10px 10px;
+		font-family: monospace;
+		font-size: 17px;
+		line-height: 1.8em;
+		padding: 0 5px;
+}
+
+img {
+		background: #DDDDDD;
+		padding: 4px;
+		border-radius: 4px;
+}
+
+figure {
+		background: #DDDDDD;
+		padding: 4px;
+		border-radius: 4px;
+}
+
+p {
+		text-align: justify;
+}
+
+pre {
+                background: #2b2a2a;
+		border-radius: 10px 10px;
+		display: inline-block;
+		font-family: monospace;
+		font-size: 12px;
+		line-height: 1.2em;
+		margin: 10px 20px 10px 0;
+		min-width: calc(100% - 20px); /* -20px for padding */
+		padding: 10px;
+		vertical-align: justify;
+}
+
+pre code {
+		padding: 0 0px;
+}
+
+h1 {
+		line-height: 50px;
+}
+
+/******************************************************************************/
+.title {
+		background-color: #222222;
+		border-radius: 10px 10px;
+		padding: 10px 20px;
+}
+
+.title h1 {
+		line-height: 40px;
+		padding: 10px 0;
+}
+
+.subtitle {
+		font-weight: bold;
+		font-style: italic;
+		text-align: center;
+}
+
+.title p {
+		margin-top: -20px;
+		padding: 5px 0;
+}
+
+/******************************************************************************/
+nav {
+		background-color:#222222;
+		border-radius: 5px 20px 5px 20px;
+		border: 3px solid gray;
+		font-weight: bold;
+		padding: 0 10px;
+		position: fixed;
+		right: 0;
+		top: 0;
+		text-align: right;
+}
+
+/*
+nav:before {
+		content: "Table of contents";
+}
+*/
+
+/* Toggle TOC when hovered. */
+nav ul {
+		display: none;
+}
+nav:hover ul {
+		display: block;
+}
+
+/* Indent sublists. */
+nav ul   {
+		text-align: left;
+		padding: 0;
+}
+nav ul li ul   {
+		padding: 0 0 0 2em;
+}
+
+/* Remove list dot. */
+nav ul li  {
+		display: block;
+}
+
+/* Remove deeply nested TOC, mostly for power-apps */
+nav ul li ul li ul li ul li  {
+		display: none;
+}
+
+nav a {
+		color: #08C;
+		text-decoration: none;
+		white-space: nowrap;
+}
+
+nav a:hover {
+		color: #dddddd;
+}
+
+/* Org uses a <h2> for "Table of Contents". */
+nav h2 {
+		font-size: 16px;
+		margin: 0;
+}
+
+/******************************************************************************/
+#preamble {
+		background-color:#222222;
+		border-radius: 5px 20px 5px 20px;
+		border: 3px solid gray;
+		font-weight: bold;
+		padding: 0 10px;
+		/* position: fixed; */
+		right: 0;
+		top: 0;
+		/* text-align: right; */
+}
+
+#preamble a {
+		color: #08C;
+		text-decoration: none;
+		white-space: nowrap;
+		margin: 0 10px 0 0;
+}
+
+#preamble a:hover {
+		color: #dddddd;
+}
+
+footer {
+		background: #222222;
+		border-radius: 10px 10px;
+		padding: 5px 0 10px 0;
+		text-align: center;
+		vertical-align: middle;
+}
+
+footer p {
+		margin: 0px;
+		text-align: center;
+}
+
+#postamble {
+		background: #222222;
+		border-radius: 10px 10px;
+		padding: 5px 0 10px 0;
+		text-align: center;
+		vertical-align: middle;
+}
+
+#postamble p {
+		margin: 0px;
+		text-align: center;
+}
+
+/******************************************************************************/
+.tag {
+		background: #444444;
+		border-radius: 10px 10px;
+		font-family: bold;
+		font-size: 12px;
+		padding: 2px;
+}
