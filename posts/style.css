@@ -11,9 +11,9 @@ a:visited {
 blockquote {
                 background: #2b2a2a;
 		font-style: italic;
-                text-align: center;
+                text-align: right;
 		margin: auto !important; /* "auto" for centering */
-		padding: 0 5px;
+		padding: 20px 20px;
                 width: auto;
                 vertical-align: center !important;
                 position: relative;
