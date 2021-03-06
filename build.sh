@@ -39,11 +39,9 @@ cat >> ./index.html << EOF
 EOF
 
 . Random-Kural.sh 
-get_kural
-pandoc kural.md >> ./index.html
-cat >> ./index.html << EOF
-<ul>
-EOF
+get_kural | pandoc -t html >> ./index.html # convert kural to html 
+
+echo "<ul>" >> ./index.html
 posts=$(ls -t ./write)
 mkdir -p ./posts
 
