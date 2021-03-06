@@ -2,24 +2,8 @@ get_title () {
     echo "$1" | sed -E -e "s/\..+$//g"  -e "s/_(.)/ \u\1/g" -e "s/^(.)/\u\1/g"
 }
 
-# get_link () {
-#     # 1 - id
-#     # 2 - title
-#     # 3 - date
-#     echo -ne "
-#     <tr>
-#         <td class="table-post">
-#             <div class=\"date\">
-#                 $3
-#             </div>
-#             <a href=\"./posts/$1.html\" class=\"post-link\">
-#                 <span class=\"post-link\">$2</span>
-#             </a>
-#         </td>
-#     </tr>
-#     "
-# }
-
+# 3 - date  
+# 2 - post title
 get_link () {
     echo -ne "
     <li>
@@ -28,21 +12,26 @@ get_link () {
     </li>"
 }
 
-cat > ./index.html << EOF
+add_meta () {
+    echo -ne "
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<link rel="stylesheet" href="./style.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="initial-scale=1">
-<meta name="HandheldFriendly" content="true">
-<meta property="og:title" content="veera">
-<meta property="og:type" content="website">
-<meta property="og:description" content="Blog">
+<html lang=\"en\">
+<link rel=\"stylesheet\" href=\"./style.css\">
+<meta charset=\"UTF-8\">
+<meta name=\"viewport\" content=\"initial-scale=1\">
+<meta name=\"HandheldFriendly\" content=\"true\">
+<meta property=\"og:title\" content=\"veera\">
+<meta property=\"og:type\" content=\"website\">
+<meta property=\"og:description\" content=\"Blog\">
+"
+}
+
+add_meta > ./index.html
+
+cat >> ./index.html << EOF
 <title>Veera's Blog</title>
 <body>
         <h1 class="heading">Core Dump</h1>
-        <div class="posts">
         <div class="posts">
 <div class="intro">
 <p>Hello, I'm Veera. I study computer science at UMass Amherst. I'm mostly interested in compilers, programming languages and operating systems. </p>
@@ -66,10 +55,7 @@ for file_name in $posts; do
     post_link=$(get_link "${file_id%.*}" "$post_title" "$post_date")
     echo -ne "$post_link" >> ./index.html  # add post link to index
     id="${file_id%.*}" # file_name
-    # post_html=$(pandoc "$file_path")
-    echo -e "<!DOCTYPE html>" > ./posts/"$id".html
-    echo -e "<link rel=\"stylesheet\" href=\"../style.css\">" >> ./posts/"$id".html
-    # echo -ne "$post_html" >> ./posts/"$id".html
+    add_meta > ./posts/"$id".html
     pandoc "$file_path" >> ./posts/"$id".html
 
 done
@@ -77,8 +63,8 @@ done
 cat >> ./index.html << EOF
     </ul>
     <nav>
-        <a href="https://github.com/veera-sivarajan">Github</a>&emsp;&emsp;&emsp;&emsp;
-        <a href="mailto:sveera.2001@gmail.com">Mail</a>&emsp;&emsp;&emsp;&emsp;
+        <a href="https://github.com/veera-sivarajan">Github</a>
+        <a href="mailto:sveera.2001@gmail.com">Email</a>
         <a href="https://linkedin.com/in/veera-sivarajan">LinkedIn</a>
     </nav>  
 </div>
