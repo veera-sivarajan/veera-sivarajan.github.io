@@ -1,9 +1,13 @@
+#! usr/bin/bash
+
+# remove underscores, file extensions and capitalize words 
 get_title () {
     echo "$1" | sed -E -e "s/\..+$//g"  -e "s/_(.)/ \u\1/g" -e "s/^(.)/\u\1/g"
 }
 
 # 3 - date  
 # 2 - post title
+# echoes a link for given post id
 get_link () {
     echo -ne "
     <li>
@@ -12,6 +16,7 @@ get_link () {
     </li>"
 }
 
+# echoes required meta data for a HTML file 
 add_meta () {
     echo -ne "
 <!DOCTYPE html>
@@ -28,6 +33,7 @@ add_meta () {
 
 add_meta > ./index.html
 
+# write intro to index.html
 cat >> ./index.html << EOF
 <title>Veera's Blog</title>
 <body>
@@ -38,13 +44,16 @@ cat >> ./index.html << EOF
    </div>
 EOF
 
-. Random-Kural.sh 
-get_kural | pandoc -t html >> ./index.html # convert kural to html 
 
+. Random-Kural.sh  # load get_kural script
+get_kural | pandoc -t html >> ./index.html # convert to html and write to index
+
+# start of post links
 echo "<ul>" >> ./index.html
 posts=$(ls -t ./write)
 mkdir -p ./posts
 
+# iteratively read all markdown files, convert to HTML and write 
 for file_name in $posts; do
     file_path="./write/"$file_name
     file_id="${file_path##*/}"
@@ -59,6 +68,7 @@ for file_name in $posts; do
 
 done
 
+# add contact details and close all tags in index.html
 cat >> ./index.html << EOF
     </ul>
     <nav>
