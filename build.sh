@@ -54,6 +54,7 @@ for file_name in $posts; do
     echo -ne "$post_link" >> ./index.html  # add post link to index
     id="${file_id%.*}" # file_name
     add_meta > ./posts/"$id".html
+    echo "<title>$post_title</title>" >> ./posts/"$id".html
     pandoc "$file_path" >> ./posts/"$id".html
 
 done
