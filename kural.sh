@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# TODO find a database with better english translations
 function get_kural () {
   num=`shuf -i 1-1330 -n 1` # generate random number in range 1-1330 inclusive
   kural=`jq --argjson index "$num" '.kural[$index] | .Line1 + " " + .Line2' /home/veera/Projects/.ThirukkuralAPI/thirukkural.json | sed -e 's/^"//' -e 's/"$//'` # get thirukural from json obj
