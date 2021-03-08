@@ -1,3 +1,4 @@
+# get post title from given file name
 # remove underscores, file extensions and capitalize words 
 get_title () {
     echo "$1" | sed -E -e "s/\..+$//g"  -e "s/_(.)/ \u\1/g" -e "s/^(.)/\u\1/g"
@@ -53,11 +54,11 @@ get_kural | pandoc -t html >> ./index.html # convert to html and write to index
 
 # start of post links
 echo "<ul>" >> ./index.html
-posts=$(ls -t ./write)
+posts=$(ls -t ./write) # list files sorted by newest first 
 mkdir -p ./posts
 
 # iteratively read all markdown files, convert to HTML and write 
-for file_name in $posts; do
+for file_name in $posts; do # iterate over every markdown file
     file_path="./write/"$file_name
     file_id="${file_path##*/}"
     post_title=$(get_title "$file_name")
@@ -65,11 +66,14 @@ for file_name in $posts; do
     post_link=$(get_link "${file_id%.*}" "$post_title" "$post_date")
     echo -ne "$post_link" >> ./index.html  # add post link to index
     id="${file_id%.*}" # file_name
-    add_meta > ./posts/"$id".html
-    echo "<title>$post_title</title>" >> ./posts/"$id".html
-    echo -e "<span class=\"date\">$post_date</span>" >> ./posts/"$id".html
-    pandoc "$file_path" >> ./posts/"$id".html
+    add_meta > ./posts/"$id".html # add meta HTML to post
+    echo "<title>$post_title</title>" >> ./posts/"$id".html # add post title
 
+    # add date to post
+    echo -e "<span class=\"date\">$post_date</span>" >> ./posts/"$id".html 
+
+    # convert markdown to html and append to file
+    pandoc "$file_path" >> ./posts/"$id".html
 done
 
 # add contact details and close all tags in index.html
