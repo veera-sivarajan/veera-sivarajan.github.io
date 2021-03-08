@@ -73,7 +73,7 @@ for file_name in $posts; do # iterate over every markdown file
     echo -e "<span class=\"date\">$post_date</span>" >> ./posts/"$id".html 
 
     # convert markdown to html and append to file
-    pandoc "$file_path" >> ./posts/"$id".html
+    pandoc "$file_path" -t html >> ./posts/"$id".html
 done
 
 # add contact details and close all tags in index.html

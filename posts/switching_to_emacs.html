@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="./style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1">
+<meta name="HandheldFriendly" content="true">
+<meta property="og:title" content="veera">
+<meta property="og:type" content="website">
+<meta property="og:description" content="Blog">
+<title>Switching To Emacs</title>
+<span class="date">2021-Mar-08</span>
+<h1 id="reflections-on-switching-to-emacs">Reflections on switching to Emacs</h1>
+<h2 id="prelude">Prelude</h2>
+<p>In this essay I would explain why I switched to Emacs and what I like about it. Before I begin I should mention that I have been using it only for the past six months and that I'm a novice on all technical matters.</p>
+<blockquote>
+<p>There's a scientific term "umwelt" that biologists use to describe the world as experienced by a particular organism. Every one of us has this "umwelt" - our "subjective view of the world." Our umwelt is limited by our physical and mental capabilities, past experiences, and social circles we grow up and live. e.g., your subjective understanding of Renaissance Art would drastically differ from when you're taken to a museum at the age of three, and when you go there as an adult, or after studying art for fifteen years.</p>
+</blockquote>
+<blockquote>
+<p>Learning and understanding Lisp expands your umwelt. You will start seeing things differently. It doesn't inevitably make you a better programmer; it might, but doesn't guarantee it, just like suddenly gaining the ability to see things in the infrared spectrum not guaranteed to make your life better.</p>
+</blockquote>
+<blockquote>
+<p>-iLemming on Hackernews</p>
+</blockquote>
+<h2 id="getting-started">Getting started</h2>
+<p>I vividly remember my first few attempts to use Emacs. I would exit out of it almost immediately because the user interface felt strange and unintuitive. At that point I was mostly working on Java programs using Vim as my editor and bash to compile and run programs. But when I started to play with functional languages, my setup started feeling inadequate. I was amazed at how quickly people could evaluate a buffer or a sexp with some key strokes and quickly get back to editing the source file. I was actually learning Haskell at that time and Haskell-mode on Emacs looked very promising and convenient to use. So I decided it was time for me to dip myself in Emacs and see for myself if it was worth the hype.</p>
+<h2 id="configuring-emacs">Configuring Emacs</h2>
+<p>Even today I fondly recollect my first few days of using Emacs. I felt like a kid entering Disney World for the first time. It was exhilirating to learn about all the power I had with Emacs. By watching a couple of Youtube videos I was able to configure it to for Haskell programming. It was first time being exposed to a prgrammable application and I really loved the fact that I had all the power to configure Emacs.</p>
+<p>I was obsessed with configuring my Emacs to my taste. I felt elated when I was able to write my Elisp function. Now I realize it is just a Elisp macro rather than a elisp function.</p>
+<pre class="elisp"><code>;; My first elisp function written on my own - August 29
+(defun switch-window-down-evil-normal()
+  (interactive)
+  (evil-normal-state)
+  (evil-window-down 1))
+</code></pre>
+<p>I was surprised that I could write a Macro, evaluate it with <code>C-c C-e</code> and can immediately use that Macro while editing files. It simplified my understand of how software works. I loved the fact that I had complete control over everything in my Emacs. It is such a powerful feeling. I should also mention that I I carefully avoided falling into the trap of constantly configuring my emacs. Once I was able to setup the desired minimalistic theme, I completely shifted my focus to working on other projects rather than spending insane number of hours configuring emacs. When I was stuck with something, I found plenty of resources online and also the documentation I could access for every Elisp function by pressing <code>C-h C-k</code> or pressing <code>C-h C-v</code> for documentation about a variable was helpful.</p>
+<h2 id="emacs-philosophy">Emacs Philosophy</h2>
+<p>I like the UNIX philosophy more than the Emacs one. In other words, I like small programs that do one thing effectively. So unlike other Emacs users, I use Emacs only as a text editor. Even though I tried to use Eshell over Bash, I was unable to achieve the swiftness I had with Bash. So I resorted back to using Bash for managing my projects.</p>
+<h2 id="why-i-love-emacs">Why I Love Emacs</h2>
+<h3 id="programmability">Programmability</h3>
+<p>I have learnt so many new things by using Emacs. By looking at various Elisp functions, Emacs source code and other packages source code, I have learnt so many things that I could not have learned otherwise. As a computer science major, I have always felt that there was a huge divide between the stuff we learn in Class and the stuff that actually goes into creating software. So when I get to see the source code for various functions I use, it demystifies what actually happens under the hood. More than once, I have been astounded by how simple things were actually put together. It was relieving to know that the source code for these applications is not some esoteric and intellectual shit but something I can also understand. I believe this is what Dr. Richard Stallman fights for.</p>
+<h3 id="org-mode">Org Mode</h3>
+<p>Org mode enabled me to do all my word processing inside Emacs. I remember having to use Google Docs for my academic works with great resentment but after getting the hang of Org, I do all my essay writing, blog writing, school homework inside Emacs. It was liberating to do all my homework in Emacs using Vi keybindings. While I'm sure that I have not explored all the capabilities of Org mode, I'm happy with the current setup and plan to modify it more when necessary.</p>
+<h3 id="lisp-and-haskell-support">Lisp and Haskell Support</h3>
+<p>Emacs at it's core is a Lisp REPL. So there is no doubt that Emacs has the best support for Lisp programming. It is such a luxury to evaluate a sexp with a couple of key strokes, check the results and get back to editing the file. When I was learing Haskell, I never had to take my hands off the keyboard. I had configured all the Haskell specific keybindings for my convenience and was swiftly able to run all my programs.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Emacs is close to my heart. There has never been a day where I have not opened Emacs. It has taught me several new cool things. I actually use Emacs in Evil mode so I get the best of both worlds. Using Emacs has been a enlightening so far and I believe it will only get better as I learn and understand more about it. For the people who work on improving and preserving the greatness of Emacs, a big thank you from the bottom of my heart.</p>
+<figure>
+<img src="../emacs_screenshot.png" title="Veera&#39;s Emacs" alt="My Lovely Emacs" /><figcaption>My Lovely Emacs</figcaption>
+</figure>

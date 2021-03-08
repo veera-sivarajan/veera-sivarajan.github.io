@@ -48,16 +48,38 @@ code {
     padding: 0 5px;
 }
 
+/* img { */
+/*     background: #DDDDDD; */
+/*     padding: 4px; */
+/*     border-radius: 4px; */
+/* } */
+
+/* figure { */
+/*     background: #DDDDDD; */
+/*     padding: 4px; */
+/*     border-radius: 4px; */
+/* } */
+
+/* figure { */
+/*   border: 1px #cccccc solid; */
+/*   padding: 60px; */
+/*   margin: 50px; */
+/*   width: 200px; */
+/*   height: 40px; */
+/* } */
+
 img {
-    background: #DDDDDD;
-    padding: 4px;
-    border-radius: 4px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
 
-figure {
-    background: #DDDDDD;
-    padding: 4px;
-    border-radius: 4px;
+figcaption {
+  color: white;
+  font-style: italic;
+  padding: 2px;
+  text-align: center;
 }
 
 p {
