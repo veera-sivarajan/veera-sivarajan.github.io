@@ -1,4 +1,4 @@
 update () {
     ./build.sh
-    firefox /home/veera/Projects/Blog/index.html
+    firefox /home/veera/Projects/Blog/docs/index.html
 }

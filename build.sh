@@ -30,10 +30,11 @@ add_meta () {
 "
 }
 
-add_meta > ./index.html
+mkdir -p ./docs/
+add_meta > ./docs/index.html
 
 # write intro to index.html
-cat >> ./index.html << EOF
+cat >> ./docs/index.html << EOF
 <title>Veera's Blog</title>
 <body>
         <h1 class="heading">Core Dump</h1>
@@ -50,34 +51,34 @@ EOF
 
 
 . kural.sh  # load get_kural script
-get_kural | pandoc -t html >> ./index.html # convert to html and write to index
+get_kural | pandoc -t html >> ./docs/index.html # convert to html and write to index
 
 # start of post links
-echo "<ul>" >> ./index.html
-posts=$(ls -t ./write) # list files sorted by newest first 
-mkdir -p ./posts
+echo "<ul>" >> ./docs/index.html
+posts=$(ls -t ./drafts) # list files sorted by newest first 
+mkdir -p ./docs/posts
 
 # iteratively read all markdown files, convert to HTML and write 
 for file_name in $posts; do # iterate over every markdown file
-    file_path="./write/"$file_name
+    file_path="./drafts/"$file_name
     file_id="${file_path##*/}"
     post_title=$(get_title "$file_name")
     post_date=$(date -r "$file_path" "+%Y-%b-%d")
     post_link=$(get_link "${file_id%.*}" "$post_title" "$post_date")
-    echo -ne "$post_link" >> ./index.html  # add post link to index
+    echo -ne "$post_link" >> ./docs/index.html  # add post link to index
     id="${file_id%.*}" # file_name
-    add_meta > ./posts/"$id".html # add meta HTML to post
-    echo "<title>$post_title</title>" >> ./posts/"$id".html # add post title
+    add_meta > ./docs/posts/"$id".html # add meta HTML to post
+    echo "<title>$post_title</title>" >> ./docs/posts/"$id".html # add post title
 
     # add date to post
-    echo -e "<span class=\"date\">$post_date</span>" >> ./posts/"$id".html 
+    echo -e "<span class=\"date\">$post_date</span>" >> ./docs/posts/"$id".html 
 
     # convert markdown to html and append to file
-    pandoc "$file_path" -t html >> ./posts/"$id".html
+    pandoc "$file_path" -t html >> ./docs/posts/"$id".html
 done
 
 # add contact details and close all tags in index.html
-cat >> ./index.html << EOF
+cat >> ./docs/index.html << EOF
     </ul>
 </div>
 </body>

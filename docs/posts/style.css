@@ -78,6 +78,7 @@ img {
 figcaption {
   color: white;
   font-style: italic;
+  font-size: 18px;
   padding: 2px;
   text-align: center;
 }
