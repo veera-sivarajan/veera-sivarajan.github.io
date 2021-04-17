@@ -41,11 +41,11 @@ cat >> ./docs/index.html << EOF
     <nav>
         <a href="https://github.com/veera-sivarajan">Github</a>
         <a href="mailto:sveera.2001@gmail.com">Email</a>
-        <a href="https://linkedin.com/in/veera-sivarajan">Linkedin</a>
+        <a href="https://linkedin.com/in/veerasivarajan">Linkedin</a>
     </nav>  
         <div class="posts">
 <div class="intro">
-<p>Hello, I'm Veera. I study computer science at UMass Amherst. I'm mostly interested in compilers, programming languages and operating systems. </p>
+<p>Hello, I'm Veera. I study computer science at UMass Amherst. I'm mostly interested in compilers, programming languages and operating systems.</p>
    </div>
 EOF
 

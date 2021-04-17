@@ -30,7 +30,7 @@ blockquote p {
 }
 
 body {
-    background: #111111;
+    background: #000000;
     color: #dddddd;
     font-family: "Deja Vu Sans", Sans-Serif;
     line-height: 1.5em;
@@ -84,7 +84,7 @@ figcaption {
 }
 
 p {
-    text-align: justify;
+    text-align: left;
 }
 
 pre {
@@ -107,6 +107,10 @@ pre code {
 h1 {
     line-height: 45px;
     text-align: center;
+}
+
+h3 {
+    text-decoration: underline;
 }
 
 /******************************************************************************/
@@ -193,6 +197,7 @@ nav a:hover {
 nav h2 {
     font-size: 16px;
     margin: 0;
+
 }
 
 /******************************************************************************/

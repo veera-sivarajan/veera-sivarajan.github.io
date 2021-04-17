@@ -24,13 +24,13 @@ blockquote p {
 }
 
 body {
-		background: #111111;
-		color: #dddddd;
-		font-family: "Deja Vu Sans", Sans-Serif;
-		line-height: 1.5em;
-		margin: 40px auto; /* "auto" for centering */
-		padding: 0 10px;
-		max-width: 55ch;
+    background: #000000;
+    color: #dddddd;
+    font-family: "Deja Vu Sans", Sans-Serif;
+    line-height: 1.5em;
+    margin: 40px auto; /* "auto" for centering */
+    padding: 0 10px;
+    max-width: 55ch;
 }
 
 code {
@@ -55,7 +55,7 @@ figure {
 }
 
 p {
-		text-align: justify;
+		text-align: left;
 }
 
 pre {
