@@ -9,22 +9,18 @@ a:visited {
 }
 
 blockquote {
-                background: #232324;
-		font-style: italic;
-                text-align: center;
-		margin: auto !important; /* "auto" for centering */
-		padding: 10px 10px;
-                width: auto;
-                vertical-align: center !important;
-                position: relative;
+    border-left: 3px solid #08C;
+    padding-left: 1rem;
+    background: #0000;
+    font-style: italic;
 }
 
 blockquote p {
-		margin: 0;
+                margin: 0;
 }
 
 body {
-    background: #000000;
+    background: #0D1117;
     color: #dddddd;
     font-family: "Deja Vu Sans", Sans-Serif;
     line-height: 1.5em;
@@ -34,28 +30,42 @@ body {
 }
 
 code {
-                background: #2b2a2a;
-		border-radius: 10px 10px;
-		font-family: monospace;
-		font-size: 17px;
-		line-height: 1.8em;
-		padding: 0 5px;
+    background: #2b2a2a;
+    display: block;
+    max-block-size: 50px 50px;
+    font-family: monospace;
+    font-size: 20px;
+    line-height: 1.8em;
 }
 
 img {
 		background: #DDDDDD;
 		padding: 4px;
 		border-radius: 4px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 50%;
 }
 
 figure {
-		background: #DDDDDD;
-		padding: 4px;
-		border-radius: 4px;
+    background: #000000;
+    padding: 4px;
+    border-radius: 4px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+figcaption {
+  background-color: black;
+  color: white;
+  font-style: italic;
+  padding: 2px;
+  text-align: center;
 }
 
 p {
-		text-align: left;
+                text-align: left;
 }
 
 pre {
