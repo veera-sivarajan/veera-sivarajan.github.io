@@ -1,0 +1,43 @@
+#+SETUPFILE: ../basic-setup.org 
+#+TITLE: My Emacs Journey 
+#+DATE:<2021-03-29 Mon> 
+
+#+BEGIN_QUOTE
+There's a scientific term "umwelt" that biologists use to describe the world as experienced by a particular organism. Every one of us has this "umwelt" - our "subjective view of the world." Our umwelt is limited by our physical and mental capabilities, past experiences, and social circles we grow up and live. e.g., your subjective understanding of Renaissance Art would drastically differ from when you're taken to a museum at the age of three, and when you go there as an adult, or after studying art for fifteen years.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+Learning and understanding Lisp expands your umwelt. You will start seeing things differently. It doesn't inevitably make you a better programmer; it might, but doesn't guarantee it, just like suddenly gaining the ability to see things in the infrared spectrum not guaranteed to make your life better.
+#+END_QUOTE
+
+#+BEGIN_QUOTE
+-[[https://news.ycombinator.com/item?id=23672473][iLemming]] on Hackernews
+#+END_QUOTE
+* Getting started
+It was the summer of 2020 and I had just completed a course in Data Structures. Armed with new ideas, I was passionately implementing various algorithms and data structures in Java. Beneath this boy who just started writing programs there lied an irresistible desire to learn and explore the world of Emacs. And when he started playing with Haskell and Lisp, he knew it was time to take the plunge and switch to Emacs.
+* Configuring Emacs
+I fondly recollect the first few days of using Emacs. It was filled with wonder and exhilaration as I felt like a kid entering Disney World for the first time. By watching a couple of YouTube videos and copy-pasting code snippets from Stack Overflow, I was able to configure it just enough to start editing files. Even though I had barely scratched the surface of Elisp programming, the possibilities seemed limitless and inspiring.   
+
+On instances where Emacs felt inadequate and cumbersome, all I had to do was spend a couple of hours writing Elisp code to achieve the desired way of working. This infinite freedom to extend the editor to my liking has allowed me to develop a personal connection with my Emacs. Every keybinding, mode and theme I use has been perfectly attuned to my taste and will continue to get more personalized over time. 
+
+#+BEGIN_SRC elisp 
+  ;; The first elisp function I wrote on my own - August 29
+  ;; switch into evil-normal mode before switching windows
+  (defun switch-window-down-evil-normal()
+    (interactive)
+    (evil-normal-state)
+    (evil-window-down 1))
+#+END_SRC
+
+* Why Emacs?
+*** Programmability
+Using Emacs was my first exposure to a programmable environment. Until then I was never able to correlate an application and its source code as it was hard to understand how it was actually implemented. But inside Emacs I could easily access the documented source code of any functionality and extend it. Moreover, my small Elisp functions are treated the same way as core functionalities of the editor. Due to this lack of difference, there is nothing holding back a beginner from extending and learning the internals of Emacs. 
+*** Org Mode
+Org mode is a document editing powerhouse inside Emacs. It has made document editing an enjoyable experience by saving me from the clutches of other document editors. The biggest advantage was the ability to do all my academic work in the comfort of my editor. Also, this mode has a fancy way to organize and render all my writings and I'm constantly blown away by its richness in features.   
+*** Lisp Support
+Being the best environment for working with Lisp programs, Emacs has aided me in solving SICP problems to a great extent. I can evaluate lisp code, check the results and get back to editing without taking my hands off keyboard or switching to an other window. Moreover, from evaluating a sexp to evaluating an entire buffer, I have the flexibility to constantly run parts of code as I write it. 
+* Conclusion
+#+CAPTION: My Emacs
+[[./imgs/emacs_screenshot.png]]
+
+I'm really glad that I embarked on this Emacs exploration journey. It has fostered a new way of life by deeply instilling the ethics of Hacker culture. My computing experience has become more enjoyable and fun because of Emacs. So I intend to contribute to Emacs development once I completely understand the internals. I would like to conclude by saying a heartfelt thank you to everyone who has worked on this fascinating software.  

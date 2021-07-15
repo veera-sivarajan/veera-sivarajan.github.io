@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Jul 14, 2021 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DAMAL DUMEEL</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="Veera Sivarajan">
+<link rel="stylesheet" type="text/css" href="/home/veera/Projects/Test/Test-Blog/posts/css/style.css" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<header id="top" class="status">
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="./css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1">
+<meta name="HandheldFriendly" content="true">
+<meta property="og:title" content="veera">
+<meta property="og:type" content="website">
+<meta property="og:description" content="Blog">
+
+<body>
+  <nav>
+    <a href="https://github.com/veera-sivarajan">Github</a>
+    <a href="mailto:sveera.2001@gmail.com">Email</a>
+    <a href="./about/">About</a>
+  </nav>  
+</header>
+<main id="content">
+<header>
+<h1 class="title">DAMAL DUMEEL</h1>
+<p class="subtitle">Mar 06, 2021</p>
+</header><p>
+After several failed attempts to create a blog, I finally managed to make one by writing a static site generator in Bash based on nerdypepper&rsquo;s <a href="https://peppe.rs/posts/static_sites_with_bash/">post</a>. To put it simply, the Bash script reads all markdown files from a directory, converts them into HTML using <a href="https://pandoc.org/installing.html">Pandoc</a>, adds some essential CSS and HTML to all the files and writes all resulting files in a specific directory. I also wrote a small script to add a random <a href="https://en.wikipedia.org/wiki/Tirukku%E1%B9%9Fa%E1%B8%B7">Tirukkural</a> to my homepage whenever I update the blog. This script uses <a href="https://stedolan.github.io/jq/">jq</a> to fetch a kural from a JSON database on my system. Finally, to update the blog, all I have to do is execute <a href="https://github.com/veera-sivarajan/veera-sivarajan.github.io/blob/master/build.sh">build.sh</a> and push all files to remote. 
+</p>
+
+<p>
+I stole the CSS from <a href="https://ambrevar.xyz/">here</a>. If you are the author of that blog, a big thank you and also I really appreciate your posts about Emacs.
+</p>
+
+<p>
+I look forward to writing regulary on this blog.
+</p>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+  Last updated on Jul 14, 2021. <br>
+  Generated using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.4.6) <br>
+</div>
+</footer>
+</body>
+</html>

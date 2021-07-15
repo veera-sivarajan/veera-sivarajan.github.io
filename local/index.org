@@ -1,0 +1,6 @@
+#+TITLE: Core Dump
+
+- 2021-Mar-29:
+  *[[file:my_emacs_journey.org][My Emacs Journey]]*
+- 2021-Mar-06:
+  *[[file:hello.org][Hello]]*
