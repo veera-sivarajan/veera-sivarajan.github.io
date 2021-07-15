@@ -92,7 +92,7 @@ PROJECT: `posts in this case."
          :index-filename "index.org"
          :recursive nil
          :publishing-function org-html-publish-to-html
-         :publishing-directory "Projects/Blog/docs/about"
+         :publishing-directory "~/Projects/Blog/docs/about"
          :html-preamble me/website-html-preamble
          :html-postamble me/website-html-postamble)
         ("css"
