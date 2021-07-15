@@ -1,4 +1,3 @@
-#+SETUPFILE: ../../basic-setup.org 
 #+TITLE: About Me
 #+DATE: <2021-07-12 Mon>
 
