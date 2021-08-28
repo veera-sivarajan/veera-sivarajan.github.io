@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2021-Aug-19:
+  *[[file:adding_features_to_lox.org][Adding Features To Lox]]*
 - 2021-Mar-29:
   *[[file:my_emacs_journey.org][My Emacs Journey]]*
 - 2021-Mar-06:

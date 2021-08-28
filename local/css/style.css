@@ -596,7 +596,7 @@ p.verse {
     /* box-shadow: 3px 3px 3px #eee; */
     font-family: $monospace;
     /* font-size: $code-size; */
-    font-size: 23px;
+    font-size: 21px;
     margin: 1em auto;
     padding: 0.1em 0.5em;
     position: relative;

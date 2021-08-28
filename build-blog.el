@@ -1,7 +1,7 @@
 ;; ox-html.el.gz has to be evaluated everytime to get
 ;; correct syntax highlighting. 
 
-(load-file "/usr/share/emacs/26.3/lisp/org/ox-html.el.gz") 
+(load-file "/home/veera/.emacs.d/elpa/org-plus-contrib-20210705/ox-html.el") 
 
 ;; setting to nil, avoids "Author: x" at the bottom
 (setq org-export-with-section-numbers nil
