@@ -263,7 +263,7 @@ body {
 @media screen and (min-width: 600px) {
     body {
         font-size: 18px;
-        background: #000000;
+        background-color: #000000;
         color: white;
         margin: 40px auto; /* "auto" for centering */
         font-family: "Deja Vu Sans", Sans-Serif;
@@ -279,7 +279,7 @@ body {
 }
 
 ::selection {
-    background: #D6EDFF;
+    background: white;
 }
 
 p {
@@ -837,7 +837,7 @@ p.verse {
 }
 
 .inlinetask {
-    background: #ffffcc;
+    background-color: #ffffcc;
     border: 2px solid gray;
     margin: 10px;
     padding: 10px;

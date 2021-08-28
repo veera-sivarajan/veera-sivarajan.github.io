@@ -1,0 +1,203 @@
+#+SETUPFILE: ../basic-setup.org 
+#+TITLE: Adding Features To Lox
+#+DATE: <2021-08-19 Thu> 
+Finally, I got time to sit down and implement a tree-walk interpreter following Bob Nystrom's [[https://craftinginterpreters.com/][Crafting Interpreters]]. In this post, I'm going to explain some of the features I have added to the language. You can find my complete implementation [[https://github.com/veera-sivarajan/lang0][here]]. I have also made a [[https://youtu.be/0P6VPOIKATg][video]] demoing the features listed below.
+
+*Note:* This post assumes that the reader has read Part II of Crafting Interpreters and is familiar with the implementation details. 
+* Anonymous Functions
+By definition, anonymous functions or lambdas are functions without an associated name. They are used when the user wants to invoke a piece of code but don't want to reuse it. This feature also solves challenge #2 in chapter 10 /Functions/. In my implementation, a lambda can be written by using the ~lambda~ keyword followed by the parameters inside parentheses and the body of the function in braces.
+#+BEGIN_SRC lox
+// lambdas in lox
+var square = lambda(num) { return num * num; };
+print square(5); // 25
+#+END_SRC
+A lambda is a primary expression that gets evaluated to a value of type ~LambdaFunction~. Parsing it is exactly like parsing a function declaration but here the parser does not consume a name for the function. Finally, it wraps the parameters and the body of lambda in a AST node. 
+#+BEGIN_SRC cpp
+std::shared_ptr<Expr> Parser::lambda() {
+    consume(TokenType::LEFT_PAREN, "Expect '(' after 'lambda'.");
+    std::vector<Token> parameters;
+    if (!check(TokenType::RIGHT_PAREN)) {
+        do {
+            if (parameters.size() >= 10) {
+                error(peek(), "Can't have more than 10 parameters.");
+            }
+            parameters.push_back(
+                consume(TokenType::IDENTIFIER, "Expect parameter name."));
+        } while (match(TokenType::COMMA));
+    }
+    consume(TokenType::RIGHT_PAREN, "Expect ')' after parameters.");
+    consume(TokenType::LEFT_BRACE, "Expect '{' before lambda body.");
+    std::vector<std::shared_ptr<Statement::Stmt>> body = block();
+    return std::make_shared<Lambda>(std::move(parameters), std::move(body));
+}
+#+END_SRC
+Since these expressions don't have a name and cannot be reused like a variable or a named function, the interpreter need not store the value of the function in its environment. Instead it would create a runtime's representation of an anonymous function using the parsed value and the environment of the lambda (to allow closures to work) and return the value.
+#+BEGIN_SRC cpp
+std::any Interpreter::visitLambdaExpr(std::shared_ptr<Lambda> expr) {
+    return std::make_shared<LambdaFunction>(expr, curr_env);
+}
+#+END_SRC
+* Lists
+To add a list data type into the language, the task can be divided into three small tasks:
+** Scanning
+Introduce two new tokens to make the scanner handle list expressions and subscripts.
+#+BEGIN_SRC cpp
+case '[': addToken(TokenType::LEFT_BRACKET); break;
+case ']': addToken(TokenType::RIGHT_BRACKET); break;
+#+END_SRC
+** Creating List Literals
+Like numbers, string, ~true~ and ~false~, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
+
+To learn about the grammar for lists, I found Caleb's blog [[https://calebschoepp.com/blog/2020/adding-a-list-data-type-to-lox/][post]] to be helpful. It explained all the details related to implementing lists in a clear and concise way.
+*** Parsing Lists
+ Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the ~]~ and wraps the vector in a AST node.
+#+BEGIN_SRC cpp
+std::shared_ptr<Expr> Parser::list() {
+    std::vector<std::shared_ptr<Expr>> values = {};
+    if (match(TokenType::RIGHT_BRACKET)) {
+        return std::make_shared<List>(values);
+    } else {
+        do {
+            if (values.size() >= 100) {
+                error(peek(), "Can't have more than 100 elements in a list.");
+            }
+            std::shared_ptr<Expr> value = logicalOr();
+            values.push_back(value);
+        } while (match(TokenType::COMMA));
+    }
+    consume(TokenType::RIGHT_BRACKET, "Expect ']' at end of list.");
+    return std::make_shared<List>(values);
+}
+#+END_SRC
+*** Interpreting Lists
+To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime's representation of a list. Finally, like interpreting any other kind of expression, the runtime's value is returned. 
+#+BEGIN_SRC cpp
+std::any Interpreter::visitListExpr(std::shared_ptr<List> expr) {
+    auto list = std::make_shared<ListType>();
+    for (std::shared_ptr<Expr> &value : expr->values) {
+        list->append(evaluate(value));
+    }
+    return list;
+}
+#+END_SRC
+** Handling Subscript Expressions
+Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick[fn::I'm not sure if this would work when classes and methods are implemented.].
+
+From the interpreter's point of view, the only difference between the two is the presence of a value expression. If the AST node has a value, it should assign it at index. Otherwise, it should return the value at index. So the trick is to make the parser pass a =nullptr= in the place of value expression when parsing a r-value and pass a value only when parsing a l-value. This allows the interpreter to easily differentiate between the two kinds of subscript expressions.
+*** Parsing Subscripts
+Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. ~subscript()~ calls ~finishSubscript()~ each time it sees a ~[~ to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a =nullptr= in the place of value expression to let the interpreter know that it is a r-value. 
+#+BEGIN_SRC cpp
+std::shared_ptr<Expr> Parser::finishSubscript(std::shared_ptr<Expr> name) {
+    std::shared_ptr<Expr> index = logicalOr();
+    Token paren = consume(TokenType::RIGHT_BRACKET,
+                          "Expect ']' after arguments.");
+    return std::make_shared<Subscript>(name, index, nullptr, paren);
+}
+
+std::shared_ptr<Expr> Parser::subscript() {
+    std::shared_ptr<Expr> expr = primary();
+    while (true) {
+        if (match(TokenType::LEFT_BRACKET)) {
+            expr = finishSubscript(expr);
+        } else {
+            break;
+        }
+    }
+    return expr;
+}
+#+END_SRC
+As you may have noticed in the formal grammar, for parsing a l-value expression, the parser extends the ~assignment~ rule. If the parsed expression is of type ~Subscript~, it wraps the list's name, index and value expression in a AST node. The list's name is stored as an expression without converting it into l-value because the methods used for manipulating the list act on a evaluated value of the list. 
+#+BEGIN_SRC cpp
+  std::shared_ptr<Expr> Parser::assignment() {
+      std::shared_ptr<Expr> expr = logicalOr();
+      if (match(TokenType::EQUAL)) {
+          Token equals = previous();
+          std::shared_ptr<Expr> value = assignment();
+          // parse variable assignment
+          } else if (Subscript *s = dynamic_cast<Subscript *>(expr.get())) {
+              return std::make_shared<Subscript>(s->name, s->index, value,
+                                                 s->paren);
+          }
+          error(std::move(equals), "Invalid assignment target.");
+      }
+      return expr;
+  }
+#+END_SRC
+*** Interpreting Subscripts
+To interpret a subscript expression, the interpreter first evaluates the list's name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list's name to the runtime's representation of a list and the index to ~int~ from ~double~[fn::This is actually a bug because index number should not be of type ~double~]. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
+
+Now the interpreter knows that the list and the index are of valid types and is ready interpret it. If the AST node has a value expression, the interpreter evaluates it and assigns it at the index. List's ~setAtIndex()~ method sets a value at a index under two condtions:
+- When index is equivalent to length of list: To append a value to the list.
+- When index is less than length of list and greater than zero: To assign a value at a index. 
+If neither of those conditions evaluate to a truthy value, the method returns ~false~ and the interpreter throws a runtime error. 
+
+If the node does *not* have a value it's a r-value and the interpreter is supposed to return the value at index. It returns the value using the list's method if index is within the range of the list. Otherwise, if the index is out of range, it returns a =nullptr=.
+#+BEGIN_SRC cpp
+std::any Interpreter::visitSubscriptExpr(std::shared_ptr<Subscript> expr) {
+    std::any name = evaluate(expr->name);
+    std::any index = evaluate(expr->index);
+    if (name.type() == typeid(std::shared_ptr<ListType>)) {
+        if (index.type() == typeid(double)) {
+            std::shared_ptr<ListType> list;
+            int castedIndex;
+            list = std::any_cast<std::shared_ptr<ListType>>(name);
+            castedIndex = std::any_cast<double>(index);
+            if (expr->value != nullptr) {
+                std::any value = evaluate(expr->value);
+                if (list->setAtIndex(castedIndex, value)) {
+                    return value; 
+                } else {
+                    throw RuntimeError{expr->paren, "Index out of range."};
+                }
+            } else {
+                if (castedIndex >= list->length() || castedIndex < 0) {
+                    return nullptr;
+                }
+                return list->getEleAt(castedIndex);
+            }
+        } else {
+            throw RuntimeError{expr->paren, "Index should be of type int."};
+        }
+    } else {
+        throw RuntimeError{expr->paren, "Only lists can be subscripted."};
+    }
+    return {};
+}
+#+END_SRC
+I could have made the interpreter throw errors when indexing out of range but chose to return a =nullptr= because it helps in terminating a loop while iterating over a list. It might seem unsafe but the interpreter throws an error when a variable initialized with =nullptr= is used in an expression. So if the user tries to access a value out of range and uses it in some other expression, the program is guaranteed to fail. 
+#+BEGIN_SRC lox
+// lox script to print all elements in a list
+var list = [1, 2, 3, 4, 5];
+for (var i = 0; list[i] != nil; i = i + 1) {
+    print list[i]; // 1 2 3 4 5
+}
+#+END_SRC
+* Unused Variable Warnings
+I also made the resolver throw warnings when there are unused variables in the local scope. This also solves challenge #3 in chapter 11 /Resolving and Binding/.
+
+To implement this feature, a vector of ~std::map~ is used like a stack to track the nested (possibly) local scopes in scope. This is similar to the =scopes= stack used in the resolver but instead of storing a string and a boolean, here I store the variable as a token and the number of times it has been resolved. When the resolver enters a local scope it pushes an empty map into the vector and when it exits a scope it pops a map. Declaring a variable in the local scope inserts a element with variable token as key and =0= as value in the top most map. This value gets incremented by one whenever the corresponding variable is resolved locally. Finally, before exiting a local scope calling =checkUnusedVariables()= would iterate over all the pairs in the top most map and throw a warning when the value is equivalent to zero.
+#+BEGIN_SRC cpp
+void Resolver::checkUnusedVariables() {
+    std::map<Token, int> &currentScope = identifiers.back();
+    for (auto const& [key, val] : currentScope) {
+        if (val == 0) {
+            Error::warn(key, "Unused local variable.");
+        }
+    }
+}
+#+END_SRC
+* Epilogue
+I had so much fun working on this project and learnt a lot about programming languages and interpreters. Before reading this book, I did not know what actually happens when I run or compile my programs but now I have a better understanding of the underlying ideas and visualize a interpreter as follows:
+
+1. Scanner:
+   Converts user input into list of tokens.
+2. Parser:
+   Tokens into expression or statement AST node based on formal grammar.
+3. Interpreter:
+   - Evaluates a expression node to a value.
+   - Executes a statement node to produce side effect.
+4. Environment:
+   Stores the state of the program.
+
+Next, I'm looking forward to start working on the bytecode interpreter.
+

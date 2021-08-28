@@ -263,7 +263,7 @@ body {
 @media screen and (min-width: 600px) {
     body {
         font-size: 18px;
-        background: #000000;
+        background-color: #000000;
         color: white;
         margin: 40px auto; /* "auto" for centering */
         font-family: "Deja Vu Sans", Sans-Serif;
