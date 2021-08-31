@@ -1,57 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2021-Jul-15 -->
+<!-- 2021-Aug-31 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About Me</title>
 <meta name="generator" content="Org mode">
 <meta name="author" content="Veera Sivarajan">
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2019 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -70,7 +46,7 @@ for the JavaScript code in this tag.
 <h1 class="title">About Me</h1>
 <p class="subtitle">2021-Jul-12</p>
 </header><p>
-Hello, I&rsquo;m Veera. I study computer science at UMass Amherst. I&rsquo;m passionate about compilers, programming languages and operating systems. I spend most of my time working on projects that would improve my computing experience. All my projects are open source and can be found on my profile linked above. I also enjoy configuring and using Emacs for a number of day-to-day tasks. 
+Hello, I&rsquo;m Veera. I study computer science at UMass Amherst. I&rsquo;m passionate about compilers, programming languages and operating systems. I spend most of my time working on projects that would improve my computing experience. All my projects are open source and can be found on the profile linked above. I also enjoy configuring and using Emacs for a number of day-to-day tasks. 
 </p>
 
 <p>
@@ -78,7 +54,7 @@ I love running long distances and have participated in several marathons since 2
 </p>
 
 <p>
-I also play Table Tennis competitively and have been trained professionally for the past ten years. I started as a passive player and have grown to develop a strong offensive game. Nowadays, even though the pandemic has put an end my Table Tennis career, I practice occasionally to stay in touch with the sport. 
+I also play Table Tennis competitively and have been trained professionally for the past ten years. I started as a passive player and have grown to develop a strong offensive game. Nowadays, even though the pandemic has put an end to my Table Tennis career, I practice occasionally to stay in touch with the sport. 
 </p>
 
 <p>
@@ -87,8 +63,7 @@ If you want to reach out, feel free to contact me via email.
 </main>
 <footer id="postamble" class="status">
 <div class='footer'>
-  Last updated on 2021-Jul-15 Thu 00:35. <br>
-  Generated using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.4.6). <br>
+  Last updated on 2021-Aug-31 Tue 18:46. <br>
 </div>
 </footer>
 </body>
