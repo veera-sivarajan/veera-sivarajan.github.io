@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2021-Nov-01:
+  *[[file:game_of_life.org][Game Of Life]]*
 - 2021-Aug-19:
   *[[file:adding_features_to_lox.org][Adding Features To Lox]]*
 - 2021-Mar-29:
