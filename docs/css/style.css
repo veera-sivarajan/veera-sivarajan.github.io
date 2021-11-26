@@ -1,5 +1,3 @@
-/* Stolen from https://ambrevar.xyz */
-
 /* @import "normalize"; */
 /* @import "htmlize"; */
 
@@ -19,7 +17,7 @@ body {
     color: #333;
 }
 
-@media screen and (min-width: 320px) {
+@media screen and (min-width: 600px) {
     body {
         font-size: 18px;
         background-color: #000000;
@@ -31,14 +29,14 @@ body {
     }
 }
 
-@media screen and (min-width: 320px) {
+@media screen and (min-width: 910px) {
     body {
         width: 900px;
     }
 }
 
 ::selection {
-    background: white;
+    background: white; 
     color: black;
 }
 
@@ -597,7 +595,7 @@ p.verse {
 }
 
 .inlinetask {
-    background-color: #ffffcc;
+    background: #ffffcc;
     border: 2px solid gray;
     margin: 10px;
     padding: 10px;

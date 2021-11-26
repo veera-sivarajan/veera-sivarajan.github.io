@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2021-Nov-25:
+  *[[file:rena's_memory_model.org][Rena's Memory Model]]*
 - 2021-Nov-01:
   *[[file:game_of_light.org][Game of Light]]*
 - 2021-Aug-19:

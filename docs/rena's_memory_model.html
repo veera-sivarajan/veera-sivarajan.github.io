@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2021-Nov-26 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rena&rsquo;s Memory Model</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="Veera Sivarajan">
+<link rel="stylesheet" type="text/css" href="./css/style.css"/>
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<header id="top" class="status">
+<nav>
+  <a href="https://github.com/veera-sivarajan">Github</a>
+  <a href="/">Home</a>
+  <a href="/about/">About</a>
+  <a href="mailto:sveera.2001@gmail.com">Email</a>
+</nav>  
+</header>
+<main id="content">
+<header>
+<h1 class="title">Rena&rsquo;s Memory Model</h1>
+<p class="subtitle">2021-Nov-25</p>
+</header><p>
+<a href="https://github.com/veera-sivarajan/rena">Rena</a> is my implementation of lox tree-walk interpreter in Rust. I&rsquo;m rewriting it in Rust to familiarize myself with the borrow checker and the fancy toolchain it offers. In this post, I&rsquo;ll explain how I implemented a simple environment for the interpreter. 
+</p>
+<section id="outline-container-org3ee5620" class="outline-2">
+<h2 id="org3ee5620">Structure</h2>
+<div class="outline-text-2" id="text-org3ee5620">
+<p>
+The environment is structured as a vector of hashmaps and is initialized with an empty hashmap to represent the global scope. Every new block in the source code inserts an empty hashmap at the head of the vector and exiting out of a block removes a hashmap from the head. The environment combines these three properties to support nesting and shadowing of values in the memory.  
+</p>
+<div class="org-src-container">
+<pre class="src src-rust"><span class="org-keyword">pub</span> <span class="org-keyword">struct</span> <span class="org-type">Environment</span> {
+    <span class="org-variable-name">frame_list</span>: <span class="org-type">Vec</span>&lt;<span class="org-type">HashMap</span>&lt;<span class="org-type">String</span>, <span class="org-type">Value</span>&gt;&gt;,
+}
+
+<span class="org-keyword">pub</span> <span class="org-keyword">fn</span> <span class="org-function-name">new</span>() -&gt; <span class="org-type">Environment</span> {
+    <span class="org-keyword">let</span> <span class="org-keyword">mut</span> <span class="org-variable-name">frames</span> = <span class="org-type">Vec</span>::new();
+    frames.push(<span class="org-type">HashMap</span>::new());
+
+    <span class="org-type">Environment</span> {
+        <span class="org-variable-name">frame_list</span>: frames,
+    }
+}
+
+<span class="org-keyword">pub</span> <span class="org-keyword">fn</span> <span class="org-function-name">new_scope</span>(&amp;<span class="org-keyword">mut</span> <span class="org-keyword">self</span>) {
+    <span class="org-keyword">self</span>.frame_list.insert(0, <span class="org-type">HashMap</span>::new());
+}
+
+<span class="org-keyword">pub</span> <span class="org-keyword">fn</span> <span class="org-function-name">exit_scope</span>(&amp;<span class="org-keyword">mut</span> <span class="org-keyword">self</span>) {
+    <span class="org-keyword">self</span>.frame_list.remove(0);
+}
+</pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgf36f69e" class="outline-2">
+<h2 id="orgf36f69e">Declaring New Values</h2>
+<div class="outline-text-2" id="text-orgf36f69e">
+<p>
+When the interpreter encounters a new block in the parsed source code, it first calls <code>new_scope()</code> to initialize a new hashmap for the block. So when new values are declared inside the block, they can be safely inserted in the first hashmap of the vector which represents the innermost scope. 
+</p>
+<div class="org-src-container">
+<pre class="src src-rust"><span class="org-keyword">pub</span> <span class="org-keyword">fn</span> <span class="org-function-name">define</span>(&amp;<span class="org-keyword">mut</span> <span class="org-keyword">self</span>, <span class="org-variable-name">name</span>: <span class="org-type">String</span>, <span class="org-variable-name">value</span>: <span class="org-type">Value</span>) -&gt; <span class="org-type">Result</span>&lt;(), <span class="org-type">LoxError</span>&gt; {
+    <span class="org-keyword">if</span> <span class="org-keyword">let</span> <span class="org-type">Some</span>(frame) = <span class="org-keyword">self</span>.frame_list.get_mut(0) {
+        frame.insert(name, value);
+        <span class="org-type">Ok</span>(())
+    } <span class="org-keyword">else</span> {
+        <span class="org-preprocessor">error!</span>(<span class="org-string">"Frame not available."</span>)
+    }
+}
+</pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org05163d1" class="outline-2">
+<h2 id="org05163d1">Fetching and Assigning Values</h2>
+<div class="outline-text-2" id="text-org05163d1">
+<p>
+<code>fetch()</code> is used to fetch a value from the environment and <code>assign()</code> is used to assign a new value to a predefined key. Both the functions are required to climb up from the starting scope to the global scope until a hashmap containing the given key is found. This is accomplished by iterating through each hashmap in the vector and performing the fetch or assign operation only if a hashmap contains the key. If the key is not found in any hashmap, the value being searched for has not been declared.
+</p>
+
+<p>
+For example, to fetch a variable <code>a</code> declared in the global scope and used inside a block statement, the interpreter will first check the first hashmap in the vector (innermost scope) for the variable name and will not find it. So it will proceed to check the second hashmap (global scope) and since this hashmap contains the variable&rsquo;s key the function will return the value associated with the key.  
+</p>
+<div class="org-src-container">
+<pre class="src src-rust"><span class="org-keyword">pub</span> <span class="org-keyword">fn</span> <span class="org-function-name">fetch</span>(&amp;<span class="org-keyword">self</span>, <span class="org-variable-name">name</span>: <span class="org-type">String</span>) -&gt; <span class="org-type">Option</span>&lt;&amp;<span class="org-type">Value</span>&gt; {
+    <span class="org-keyword">for</span> <span class="org-variable-name">frame</span> <span class="org-keyword">in</span> &amp;<span class="org-keyword">self</span>.frame_list {
+        <span class="org-keyword">if</span> frame.contains_key(&amp;name) {
+            <span class="org-keyword">return</span> frame.get(&amp;name);
+        }
+    }
+    <span class="org-type">None</span>
+}
+
+<span class="org-keyword">pub</span> <span class="org-keyword">fn</span> <span class="org-function-name">assign</span>(&amp;<span class="org-keyword">mut</span> <span class="org-keyword">self</span>, <span class="org-variable-name">name</span>: <span class="org-type">String</span>, <span class="org-variable-name">value</span>: <span class="org-type">Value</span>) -&gt; <span class="org-type">Result</span>&lt;<span class="org-type">Value</span>, <span class="org-type">LoxError</span>&gt; {
+    <span class="org-keyword">for</span> <span class="org-variable-name">frame</span> <span class="org-keyword">in</span> &amp;<span class="org-keyword">mut</span> <span class="org-keyword">self</span>.frame_list {
+        <span class="org-keyword">if</span> frame.contains_key(&amp;name) {
+            frame.insert(name, value.clone());
+            <span class="org-keyword">return</span> <span class="org-type">Ok</span>(value);
+        }
+    }
+    <span class="org-preprocessor">error!</span>(<span class="org-string">"Undefined variable."</span>)
+}
+</pre>
+</div>
+</div>
+</section>
+<section id="outline-container-orgd45a199" class="outline-2">
+<h2 id="orgd45a199">The End</h2>
+<div class="outline-text-2" id="text-orgd45a199">
+<p>
+Here&rsquo;s a pictorial representation of the environment for the source code below. The first element represents the innermost scope and the following elements represent the enclosing outer scopes. 
+<img src="imgs/scopes3.png" alt="scopes3.png">
+</p>
+<pre class="example">
+var a = 1;
+var b = 2;
+{
+    var c = 100;
+    print a; // 1
+    {
+        var d = 4;
+        {
+            var e = 5;
+            c = 3;
+            print c; // 3
+        }
+    }
+}
+</pre>
+<p>
+Compared to the implementation provided in the book, my implementation sits well with the borrow checker and may be more performant and readable as it uses iteration instead of recursion to climb up the nested scopes. 
+</p>
+
+<p>
+Now, back to hacking :^)
+</p>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+  Last updated on 2021-Nov-26 Fri 13:02. <br>
+</div>
+</footer>
+</body>
+</html>
