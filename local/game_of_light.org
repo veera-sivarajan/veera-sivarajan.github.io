@@ -8,3 +8,23 @@ For our final project, Hayden and I are building [[https://en.wikipedia.org/wiki
 3. [ ] Simulation Controller
 4. [X] Connecting wires
    
+
+* Project Milestone Report
+** Completed Work
+- Finished procuring all materials required for the project.
+- Connected the Matrix to the makerboard and experimented how the source code communicates with LED pixels. 
+- Read a bunch of sample Game Of Life programs to get inspiration. 
+** Yet To Finish
+*** TODO  Connect everything together in a presentable manner
+This should take around half a day as we have a solid plan.
+*** TODO Test if the source code functions correctly
+This will also take half a day. The code we currently have should be modified a bit to suit our requirements. 
+*** TODO Figure out how to get data from the game console into the game source code
+This will take ~1 day to finish since this is uncharted territory for both of us. 
+** Roadblocks
+1. Figure out how to cascade multiple matrices.
+** Pictures
+#+CAPTION: LED Matrix connected to makerboard
+[[./imgs/gol1.jpg]]
+#+CAPTION: Glowing in full glory
+[[./imgs/gol2.jpg]]
