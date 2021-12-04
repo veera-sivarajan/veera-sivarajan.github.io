@@ -84,3 +84,13 @@ var b = 2;
 Compared to the implementation provided in the book, my implementation sits well with the borrow checker and may be more performant and readable as it uses iteration instead of recursion to climb up the nested scopes. 
 
 Now, back to hacking :^)
+
+* Edit
+A comment by [[https://www.reddit.com/r/rust/comments/r2tblf/comment/hm84mvq/?utm_source=share&utm_medium=web2x&context=3][u/Training-Ad-9425]] mentioned that my implementation is inefficient and after referring to the [[https://doc.rust-lang.org/std/collections/index.html#sequences][documentation]], I realized that inserting and removing an element from the head of a ~Vec~ is a $O(n)$ operation.
+
+To improve on that, I had two options:
+1. Push and pop new scopes at the tail of the vector and reverse the sequence when traversing from inner to outer scope. This would allow new scopes to be added to the environment in $O(1)$ and traversing will remain to be $O(n)$. 
+
+2. Replace the environment structure with ~VecDeque~ as it supports $O(1)$ insertion and removal at both ends of the sequence.
+
+I implemented the first option as it would give me a chance to play with iterator's methods. You can find the update source code in the remote repository linked above.

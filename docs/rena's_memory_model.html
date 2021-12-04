@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2021-Nov-26 -->
+<!-- 2021-Dec-04 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rena&rsquo;s Memory Model</title>
@@ -30,6 +30,28 @@
     /*]]>*///-->
 // @license-end
 </script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <header id="top" class="status">
@@ -162,10 +184,32 @@ Now, back to hacking :^)
 </p>
 </div>
 </section>
+
+<section id="outline-container-orgb1c569e" class="outline-2">
+<h2 id="orgb1c569e">Edit</h2>
+<div class="outline-text-2" id="text-orgb1c569e">
+<p>
+A comment by <a href="https://www.reddit.com/r/rust/comments/r2tblf/comment/hm84mvq/?utm_source=share&amp;utm_medium=web2x&amp;context=3">u/Training-Ad-9425</a> mentioned that my implementation is inefficient and after referring to the <a href="https://doc.rust-lang.org/std/collections/index.html#sequences">documentation</a>, I realized that inserting and removing an element from the head of a <code>Vec</code> is a \(O(n)\) operation.
+</p>
+
+<p>
+To improve on that, I had two options:
+</p>
+<ol class="org-ol">
+<li>Push and pop new scopes at the tail of the vector and reverse the sequence when traversing from inner to outer scope. This would allow new scopes to be added to the environment in \(O(1)\) and traversing will remain to be \(O(n)\).</li>
+
+<li>Replace the environment structure with <code>VecDeque</code> as it supports \(O(1)\) insertion and removal at both ends of the sequence.</li>
+</ol>
+
+<p>
+I implemented the first option as it would give me a chance to play with iterator&rsquo;s methods. You can find the update source code in the remote repository linked above.
+</p>
+</div>
+</section>
 </main>
 <footer id="postamble" class="status">
 <div class='footer'>
-  Last updated on 2021-Nov-26 Fri 13:02. <br>
+  Last updated on 2021-Dec-04 Sat 13:32. <br>
 </div>
 </footer>
 </body>
