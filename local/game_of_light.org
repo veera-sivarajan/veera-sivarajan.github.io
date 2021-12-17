@@ -2,7 +2,7 @@
 #+TITLE: Game of Light
 #+DATE:<2021-11-01 Mon> 
 For our final project, Hayden and I are building [[https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life][Conway's Game of Life]] simulator on a LED matrix. We will also add a controller which the audience can use to pause and play the simulation. With this project, we aim to understand how interesting patterns emerge from a small set of rules. The coordinates for the simulation will be computed on an Arduino board which will be connected to both the simulator and the controller. Along the way, we might also add features that tickles our fancy. Check this page by December, 2021 to view the final product.   
-* Final Update
-After soldering countless wire tips to the LED matrix and Hayden's all-out effort on porting the [[https://github.com/veera-sivarajan/game-of-light/blob/master/gameOfLight.ino][software]] to run on our hardware, we were able to finish the project on time and demo it during the final presentation. To see how our final project looked like, check out this video where we simulate a bunch of still life patterns in the game. 
+* Update
+After soldering countless wire tips to the LED matrix and Hayden's all-out effort on porting the [[https://github.com/veera-sivarajan/game-of-light/blob/master/gameOfLight.ino][software]] to run on our hardware, we were able to finish the project on time and demo it during the final presentation. To see how our final project looked like, check out this [[https://youtu.be/IcmwVxqATL4][video]] where we simulate a bunch of still life patterns in the game. 
 * Fin
 CICS 256 has been a great learning experience as we got to work on a project of our choice instead of writing exams. I learned a great deal about electronics and how software and hardware interact with each other. I'm sure the skills I gained from this class will help me throughout my life. CICS 256 rocks! 
