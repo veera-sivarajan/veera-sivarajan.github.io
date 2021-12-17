@@ -2,29 +2,7 @@
 #+TITLE: Game of Light
 #+DATE:<2021-11-01 Mon> 
 For our final project, Hayden and I are building [[https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life][Conway's Game of Life]] simulator on a LED matrix. We will also add a controller which the audience can use to pause and play the simulation. With this project, we aim to understand how interesting patterns emerge from a small set of rules. The coordinates for the simulation will be computed on an Arduino board which will be connected to both the simulator and the controller. Along the way, we might also add features that tickles our fancy. Check this page by December, 2021 to view the final product.   
-** Materials Required
-1. [ ] LED Matrix
-2. [X] Arduino Board
-3. [ ] Simulation Controller
-4. [X] Connecting wires
-   
-
-* Project Milestone Report
-** Completed Work
-- Finished procuring all materials required for the project.
-- Connected the Matrix to the makerboard and experimented how the source code communicates with LED pixels. 
-- Read a bunch of sample Game Of Life programs to get inspiration. 
-** Yet To Finish
-*** TODO  Connect everything together in a presentable manner
-This should take around half a day as we have a solid plan.
-*** TODO Test if the source code functions correctly
-This will also take half a day. The code we currently have should be modified a bit to suit our requirements. 
-*** TODO Figure out how to get data from the game console into the game source code
-This will take ~1 day to finish since this is uncharted territory for both of us. 
-** Roadblocks
-1. Figure out how to cascade multiple matrices.
-** Pictures
-#+CAPTION: LED Matrix connected to makerboard
-[[./imgs/gol1.jpg]]
-#+CAPTION: Glowing in full glory
-[[./imgs/gol2.jpg]]
+* Final Update
+After soldering countless wire tips to the LED matrix and Hayden's all-out effort on porting the [[https://github.com/veera-sivarajan/game-of-light/blob/master/gameOfLight.ino][software]] to run on our hardware, we were able to finish the project on time and demo it during the final presentation. To see how our final project looked like, check out this video where we simulate a bunch of still life patterns in the game. 
+* Fin
+CICS 256 has been a great learning experience as we got to work on a project of our choice instead of writing exams. I learned a great deal about electronics and how software and hardware interact with each other. I'm sure the skills I gained from this class will help me throughout my life. CICS 256 rocks! 
