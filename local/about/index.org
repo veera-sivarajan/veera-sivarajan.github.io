@@ -1,11 +1,11 @@
 #+TITLE: About Me
-#+DATE: <2021-07-12 Mon>
+#+DATE: <2022-04-12 Tue>  
 
 Hello, I'm Veera. I study computer science at UMass Amherst. I'm passionate about compilers, programming languages and operating systems. I spend most of my time working on projects that would improve my computing experience. All my projects are open source and can be found on the profile linked above. I also enjoy configuring and using Emacs for a number of day-to-day tasks. 
 
 I love running long distances and have participated in several marathons since 2012. I try to run around five miles everyday even during the cold winters of New England. Over the years, running has become my everyday therapy.
 
-I also play Table Tennis competitively and have been trained professionally for the past ten years. I started as a passive player and have grown to develop a strong offensive game. Nowadays, even though the pandemic has put an end to my Table Tennis career, I practice occasionally to stay in touch with the sport. 
+I also love playing Table Tennis and have been trained professionally for the past ten years. These days, I play twice a week to maintain a USATT rating around 2000. Recently, our team at UMass participated in the NCTTA nationals.
 
 If you want to reach out, feel free to contact me via email. 
 
