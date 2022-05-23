@@ -3,7 +3,7 @@
 
 Hello, I'm Veera. I study computer science at UMass Amherst. I'm passionate about compilers, programming languages and developer tools. I spend most of my time working on projects that would improve my computing experience. All my projects are open source and can be found on the profile linked above. I also enjoy configuring and using Emacs for a number of day-to-day tasks. 
 
-I love running lond distances. It allows me to take a break from sitting in front of a computer and makes me feel calm and composed.  
+I love running long distances. It allows me to take a break from sitting in front of a computer and makes me feel calm and composed.  
 
 I also love Table Tennis and have played competitively for several years. 
 
