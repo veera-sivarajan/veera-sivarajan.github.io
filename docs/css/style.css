@@ -34,7 +34,8 @@ body {
 }
 
 ::selection {
-    background: #D6EDFF;
+    background: white;
+    color: black;
 }
 
 p {
@@ -638,6 +639,20 @@ footer {
 }
 
 nav {
+    /* background-color:#222222; */
+    /* border-radius: 5px 20px 5px 20px; */
+    border: 3px solid gray;
+    font-weight: bold;
+    padding: 0 15;
+    font-size: 20px;
+    top: 50;
+    text-align: left;
+    display: flex;
+    justify-content: space-around;
+}
+
+
+nav {
     border: 1px solid gray;
     font-weight: bold;
     padding: 0 15;
@@ -647,4 +662,3 @@ nav {
     display: flex;
     justify-content: space-around;
 }
-
