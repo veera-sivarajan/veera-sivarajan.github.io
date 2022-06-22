@@ -751,7 +751,7 @@ pre {
     overflow-x: auto;
 }
 
-.org-keyword{
+.org-function-name {
     color: white;
     font-weight: bold;
 }
