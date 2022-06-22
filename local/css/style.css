@@ -27,9 +27,12 @@ body {
     }
 }
 
+/*my laptop */
 @media screen and (min-width: 400px) {
     body {
-        max-width: 650px;
+        width: 50%;
+        font-size: 25px;
+        line-height: 1.5em;
     }
 }
 
@@ -54,6 +57,7 @@ dl {
     text-align: center;
     margin: 0.8em auto;
     color: white;
+    font-size: 50px;
 }
 
 .subtitle {
@@ -336,23 +340,22 @@ p.verse {
     margin-left: 3%;
 }
 
+/* Inline source code */
 :not(pre) > code {
-    padding: 2px 5px;
     margin: auto 1px;
-    /* border: 1px solid #DDD; */
     border-radius: 3px;
     background-clip: padding-box;
     color: cyan;
-    /* font-size: $code-size; */
     font-size: 15px;
 }
 
+/* Source code block */
 .org-src-container {
     border: 1px solid #1c1c1c;
     /* box-shadow: 3px 3px 3px #eee; */
     font-family: $monospace;
     /* font-size: $code-size; */
-    font-size: 13px;
+    font-size: 22px;
     margin: 1em auto;
     padding: 0.1em 0.5em;
     position: relative;
@@ -638,25 +641,25 @@ footer {
     font-size: 11px;
 }
 
-nav {
-    /* background-color:#222222; */
-    /* border-radius: 5px 20px 5px 20px; */
-    border: 3px solid gray;
-    font-weight: bold;
-    padding: 0 15;
-    font-size: 20px;
-    top: 50;
-    text-align: left;
-    display: flex;
-    justify-content: space-around;
-}
+/* nav { */
+/*     /\* background-color:#222222; *\/ */
+/*     /\* border-radius: 5px 20px 5px 20px; *\/ */
+/*     border: 3px solid gray; */
+/*     font-weight: bold; */
+/*     padding: 0 15; */
+/*     font-size: 20px; */
+/*     top: 50; */
+/*     text-align: left; */
+/*     display: flex; */
+/*     justify-content: space-around; */
+/* } */
 
 
 nav {
     border: 1px solid gray;
     font-weight: bold;
     padding: 0 15;
-    font-size: 13px;
+    font-size: 20px;
     top: 50;
     text-align: left;
     display: flex;
