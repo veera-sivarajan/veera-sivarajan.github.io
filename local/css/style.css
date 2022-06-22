@@ -752,7 +752,7 @@ pre {
 }
 
 .org-keyword{
-    color: cyan;
+    color: yellow; 
 }
 
 .org-rainbow-delimiters-depth-1{
@@ -835,8 +835,8 @@ nav {
 
 :not(pre) > code {
     font-size: 0.9rem;
-    color: cyan;
-    font-family: "Courier New";
+    color: yellow;
+    font-family: "Helvetica";
 }
 
 footer {
