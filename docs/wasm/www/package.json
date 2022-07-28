@@ -39,7 +39,7 @@
         "@codemirror/lang-html": "^0.18.1",
         "@codemirror/lang-javascript": "^0.18.0",
         "@codemirror/theme-one-dark": "^0.18.1",
-        "wasm": "file:../pkg",
+        "wasm": "../pkg",
         "xterm": "^4.19.0",
         "xterm-addon-fit": "^0.5.0"
     }
