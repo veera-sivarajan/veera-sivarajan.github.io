@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2022-Aug-15:
+  *[[file:a_programmer's_utopia.org][A Programmer's Utopia]]*
 - 2021-Nov-25:
   *[[file:rena's_memory_model.org][Rena's Memory Model]]*
 - 2021-Nov-01:
