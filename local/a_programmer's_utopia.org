@@ -23,9 +23,6 @@ A weekly event to discuss everything related to Rust. Here we helped each other 
 This was an interest group for Zig programming. Initially, I was curious to learn what Zig has to offer in terms of an improvement over C and was fascinated by its C interoperability as a first class feature. I played with the toolchain and, with the help of Recursers, I was able to compile a existing C code base using ~zig cc~ and also transpile it to Zig. You can read more about our process to translate a C project into Zig in Jeff Fowler's [[https://blog.jfo.click/zig-translate-c-and-linking-equal-best-friends/]["Zig translate-c and linking equal best friends"]].
 ** Scone Production and Consumption Group
 This was an occasional social event where I baked Scones along with other Recursers by following the [[https://www.seriouseats.com/bakery-style-cream-scones-with-chocolate-recipe][recipe]] written by Stella Parks. This was my first attempt at baking and I really enjoyed the process even though my Scones ended up looking like giant cookies because I did not follow the recipe word for word :). Nevertheless, I see strong parallels between programming and cooking/baking and, for me, both the art forms evoke the same creative feeling.
-
-#+CAPTION: Scones but looks like cookies
-[[/home/veera/Projects/Blog/local/imgs/scones.jpg]]
 * Never Graduate
 Finally, my batch ended in the first week of August, 2022. Doing a batch at RC was an unique and memorable experience for me. The environment was highly diverse and all Recursers were kind and supportive of each other's goals. I'm grateful to the RC faculty for creating and maintaining this safe and happy place.
 
