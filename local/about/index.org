@@ -5,4 +5,4 @@ I'm Veera (he/him), a computer science student at UMass Amherst. I'm passionate 
 
 Outside of programming, I love to run long distances or play [[https://youtu.be/I7XNeGwZhj4][Table Tennis]].
 * Hire Me                                                            
-I'm looking for a job involving compilers or developer tools. I currently work as an IOS developer and have experience using Rust and C++ for my personal projects. Here is my [[file:~/Projects/Blog/local/imgs/veera-vitae.pdf][curriculum vitae]].
+I'm looking for a job involving compilers or developer tools. I currently work as an IOS developer and have experience using Rust and C++ for my personal projects. Here is my [[https://veera.app/imgs/veera-vitae.pdf][curriculum vitae]].
