@@ -166,9 +166,12 @@ nav {
     border: 1px solid gray;
 }
 
+/* inline code */
 :not(pre) > code {
     font-size: 0.9rem;
-    color: yellow;
+    color: white;
+    background-color: #363636;
+    padding: 2px;
     font-family: "Courier New";
 }
 
