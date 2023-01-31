@@ -1,35 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2021-Nov-26 -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 2023-Jan-31 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Adding Features To Lox</title>
-<meta name="generator" content="Org mode">
-<meta name="author" content="Veera Sivarajan">
+<meta name="author" content="Veera Sivarajan" />
+<meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="./css/style.css"/>
-<script type="text/javascript">
-// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
-<!--/*--><![CDATA[/*><!--*/
-     function CodeHighlightOn(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.add("code-highlighted");
-         target.classList.add("code-highlighted");
-       }
-     }
-     function CodeHighlightOff(elem, id)
-     {
-       var target = document.getElementById(id);
-       if(null != target) {
-         elem.classList.remove("code-highlighted");
-         target.classList.remove("code-highlighted");
-       }
-     }
-    /*]]>*///-->
-// @license-end
-</script>
 </head>
 <body>
 <header id="top" class="status">
@@ -40,10 +18,10 @@
   <a href="mailto:sveera.2001@gmail.com">Email</a>
 </nav>  
 </header>
-<main id="content">
+<main id="content" class="content">
 <header>
 <h1 class="title">Adding Features To Lox</h1>
-<p class="subtitle">2021-Aug-19</p>
+<p class="subtitle" role="doc-subtitle">2021-Aug-19</p>
 </header><p>
 Finally, I got time to sit down and implement a tree-walk interpreter following Bob Nystrom&rsquo;s <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>. In this post, I&rsquo;m going to explain some of the features I have added to the language. You can find my complete implementation <a href="https://github.com/veera-sivarajan/lang0">here</a>. I have also made a <a href="https://youtu.be/0P6VPOIKATg">video</a> demoing the features listed below.
 </p>
@@ -51,9 +29,9 @@ Finally, I got time to sit down and implement a tree-walk interpreter following 
 <p>
 <b>Note:</b> This post assumes that the reader has read Part II of Crafting Interpreters and is familiar with the implementation details. 
 </p>
-<section id="outline-container-org856a920" class="outline-2">
-<h2 id="org856a920">Anonymous Functions</h2>
-<div class="outline-text-2" id="text-org856a920">
+<section id="outline-container-orgc6f299f" class="outline-2">
+<h2 id="orgc6f299f"><span class="section-number-2">1.</span> Anonymous Functions</h2>
+<div class="outline-text-2" id="text-1">
 <p>
 By definition, anonymous functions or lambdas are functions without an associated name. They are used when the user wants to invoke a piece of code but don&rsquo;t want to reuse it. This feature also solves challenge #2 in chapter 10 <i>Functions</i>. In my implementation, a lambda can be written by using the <code>lambda</code> keyword followed by the parameters inside parentheses and the body of the function in braces.
 </p>
@@ -67,22 +45,22 @@ print square(5); // 25
 A lambda is a primary expression that gets evaluated to a value of type <code>LambdaFunction</code>. Parsing it is exactly like parsing a function declaration but here the parser does not consume a name for the function. Finally, it wraps the parameters and the body of lambda in a AST node. 
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-constant">Parser</span>::<span class="org-function-name">lambda</span>() {
-    consume(<span class="org-constant">TokenType</span>::LEFT_PAREN, <span class="org-string">"Expect '(' after 'lambda'."</span>);
-    <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;Token&gt; <span class="org-variable-name">parameters</span>;
-    <span class="org-keyword">if</span> (<span class="org-negation-char">!</span>check(<span class="org-constant">TokenType</span>::RIGHT_PAREN)) {
-        <span class="org-keyword">do</span> {
-            <span class="org-keyword">if</span> (parameters.size() &gt;= 10) {
-                error(peek(), <span class="org-string">"Can't have more than 10 parameters."</span>);
+<pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::lambda() {
+    consume(TokenType::LEFT_PAREN, "Expect '(' after 'lambda'.");
+    std::vector&lt;Token&gt; parameters;
+    if (!check(TokenType::RIGHT_PAREN)) {
+        do {
+            if (parameters.size() &gt;= 10) {
+                error(peek(), "Can't have more than 10 parameters.");
             }
             parameters.push_back(
-                consume(<span class="org-constant">TokenType</span>::IDENTIFIER, <span class="org-string">"Expect parameter name."</span>));
-        } <span class="org-keyword">while</span> (match(<span class="org-constant">TokenType</span>::COMMA));
+                consume(TokenType::IDENTIFIER, "Expect parameter name."));
+        } while (match(TokenType::COMMA));
     }
-    consume(<span class="org-constant">TokenType</span>::RIGHT_PAREN, <span class="org-string">"Expect ')' after parameters."</span>);
-    consume(<span class="org-constant">TokenType</span>::LEFT_BRACE, <span class="org-string">"Expect '{' before lambda body."</span>);
-    <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;<span class="org-constant">Statement</span>::Stmt&gt;&gt; <span class="org-variable-name">body</span> = block();
-    <span class="org-keyword">return</span> <span class="org-constant">std</span>::make_shared&lt;Lambda&gt;(<span class="org-constant">std</span>::move(parameters), <span class="org-constant">std</span>::move(body));
+    consume(TokenType::RIGHT_PAREN, "Expect ')' after parameters.");
+    consume(TokenType::LEFT_BRACE, "Expect '{' before lambda body.");
+    std::vector&lt;std::shared_ptr&lt;Statement::Stmt&gt;&gt; body = block();
+    return std::make_shared&lt;Lambda&gt;(std::move(parameters), std::move(body));
 }
 </pre>
 </div>
@@ -90,36 +68,36 @@ A lambda is a primary expression that gets evaluated to a value of type <code>La
 Since these expressions don&rsquo;t have a name and cannot be reused like a variable or a named function, the interpreter need not store the value of the function in its environment. Instead it would create a runtime&rsquo;s representation of an anonymous function using the parsed value and the environment of the lambda (to allow closures to work) and return the value.
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-constant">std</span>::<span class="org-type">any</span> <span class="org-constant">Interpreter</span>::<span class="org-function-name">visitLambdaExpr</span>(<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Lambda&gt; <span class="org-variable-name">expr</span>) {
-    <span class="org-keyword">return</span> <span class="org-constant">std</span>::make_shared&lt;LambdaFunction&gt;(expr, curr_env);
+<pre class="src src-cpp">std::any Interpreter::visitLambdaExpr(std::shared_ptr&lt;Lambda&gt; expr) {
+    return std::make_shared&lt;LambdaFunction&gt;(expr, curr_env);
 }
 </pre>
 </div>
 </div>
 </section>
-<section id="outline-container-org6fb4523" class="outline-2">
-<h2 id="org6fb4523">Lists</h2>
-<div class="outline-text-2" id="text-org6fb4523">
+<section id="outline-container-orgf175344" class="outline-2">
+<h2 id="orgf175344"><span class="section-number-2">2.</span> Lists</h2>
+<div class="outline-text-2" id="text-2">
 <p>
 To add a list data type into the language, the task can be divided into three small tasks:
 </p>
 </div>
-<div id="outline-container-org570b9a6" class="outline-3">
-<h3 id="org570b9a6">Scanning</h3>
-<div class="outline-text-3" id="text-org570b9a6">
+<div id="outline-container-orgfb4d79d" class="outline-3">
+<h3 id="orgfb4d79d"><span class="section-number-3">2.1.</span> Scanning</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 Introduce two new tokens to make the scanner handle list expressions and subscripts.
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-keyword">case</span> <span class="org-string">'['</span>: addToken(<span class="org-constant">TokenType</span>::LEFT_BRACKET); <span class="org-keyword">break</span>;
-<span class="org-keyword">case</span> <span class="org-string">']'</span>: addToken(<span class="org-constant">TokenType</span>::RIGHT_BRACKET); <span class="org-keyword">break</span>;
+<pre class="src src-cpp">case '[': addToken(TokenType::LEFT_BRACKET); break;
+case ']': addToken(TokenType::RIGHT_BRACKET); break;
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orga150fe9" class="outline-3">
-<h3 id="orga150fe9">Creating List Literals</h3>
-<div class="outline-text-3" id="text-orga150fe9">
+<div id="outline-container-orga97d31e" class="outline-3">
+<h3 id="orga97d31e"><span class="section-number-3">2.2.</span> Creating List Literals</h3>
+<div class="outline-text-3" id="text-2-2">
 <p>
 Like numbers, string, <code>true</code> and <code>false</code>, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
 </p>
@@ -128,87 +106,87 @@ Like numbers, string, <code>true</code> and <code>false</code>, a list is a prim
 To learn about the grammar for lists, I found Caleb&rsquo;s blog <a href="https://calebschoepp.com/blog/2020/adding-a-list-data-type-to-lox/">post</a> to be helpful. It explained all the details related to implementing lists in a clear and concise way.
 </p>
 </div>
-<div id="outline-container-orgd479be1" class="outline-4">
-<h4 id="orgd479be1">Parsing Lists</h4>
-<div class="outline-text-4" id="text-orgd479be1">
+<div id="outline-container-org891fc2c" class="outline-4">
+<h4 id="org891fc2c"><span class="section-number-4">2.2.1.</span> Parsing Lists</h4>
+<div class="outline-text-4" id="text-2-2-1">
 <p>
 Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the <code>]</code> and wraps the vector in a AST node.
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-constant">Parser</span>::<span class="org-function-name">list</span>() {
-    <span class="org-constant">std</span>::<span class="org-type">vector</span>&lt;<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt;&gt; <span class="org-variable-name">values</span> = {};
-    <span class="org-keyword">if</span> (match(<span class="org-constant">TokenType</span>::RIGHT_BRACKET)) {
-        <span class="org-keyword">return</span> <span class="org-constant">std</span>::make_shared&lt;List&gt;(values);
-    } <span class="org-keyword">else</span> {
-        <span class="org-keyword">do</span> {
-            <span class="org-keyword">if</span> (values.size() &gt;= 100) {
-                error(peek(), <span class="org-string">"Can't have more than 100 elements in a list."</span>);
+<pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::list() {
+    std::vector&lt;std::shared_ptr&lt;Expr&gt;&gt; values = {};
+    if (match(TokenType::RIGHT_BRACKET)) {
+        return std::make_shared&lt;List&gt;(values);
+    } else {
+        do {
+            if (values.size() &gt;= 100) {
+                error(peek(), "Can't have more than 100 elements in a list.");
             }
-            <span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-variable-name">value</span> = logicalOr();
+            std::shared_ptr&lt;Expr&gt; value = logicalOr();
             values.push_back(value);
-        } <span class="org-keyword">while</span> (match(<span class="org-constant">TokenType</span>::COMMA));
+        } while (match(TokenType::COMMA));
     }
-    consume(<span class="org-constant">TokenType</span>::RIGHT_BRACKET, <span class="org-string">"Expect ']' at end of list."</span>);
-    <span class="org-keyword">return</span> <span class="org-constant">std</span>::make_shared&lt;List&gt;(values);
+    consume(TokenType::RIGHT_BRACKET, "Expect ']' at end of list.");
+    return std::make_shared&lt;List&gt;(values);
 }
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgb7f2167" class="outline-4">
-<h4 id="orgb7f2167">Interpreting Lists</h4>
-<div class="outline-text-4" id="text-orgb7f2167">
+<div id="outline-container-orgc7dca8f" class="outline-4">
+<h4 id="orgc7dca8f"><span class="section-number-4">2.2.2.</span> Interpreting Lists</h4>
+<div class="outline-text-4" id="text-2-2-2">
 <p>
 To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime&rsquo;s representation of a list. Finally, like interpreting any other kind of expression, the runtime&rsquo;s value is returned. 
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-constant">std</span>::<span class="org-type">any</span> <span class="org-constant">Interpreter</span>::<span class="org-function-name">visitListExpr</span>(<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;List&gt; <span class="org-variable-name">expr</span>) {
-    <span class="org-keyword">auto</span> <span class="org-variable-name">list</span> = <span class="org-constant">std</span>::make_shared&lt;ListType&gt;();
-    <span class="org-keyword">for</span> (<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; &amp;<span class="org-variable-name">value</span> : expr-&gt;values) {
+<pre class="src src-cpp">std::any Interpreter::visitListExpr(std::shared_ptr&lt;List&gt; expr) {
+    auto list = std::make_shared&lt;ListType&gt;();
+    for (std::shared_ptr&lt;Expr&gt; &amp;value : expr-&gt;values) {
         list-&gt;append(evaluate(value));
     }
-    <span class="org-keyword">return</span> list;
+    return list;
 }
 </pre>
 </div>
 </div>
 </div>
 </div>
-<div id="outline-container-org9268e5f" class="outline-3">
-<h3 id="org9268e5f">Handling Subscript Expressions</h3>
-<div class="outline-text-3" id="text-org9268e5f">
+<div id="outline-container-orgc1fe79f" class="outline-3">
+<h3 id="orgc1fe79f"><span class="section-number-3">2.3.</span> Handling Subscript Expressions</h3>
+<div class="outline-text-3" id="text-2-3">
 <p>
-Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
+Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>.
 </p>
 
 <p>
 From the interpreter&rsquo;s point of view, the only difference between the two is the presence of a value expression. If the AST node has a value, it should assign it at index. Otherwise, it should return the value at index. So the trick is to make the parser pass a <code>nullptr</code> in the place of value expression when parsing a r-value and pass a value only when parsing a l-value. This allows the interpreter to easily differentiate between the two kinds of subscript expressions.
 </p>
 </div>
-<div id="outline-container-orgf59c3a6" class="outline-4">
-<h4 id="orgf59c3a6">Parsing Subscripts</h4>
-<div class="outline-text-4" id="text-orgf59c3a6">
+<div id="outline-container-orga41b015" class="outline-4">
+<h4 id="orga41b015"><span class="section-number-4">2.3.1.</span> Parsing Subscripts</h4>
+<div class="outline-text-4" id="text-2-3-1">
 <p>
 Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. <code>subscript()</code> calls <code>finishSubscript()</code> each time it sees a <code>[</code> to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a <code>nullptr</code> in the place of value expression to let the interpreter know that it is a r-value. 
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-constant">Parser</span>::<span class="org-function-name">finishSubscript</span>(<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-variable-name">name</span>) {
-    <span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-variable-name">index</span> = logicalOr();
-    <span class="org-type">Token</span> <span class="org-variable-name">paren</span> = consume(<span class="org-constant">TokenType</span>::RIGHT_BRACKET,
-                          <span class="org-string">"Expect ']' after arguments."</span>);
-    <span class="org-keyword">return</span> <span class="org-constant">std</span>::make_shared&lt;Subscript&gt;(name, index, <span class="org-constant">nullptr</span>, paren);
+<pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::finishSubscript(std::shared_ptr&lt;Expr&gt; name) {
+    std::shared_ptr&lt;Expr&gt; index = logicalOr();
+    Token paren = consume(TokenType::RIGHT_BRACKET,
+                          "Expect ']' after arguments.");
+    return std::make_shared&lt;Subscript&gt;(name, index, nullptr, paren);
 }
 
-<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-constant">Parser</span>::<span class="org-function-name">subscript</span>() {
-    <span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-variable-name">expr</span> = primary();
-    <span class="org-keyword">while</span> (<span class="org-constant">true</span>) {
-        <span class="org-keyword">if</span> (match(<span class="org-constant">TokenType</span>::LEFT_BRACKET)) {
+std::shared_ptr&lt;Expr&gt; Parser::subscript() {
+    std::shared_ptr&lt;Expr&gt; expr = primary();
+    while (true) {
+        if (match(TokenType::LEFT_BRACKET)) {
             expr = finishSubscript(expr);
-        } <span class="org-keyword">else</span> {
-            <span class="org-keyword">break</span>;
+        } else {
+            break;
         }
     }
-    <span class="org-keyword">return</span> expr;
+    return expr;
 }
 </pre>
 </div>
@@ -216,29 +194,29 @@ Parsing the r-value is, once again, similar to parsing a function call. But inst
 As you may have noticed in the formal grammar, for parsing a l-value expression, the parser extends the <code>assignment</code> rule. If the parsed expression is of type <code>Subscript</code>, it wraps the list&rsquo;s name, index and value expression in a AST node. The list&rsquo;s name is stored as an expression without converting it into l-value because the methods used for manipulating the list act on a evaluated value of the list. 
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-constant">Parser</span>::<span class="org-function-name">assignment</span>() {
-    <span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-variable-name">expr</span> = logicalOr();
-    <span class="org-keyword">if</span> (match(<span class="org-constant">TokenType</span>::EQUAL)) {
-        <span class="org-type">Token</span> <span class="org-variable-name">equals</span> = previous();
-        <span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Expr&gt; <span class="org-variable-name">value</span> = assignment();
-        <span class="org-comment-delimiter">// </span><span class="org-comment">parse variable assignment</span>
-        } <span class="org-keyword">else</span> <span class="org-keyword">if</span> (<span class="org-type">Subscript</span> *<span class="org-variable-name">s</span> = <span class="org-keyword">dynamic_cast</span>&lt;<span class="org-type">Subscript</span> *&gt;(expr.get())) {
-            <span class="org-keyword">return</span> <span class="org-constant">std</span>::make_shared&lt;<span class="org-type">Subscript</span>&gt;(s-&gt;name, s-&gt;index, value,
+<pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::assignment() {
+    std::shared_ptr&lt;Expr&gt; expr = logicalOr();
+    if (match(TokenType::EQUAL)) {
+        Token equals = previous();
+        std::shared_ptr&lt;Expr&gt; value = assignment();
+        // parse variable assignment
+        } else if (Subscript *s = dynamic_cast&lt;Subscript *&gt;(expr.get())) {
+            return std::make_shared&lt;Subscript&gt;(s-&gt;name, s-&gt;index, value,
                                                s-&gt;paren);
         }
-        error(<span class="org-constant">std</span>::move(equals), <span class="org-string">"Invalid assignment target."</span>);
+        error(std::move(equals), "Invalid assignment target.");
     }
-    <span class="org-keyword">return</span> expr;
+    return expr;
 }
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orge106fde" class="outline-4">
-<h4 id="orge106fde">Interpreting Subscripts</h4>
-<div class="outline-text-4" id="text-orge106fde">
+<div id="outline-container-org0984971" class="outline-4">
+<h4 id="org0984971"><span class="section-number-4">2.3.2.</span> Interpreting Subscripts</h4>
+<div class="outline-text-4" id="text-2-3-2">
 <p>
-To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
+To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
 </p>
 
 <p>
@@ -256,35 +234,35 @@ If neither of those conditions evaluate to a truthy value, the method returns <c
 If the node does <b>not</b> have a value it&rsquo;s a r-value and the interpreter is supposed to return the value at index. It returns the value using the list&rsquo;s method if index is within the range of the list. Otherwise, if the index is out of range, it returns a <code>nullptr</code>.
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-constant">std</span>::<span class="org-type">any</span> <span class="org-constant">Interpreter</span>::<span class="org-function-name">visitSubscriptExpr</span>(<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;Subscript&gt; <span class="org-variable-name">expr</span>) {
-    <span class="org-constant">std</span>::<span class="org-type">any</span> <span class="org-variable-name">name</span> = evaluate(expr-&gt;name);
-    <span class="org-constant">std</span>::<span class="org-type">any</span> <span class="org-variable-name">index</span> = evaluate(expr-&gt;index);
-    <span class="org-keyword">if</span> (name.type() == <span class="org-keyword">typeid</span>(<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;ListType&gt;)) {
-        <span class="org-keyword">if</span> (index.type() == <span class="org-keyword">typeid</span>(<span class="org-type">double</span>)) {
-            <span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;ListType&gt; <span class="org-variable-name">list</span>;
-            <span class="org-type">int</span> <span class="org-variable-name">castedIndex</span>;
-            list = <span class="org-constant">std</span>::any_cast&lt;<span class="org-constant">std</span>::<span class="org-type">shared_ptr</span>&lt;ListType&gt;&gt;(name);
-            castedIndex = <span class="org-constant">std</span>::any_cast&lt;<span class="org-type">double</span>&gt;(index);
-            <span class="org-keyword">if</span> (expr-&gt;value != <span class="org-constant">nullptr</span>) {
-                <span class="org-constant">std</span>::<span class="org-type">any</span> <span class="org-variable-name">value</span> = evaluate(expr-&gt;value);
-                <span class="org-keyword">if</span> (list-&gt;setAtIndex(castedIndex, value)) {
-                    <span class="org-keyword">return</span> value; 
-                } <span class="org-keyword">else</span> {
-                    <span class="org-keyword">throw</span> RuntimeError{expr-&gt;paren, <span class="org-string">"Index out of range."</span>};
+<pre class="src src-cpp">std::any Interpreter::visitSubscriptExpr(std::shared_ptr&lt;Subscript&gt; expr) {
+    std::any name = evaluate(expr-&gt;name);
+    std::any index = evaluate(expr-&gt;index);
+    if (name.type() == typeid(std::shared_ptr&lt;ListType&gt;)) {
+        if (index.type() == typeid(double)) {
+            std::shared_ptr&lt;ListType&gt; list;
+            int castedIndex;
+            list = std::any_cast&lt;std::shared_ptr&lt;ListType&gt;&gt;(name);
+            castedIndex = std::any_cast&lt;double&gt;(index);
+            if (expr-&gt;value != nullptr) {
+                std::any value = evaluate(expr-&gt;value);
+                if (list-&gt;setAtIndex(castedIndex, value)) {
+                    return value; 
+                } else {
+                    throw RuntimeError{expr-&gt;paren, "Index out of range."};
                 }
-            } <span class="org-keyword">else</span> {
-                <span class="org-keyword">if</span> (castedIndex &gt;= list-&gt;length() || castedIndex &lt; 0) {
-                    <span class="org-keyword">return</span> <span class="org-constant">nullptr</span>;
+            } else {
+                if (castedIndex &gt;= list-&gt;length() || castedIndex &lt; 0) {
+                    return nullptr;
                 }
-                <span class="org-keyword">return</span> list-&gt;getEleAt(castedIndex);
+                return list-&gt;getEleAt(castedIndex);
             }
-        } <span class="org-keyword">else</span> {
-            <span class="org-keyword">throw</span> RuntimeError{expr-&gt;paren, <span class="org-string">"Index should be of type int."</span>};
+        } else {
+            throw RuntimeError{expr-&gt;paren, "Index should be of type int."};
         }
-    } <span class="org-keyword">else</span> {
-        <span class="org-keyword">throw</span> RuntimeError{expr-&gt;paren, <span class="org-string">"Only lists can be subscripted."</span>};
+    } else {
+        throw RuntimeError{expr-&gt;paren, "Only lists can be subscripted."};
     }
-    <span class="org-keyword">return</span> {};
+    return {};
 }
 </pre>
 </div>
@@ -303,9 +281,9 @@ for (var i = 0; list[i] != nil; i = i + 1) {
 </div>
 </div>
 </section>
-<section id="outline-container-orgc76c6b5" class="outline-2">
-<h2 id="orgc76c6b5">Unused Variable Warnings</h2>
-<div class="outline-text-2" id="text-orgc76c6b5">
+<section id="outline-container-org9112e62" class="outline-2">
+<h2 id="org9112e62"><span class="section-number-2">3.</span> Unused Variable Warnings</h2>
+<div class="outline-text-2" id="text-3">
 <p>
 I also made the resolver throw warnings when there are unused variables in the local scope. This also solves challenge #3 in chapter 11 <i>Resolving and Binding</i>.
 </p>
@@ -314,11 +292,11 @@ I also made the resolver throw warnings when there are unused variables in the l
 To implement this feature, a vector of <code>std::map</code> is used like a stack to track the nested (possibly) local scopes in scope. This is similar to the <code>scopes</code> stack used in the resolver but instead of storing a string and a boolean, here I store the variable as a token and the number of times it has been resolved. When the resolver enters a local scope it pushes an empty map into the vector and when it exits a scope it pops a map. Declaring a variable in the local scope inserts a element with variable token as key and <code>0</code> as value in the top most map. This value gets incremented by one whenever the corresponding variable is resolved locally. Finally, before exiting a local scope calling <code>checkUnusedVariables()</code> would iterate over all the pairs in the top most map and throw a warning when the value is equivalent to zero.
 </p>
 <div class="org-src-container">
-<pre class="src src-cpp"><span class="org-type">void</span> <span class="org-constant">Resolver</span>::<span class="org-function-name">checkUnusedVariables</span>() {
-    <span class="org-constant">std</span>::<span class="org-type">map</span>&lt;Token, <span class="org-type">int</span>&gt; &amp;<span class="org-variable-name">currentScope</span> = identifiers.back();
-    <span class="org-keyword">for</span> (<span class="org-keyword">auto</span> <span class="org-keyword">const</span>&amp; [<span class="org-constant">key</span>, <span class="org-constant">val</span>] : currentScope) {
-        <span class="org-keyword">if</span> (val == 0) {
-            <span class="org-constant">Error</span>::warn(key, <span class="org-string">"Unused local variable."</span>);
+<pre class="src src-cpp">void Resolver::checkUnusedVariables() {
+    std::map&lt;Token, int&gt; &amp;currentScope = identifiers.back();
+    for (auto const&amp; [key, val] : currentScope) {
+        if (val == 0) {
+            Error::warn(key, "Unused local variable.");
         }
     }
 }
@@ -326,9 +304,9 @@ To implement this feature, a vector of <code>std::map</code> is used like a stac
 </div>
 </div>
 </section>
-<section id="outline-container-orgdd7f076" class="outline-2">
-<h2 id="orgdd7f076">Epilogue</h2>
-<div class="outline-text-2" id="text-orgdd7f076">
+<section id="outline-container-orgedf8374" class="outline-2">
+<h2 id="orgedf8374"><span class="section-number-2">4.</span> Epilogue</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 I had so much fun working on this project and learnt a lot about programming languages and interpreters. Before reading this book, I did not know what actually happens when I run or compile my programs but now I have a better understanding of the underlying ideas and visualize a interpreter as follows:
 </p>
@@ -356,16 +334,16 @@ Next, I&rsquo;m looking forward to start working on the bytecode interpreter.
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">I&rsquo;m not sure if this would work when classes and methods are implemented.</p></div></div>
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">I&rsquo;m not sure if this would work when classes and methods are implemented.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">This is actually a bug because index number should not be of type <code>double</code></p></div></div>
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">This is actually a bug because index number should not be of type <code>double</code></p></div></div>
 
 
 </div>
 </div></main>
 <footer id="postamble" class="status">
 <div class='footer'>
-  Last updated on 2021-Nov-26 Fri 13:02. <br>
+  Last updated on 2023-Jan-31 Tue 01:16. <br>
 </div>
 </footer>
 </body>

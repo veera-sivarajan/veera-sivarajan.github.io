@@ -1,12 +1,11 @@
 ;; ox-html.el.gz has to be evaluated everytime to get
 ;; correct syntax highlighting. 
-(require 'ox-rss)
+;; (require 'ox-rss)
 
-(load-file "/home/veera/.emacs.d/elpa/org-plus-contrib-20210705/ox-html.el") 
+;; (load-file "/home/veera/.emacs.d/elpa/org-plus-contrib-20210705/ox-html.el") 
 
 ;; setting to nil, avoids "Author: x" at the bottom
-(setq org-export-with-section-numbers nil
-      org-export-with-smart-quotes t
+(setq org-export-with-smart-quotes t
       org-export-with-toc nil)
 
 (defvar rw-url "https://veera.app/"

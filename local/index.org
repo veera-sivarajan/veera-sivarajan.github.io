@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2023-Jan-31:
+  *[[file:type_inference.org][Type Inference]]*
 - 2022-Aug-15:
   *[[file:a_programmer's_utopia.org][A Programmer's Utopia]]*
 - 2021-Nov-25:
