@@ -1,6 +1,6 @@
 #+SETUPFILE: ../basic-setup.org 
 #+TITLE: Track My Music Listening History 
-#+DATE: Mar 25, 2023 
+#+DATE:<2023-03-25 Sat>  
 
 I have all my music downloaded on the computer and listen to them using a lightweight music player. This setup worked fine for a while but soon I felt a need for a way to track my music listening history. I wanted a simple tool to log all the music I listen to and view it through an interface that allows me to query using different parameters. 
 
