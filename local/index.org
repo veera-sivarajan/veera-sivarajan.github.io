@@ -1,7 +1,7 @@
 #+TITLE: Core Dump
 
 - 2023-Mar-25:
-  *[[file:track_my_music.org][Track My Music Listening History]]*
+  *[[file:tracking_music_history.org][Tracking Music History]]*
 - 2023-Jan-31:
   *[[file:type_inference.org][Type Inference]]*
 - 2022-Aug-15:
