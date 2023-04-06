@@ -1,0 +1,62 @@
+#+SETUPFILE: ../basic-setup.org 
+#+TITLE: Professor Eliot Moss on the Design and Implementation of CLU
+#+DATE: <2023-04-06 Thu>
+
+In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
+
+Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response:
+
+#+BEGIN_VERSE
+Hello, Veera!
+
+> I came across the CLU programming language when researching about how
+> iterators came into being and was excited to see that you have contributed
+> to the design and implementation of CLU.
+
+Yes, though I came on somewhat in the middle of the language design effort.
+
+> Can you please tell me about your experience working on the language? And
+> how do you feel about it now that CLU's ideas are adopted in almost every
+> modern programming language?
+
+Prior to working on Clu I had coded in Basic, Fortran, Lisp, and C.  The key
+innovation of Clu was its emphasis on *abstract data types*, which wrapped
+together (into a "cluster", hence the name Clu) a data structure definition
+and operations on that data structure into a higher level thing.
+Object-orientation is similar in that you can have private parts of your data
+structure and then write methods.  What OO languages add to what Clu did is
+inheritance / extension of one type by another.  (Clu did have a nice system
+of *parameterized* types, similar to Java's type parameters.)
+
+Another nice thing Clu had was a way to extend the builtin operators, like +,
+to any data type - we called that "syntactic sugar".  It's a bit like what you
+can do in C++, minus the complicated overloading.
+
+Coming back to what you led with: iterators.  We realized that people do like
+to iterate over organized collections of things, and also that if we did *not*
+provide something like iterators then data abstraction would not be so nice
+since people would tend to expose internal data structure to support the
+iteration.  Clu's iterators are as easy to *use* as those of Java, but much
+easier to *write* because of the yield statement.  In Java, you have to come
+up with a way of representing the state of the iteration explicitly, while in
+Clu it is implicit in the local variables, etc., of the running iterator.  It
+did require a more co-routine / lambda function kind of implementation (the
+caller of an iterator has to provide a place for the iterator to "call" back
+into the loop body).
+
+Clu was also a garbage collected language - I wrote the first garbage
+collector for it (in assembly language, no less!).  Storage management errors,
+and just the general mess of tracking your storage, makes it harder to write
+programs.  In Clu, many of us had the novel experience of having a program
+work the first time it compiled (!).  Clu's nice collection of builtin types
+and the functions provided for them also made many things easier to code, an
+example being strings.  (This was part where I took the design lead, as I
+recall.)
+
+Overall, it was quite an elegant language, if I say so myself.  And for
+someone who works in the PL area, having a grad school experience of being on
+a good language design and implementation team was great!  I am grateful to
+all of them, and of course our advisor and group leader, Barbara Liskov.
+
+Cheers - E
+#+END_VERSE

@@ -72,7 +72,7 @@ a:visited, a:hover, a:focus, a:active {
 }
 
 /* Code */
-pre {
+pre, .verse {
     font-family: "Courier New";
     padding: .5rem;
     background: #0d0d0d;

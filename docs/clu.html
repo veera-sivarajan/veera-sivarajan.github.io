@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2023-Apr-06 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Professor Eliot Moss on the Design and Implementation of CLU</title>
+<meta name="author" content="Veera Sivarajan" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="./css/style.css"/>
+</head>
+<body>
+<header id="top" class="status">
+<nav>
+  <a href="https://github.com/veera-sivarajan">Github</a>
+  <a href="/">Home</a>
+  <a href="/about/">About</a>
+  <a href="mailto:sveera.2001@gmail.com">Email</a>
+</nav>  
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Professor Eliot Moss on the Design and Implementation of CLU</h1>
+<p class="subtitle" role="doc-subtitle">2023-Apr-06</p>
+</header><p>
+In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
+</p>
+
+<p>
+Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response:
+</p>
+
+<p class="verse">
+Hello, Veera!<br>
+<br>
+&gt; I came across the CLU programming language when researching about how<br>
+&gt; iterators came into being and was excited to see that you have contributed<br>
+&gt; to the design and implementation of CLU.<br>
+<br>
+Yes, though I came on somewhat in the middle of the language design effort.<br>
+<br>
+&gt; Can you please tell me about your experience working on the language? And<br>
+&gt; how do you feel about it now that CLU&rsquo;s ideas are adopted in almost every<br>
+&gt; modern programming language?<br>
+<br>
+Prior to working on Clu I had coded in Basic, Fortran, Lisp, and C.  The key<br>
+innovation of Clu was its emphasis on <b>abstract data types</b>, which wrapped<br>
+together (into a &ldquo;cluster&rdquo;, hence the name Clu) a data structure definition<br>
+and operations on that data structure into a higher level thing.<br>
+Object-orientation is similar in that you can have private parts of your data<br>
+structure and then write methods.  What OO languages add to what Clu did is<br>
+inheritance / extension of one type by another.  (Clu did have a nice system<br>
+of <b>parameterized</b> types, similar to Java&rsquo;s type parameters.)<br>
+<br>
+Another nice thing Clu had was a way to extend the builtin operators, like +,<br>
+to any data type - we called that &ldquo;syntactic sugar&rdquo;.  It&rsquo;s a bit like what you<br>
+can do in C++, minus the complicated overloading.<br>
+<br>
+Coming back to what you led with: iterators.  We realized that people do like<br>
+to iterate over organized collections of things, and also that if we did <b>not</b><br>
+provide something like iterators then data abstraction would not be so nice<br>
+since people would tend to expose internal data structure to support the<br>
+iteration.  Clu&rsquo;s iterators are as easy to <b>use</b> as those of Java, but much<br>
+easier to <b>write</b> because of the yield statement.  In Java, you have to come<br>
+up with a way of representing the state of the iteration explicitly, while in<br>
+Clu it is implicit in the local variables, etc., of the running iterator.  It<br>
+did require a more co-routine / lambda function kind of implementation (the<br>
+caller of an iterator has to provide a place for the iterator to &ldquo;call&rdquo; back<br>
+into the loop body).<br>
+<br>
+Clu was also a garbage collected language - I wrote the first garbage<br>
+collector for it (in assembly language, no less!).  Storage management errors,<br>
+and just the general mess of tracking your storage, makes it harder to write<br>
+programs.  In Clu, many of us had the novel experience of having a program<br>
+work the first time it compiled (!).  Clu&rsquo;s nice collection of builtin types<br>
+and the functions provided for them also made many things easier to code, an<br>
+example being strings.  (This was part where I took the design lead, as I<br>
+recall.)<br>
+<br>
+Overall, it was quite an elegant language, if I say so myself.  And for<br>
+someone who works in the PL area, having a grad school experience of being on<br>
+a good language design and implementation team was great!  I am grateful to<br>
+all of them, and of course our advisor and group leader, Barbara Liskov.<br>
+<br>
+Cheers - E<br>
+</p>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+  Last updated on 2023-Apr-06 Thu 17:27. <br>
+</div>
+</footer>
+</body>
+</html>

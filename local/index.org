@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2023-Apr-06:
+  *[[file:clu.org][Professor Eliot Moss on the Design and Implementation of CLU]]*
 - 2023-Mar-25:
   *[[file:tracking_music_history.org][Tracking Music History]]*
 - 2023-Jan-31:
