@@ -27,11 +27,11 @@ On instances where Emacs felt inadequate and cumbersome, all I had to do was spe
     (evil-window-down 1))
 #+END_SRC
 * Why Emacs?
-*** Programmability
+** Programmability
 Using Emacs was my first exposure to a programmable environment. Until then I was never able to correlate an application and its source code as it was hard to understand how it was actually implemented. But inside Emacs I could easily access the documented source code of any functionality and extend it. Moreover, my small Elisp functions are treated the same way as core functionalities of the editor. Due to this lack of difference, there is nothing holding back a beginner from extending and learning the internals of Emacs. 
-*** Org Mode
+** Org Mode
 Org mode is a document editing powerhouse inside Emacs. It has made document editing an enjoyable experience by saving me from the clutches of other document editors. The biggest advantage was the ability to do all my academic work in the comfort of my editor. Also, this mode has a fancy way to organize and render all my writings and I'm constantly blown away by its richness in features.   
-*** Lisp Support
+** Lisp Support
 Being the best environment for working with Lisp programs, Emacs has aided me in solving SICP problems to a great extent. I can evaluate lisp code, check the results and get back to editing without taking my hands off keyboard or switching to an other window. Moreover, from evaluating a sexp to evaluating an entire buffer, I have the flexibility to constantly run parts of code as I write it. 
 * Conclusion
 #+CAPTION: My Emacs
