@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+     xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+     xmlns:georss="http://www.georss.org/georss"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:media="http://search.yahoo.com/mrss/"><channel>
+  <title>core dump</title>
+  <atom:link href="https://veera.app/rss.xml" rel="self" type="application/rss+xml" />
+  <link>https://veera.app/</link>
+  <description><![CDATA[]]></description>
+  <language>en</language>
+  <pubDate>Fri, 07 Apr 2023 02:17:18 -0400</pubDate>
+  <lastBuildDate>Fri, 07 Apr 2023 02:17:18 -0400</lastBuildDate>
+  <generator>Emacs 28.1 Org-mode 9.5.2</generator>
+  <webMaster>sveera.2001@gmail.com (Veera Sivarajan)</webMaster>
+  <image>
+    <url>https://orgmode.org/img/org-mode-unicorn-logo.png</url>
+    <title>core dump</title>
+    <link>https://veera.app/</link>
+  </image>
+
+
+  <item>
+    <title>Professor Eliot Moss on the Design and Implementation of CLU</title>
+    <link>https://veera.app/clu.html</link>
+    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+    <guid isPermaLink="false">https://veera.app/clu.html</guid>
+    <pubDate>Thu, 06 Apr 2023 00:00:00 -0400</pubDate>
+
+    <description><![CDATA[<p>
+    In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
+    </p>
+
+    <p>
+    Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>:
+    </p>
+
+    <p class="verse">
+    Hello, Veera!<br>
+    <br>
+    &gt; I came across the CLU programming language when researching about how<br>
+    &gt; iterators came into being and was excited to see that you have contributed<br>
+    &gt; to the design and implementation of CLU.<br>
+    <br>
+    Yes, though I came on somewhat in the middle of the language design effort.<br>
+    <br>
+    &gt; Can you please tell me about your experience working on the language? And<br>
+    &gt; how do you feel about it now that CLU's ideas are adopted in almost every<br>
+    &gt; modern programming language?<br>
+    <br>
+    Prior to working on Clu I had coded in Basic, Fortran, Lisp, and C.  The key<br>
+    innovation of Clu was its emphasis on <b>abstract data types</b>, which wrapped<br>
+    together (into a "cluster", hence the name Clu) a data structure definition<br>
+    and operations on that data structure into a higher level thing.<br>
+    Object-orientation is similar in that you can have private parts of your data<br>
+    structure and then write methods.  What OO languages add to what Clu did is<br>
+    inheritance / extension of one type by another.  (Clu did have a nice system<br>
+    of <b>parameterized</b> types, similar to Java's type parameters.)<br>
+    <br>
+    Another nice thing Clu had was a way to extend the builtin operators, like +,<br>
+    to any data type - we called that "syntactic sugar".  It's a bit like what you<br>
+    can do in C++, minus the complicated overloading.<br>
+    <br>
+    Coming back to what you led with: iterators.  We realized that people do like<br>
+    to iterate over organized collections of things, and also that if we did <b>not</b><br>
+    provide something like iterators then data abstraction would not be so nice<br>
+    since people would tend to expose internal data structure to support the<br>
+    iteration.  Clu's iterators are as easy to <b>use</b> as those of Java, but much<br>
+    easier to <b>write</b> because of the yield statement.  In Java, you have to come<br>
+    up with a way of representing the state of the iteration explicitly, while in<br>
+    Clu it is implicit in the local variables, etc., of the running iterator.  It<br>
+    did require a more co-routine / lambda function kind of implementation (the<br>
+    caller of an iterator has to provide a place for the iterator to "call" back<br>
+    into the loop body).<br>
+    <br>
+    Clu was also a garbage collected language - I wrote the first garbage<br>
+    collector for it (in assembly language, no less!).  Storage management errors,<br>
+    and just the general mess of tracking your storage, makes it harder to write<br>
+    programs.  In Clu, many of us had the novel experience of having a program<br>
+    work the first time it compiled (!).  Clu's nice collection of builtin types<br>
+    and the functions provided for them also made many things easier to code, an<br>
+    example being strings.  (This was part where I took the design lead, as I<br>
+    recall.)<br>
+    <br>
+    Overall, it was quite an elegant language, if I say so myself.  And for<br>
+    someone who works in the PL area, having a grad school experience of being on<br>
+    a good language design and implementation team was great!  I am grateful to<br>
+    all of them, and of course our advisor and group leader, Barbara Liskov.<br>
+    <br>
+    Cheers - E<br>
+    </p>
+    ]]></description>
+  </item>
+  <item>
+    <title>Tracking Music History</title>
+    <link>https://veera.app/tracking_music_history.html</link>
+    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+    <guid isPermaLink="false">https://veera.app/tracking_music_history.html</guid>
+    <pubDate>Sat, 25 Mar 2023 00:00:00 -0400</pubDate>
+
+    <description><![CDATA[<p>
+    I have all my music downloaded on the computer and listen to them using a lightweight music player. This setup worked fine for a while but soon I felt a need for a way to track my music listening history. I wanted a simple tool to log all the music I listen to and view it through an interface that allows me to query using different parameters. 
+    </p>
+
+    <p>
+    So I wrote a small daemon that watches for music files I open using <code>inotify</code> API and logs the song title along with current date and time to a local SQLite database. To view my listening history, I wrote a web interface that can query the database through a bunch GET routes. For example, accessing the <code>/top/5</code> route will display my top five most listened tracks in a HTML table decorated with minimal CSS.
+    </p>
+
+    <p>
+    The daemon was built using the <a href="https://docs.rs/daemonize/latest/daemonize/">daemonize</a> library as it gives nice declarative APIs to configure and spin up a daemon quickly. For the web interface, I used <a href="https://rocket.rs/">Rocket.rs</a> as using attributes to match against paths and the built-in mechanism to pass database connection between various request handlers made the application simple and easy to understand.
+    </p>
+
+    <p>
+    To conclude, despite it being a <a href="https://github.com/veera-sivarajan/music-daemon">small project</a>, I learnt a lot and had fun working on it.
+    </p>
+    ]]></description>
+  </item>
+  <item>
+    <title>Type Inference</title>
+    <link>https://veera.app/type_inference.html</link>
+    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+    <guid isPermaLink="false">https://veera.app/type_inference.html</guid>
+    <pubDate>Tue, 31 Jan 2023 00:00:00 -0500</pubDate>
+
+    <description><![CDATA[<p>
+    Dabbling with Haskell inspired me to learn about type inference. So this last week I spent some time reading through literature on type systems and <a href="https://github.com/veera-sivarajan/type-inferencer">implemented</a> the Hindley-Milner algorithm for a toy expression language using Rust. In this post, I will give an implementation focused explanation of the algorithm. 
+    Hindley-Milner
+    The type inference algorithm takes the AST as input and outputs the type for each expression in the tree. Much like a detective, who solves a case by collecting all the available evidence and then finding the relation between them to come to a conclusion, the algorithm creates a mapping between each expression and its expected type and then finds the types for all expressions using the relation between the generated mappings. Formally, the first step is termed as <i>constraint generation</i> and the latter is <i>unification</i>.
+    </p>
+    <div id="outline-container-org598349e" class="outline-3">
+    <h3 id="org598349e"><span class="section-number-3">3.1.</span> Constraint Generation</h3>
+    <div class="outline-text-3" id="text-3-1">
+    <p>
+    A constraint is a mapping between an expression and its expected type. To generate constraints for an AST, the algorithm recursively visits every expression in the tree and maps it to an expected type. Primitive expressions like numbers, booleans and identifiers, can be straightforwardly mapped to their respective types since any symbol parsed as, for example, a number is guaranteed to be of type number. It gets more interesting when generating constraints for nested expressions. 
+    </p>
+
+    <p>
+    Constraints for nested expressions are generated in two steps:
+    Each sub-expression is constrained to an expected type based on its value. For example, the sub-expression <code>1</code> in a conditional expression will be mapped to type <code>Number</code>.
+    All sub-expressions and the root expression are mapped to their expected types based on their position in the AST.  For example, if there is a sub-expression <code>1</code> in the condition part of conditional expression, it will be mapped to type <code>Bool</code>.
+    </p>
+    </div>
+    <div id="outline-container-orgb15b66b" class="outline-4">
+    <h4 id="orgb15b66b"><span class="section-number-4">3.1.1.</span> Binary Add Expression</h4>
+    <div class="outline-text-4" id="text-3-1-1">
+    <p>
+    For the binary add expression, generate constraints for the left and right operands and then map each operand and the add expression to type number. For example, the following are the constraints generated for the incorrect expression <code>1 + false</code>.
+    </p>
+    <div class="org-src-container">
+    <pre class="src src-shell">1         = Number
+    false     = Bool
+    1         = Number
+    false     = Number
+    1 + false = Number
+    </pre>
+    </div>
+    </div>
+    </div>
+    <div id="outline-container-orgeed8e9a" class="outline-4">
+    <h4 id="orgeed8e9a"><span class="section-number-4">3.1.2.</span> Conditional Expression</h4>
+    <div class="outline-text-4" id="text-3-1-2">
+    <p>
+    For conditional expressions, there are three expectations for its types:
+    Condition should be of type boolean.
+    <a id="orgba7b51d"></a>Both the branches should be of same type<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
+    <a id="org25ee5c5"></a>Type of conditional expression should be of same type as its branches.
+    </p>
+
+    <p>
+    To express these expectations in terms of constraints, start by generating constraints for the condition and the two branches. Then, map the condition to type boolean and the conditional expression to then and else branch to denote expectations <a href="#orgba7b51d">3.1.2</a> and <a href="#org25ee5c5">3.1.2</a> from above. The constraints generated for the expression <code>if true {1} else {2}</code> are:
+    </p>
+    <div class="org-src-container">
+    <pre class="src src-shell">true                 = Bool
+    1                    = Number
+    2                    = Number
+    true                 = Bool
+    if true {1} else {2} = 1
+    if true {1} else {2} = 2
+    </pre>
+    </div>
+    </div>
+    </div>
+    <div id="outline-container-org73a34c4" class="outline-4">
+    <h4 id="org73a34c4"><span class="section-number-4">3.1.3.</span> Functions</h4>
+    <div class="outline-text-4" id="text-3-1-3">
+    <p>
+    A function definition is constrained as an arrow type with parameters as domain and body as range. As you may be familiar by now, start by generating constraints for parameters and body to determine their types. Then, map the function definition to an arrow type with parameters as domain and body as range. For the expression <code>lambda(x) x + 2</code>, the constraints are:
+    </p>
+    <div class="org-src-container">
+    <pre class="src src-shell">x                 = x
+    2                 = Number
+    x                 = Number
+    2                 = Number
+    x + 2             = Number
+    (lambda(x) x + 2) = x -&gt; x + 2
+    </pre>
+    </div>
+
+    <p>
+    Similarly, a function call is also constrained as an arrow type with arguments as domain and the call expression as range because the expected type of a call expression is the type returned by calling the function with given arguments. So, generate constraints for the calling function, arguments and then map the function expression to an arrow type with arguments as domain and the call expression as range. For example, calling the function defined above with argument <code>10</code> will generate:
+    </p>
+    <div class="org-src-container">
+    <pre class="src src-shell">x                 = x
+    2                 = Number
+    x                 = Number
+    2                 = Number
+    x + 2             = Number
+    (lambda(x) x + 2) = x -&gt; x + 2
+    10                = Number
+    (lambda(x) x + 2) = 10 -&gt; Call&lt;(lambda(x) x + 2)(10)&gt;
+    </pre>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="outline-container-orgd3500c1" class="outline-3">
+    <h3 id="orgd3500c1"><span class="section-number-3">3.2.</span> Unification</h3>
+    <div class="outline-text-3" id="text-3-2">
+    <p>
+    The meat of type inference happens during unification. In this step, the algorithm iterates through the list of constraints and outputs either a type error, if any, or the type for each expression.
+    </p>
+    </div>
+    <div id="outline-container-orga5fd1da" class="outline-4">
+    <h4 id="orga5fd1da"><span class="section-number-4">3.2.1.</span> Substitution</h4>
+    <div class="outline-text-4" id="text-3-2-1">
+    <p>
+    The core idea of unification is a simple concept called substitution. Assume we have the following set of constraints for a function definition <code>(lambda(x) x + 2)</code>.
+    </p>
+    <div class="org-src-container">
+    <pre class="src src-shell">1. x                 = Number
+    2. 2                 = Number
+    3. x + 2             = Number
+    4. (lambda(x) x + 2) = x -&gt; x + 2
+    </pre>
+    </div>
+    <p>
+    After unification, the RHS of constraint #4 will be substituted with types asserted by previous constraints. The parameter <code>x</code> will be substituted with type <code>Number</code> as stated by constraint #1 and the body <code>x + 2</code> will also be substituted with type <code>Number</code> as stated by constraint #3.
+    </p>
+    <div class="org-src-container">
+    <pre class="src src-shell">(lambda(x) x + 2) :: Number -&gt; Number
+    </pre>
+    </div>
+    </div>
+    </div>
+    <div id="outline-container-org305ea6b" class="outline-4">
+    <h4 id="org305ea6b"><span class="section-number-4">3.2.2.</span> Occurs Check</h4>
+    <div class="outline-text-4" id="text-3-2-2">
+    <p>
+    We substitute a term A with term B to ensure that expressions progressively get mapped to a more specific type. But if term B contains term A, the replacement is redundant and can lead to infinite unifications. To prevent this, ensure that term B does not contain term A anywhere in its nested structure before each substitution.
+    </p>
+    </div>
+    </div>
+    <div id="outline-container-orgbb98dc5" class="outline-4">
+    <h4 id="orgbb98dc5"><span class="section-number-4">3.2.3.</span> Algorithm</h4>
+    <div class="outline-text-4" id="text-3-2-3">
+    <p>
+    The goal of unification is to make the required substitution for each constraint. The algorithm to accomplish this can be better explained through psuedocode:
+    </p>
+    <div class="org-src-container">
+    <pre class="src src-python">substitution list = []
+    for LHS and RHS in each constraint:
+    if LHS == RHS:
+    continue
+    else if LHS is not a type:
+    substitute all occurrences of LHS with RHS in both constraint and substitution list
+    add the substitution LHS -&gt; RHS to substitution list
+    else if RHS is not a type:
+    substitute all occurrences of RHS with LHS in both constraint and substitution list
+    add the substitution RHS -&gt; LHS to substitution list
+    else if both LHS and RHS are arrow types:
+    create a new constraint mapping domain of LHS with domain of RHS
+    create a new constraint mapping range of LHS with range of RHS
+    add both constraints to constraint list 
+    else:
+    it's a type error as LHS and RHS cannot be unified
+    </pre>
+    </div>
+    <p>
+    <b>Notes</b>
+    When replacing all occurrences of LHS with RHS or vice versa, ensure that replacement occurs in both LHS and RHS of constraint and substitution list.
+    The implementation can take advantage of nested structure of ASTs and implement unification and all supporting functions recursively.
+    Conclusion
+    It took me about a week to understand and implement this algorithm. In the end, it felt magical to programmatically infer all the types for an untyped language. 
+    </p>
+
+    <p>
+    Refer to the following resources to learn more about this algorithm:
+    Chapter 30 in <a href="https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf">Programming Languages: Application and Interpretation (first edition)</a> for step by step examples of constraint generation and unification.
+    Chapter 15.3.2 in <a href="https://cs.brown.edu/courses/cs173/2012/book/types.html#%28part._.Type_.Inference%29">Programming Languages: Application and Interpretation (second edition)</a> for an explanation of the algorithm using Typed Racket. 
+    <a href="https://eli.thegreenplace.net/2018/unification/">Unification</a> by Eli Bendersky talks a bit about efficiency.
+    <a href="https://github.com/vkz/PLAI/blob/master/type-unify.rkt">type-unify.rkt</a> for a complete implementation in Typed Racket. 
+    </p>
+    </div>
+    </div>
+    </div>
+    ]]></description>
+</item>
+<item>
+  <title>A Programmer's Utopia</title>
+  <link>https://veera.app/a_programmer's_utopia.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/a_programmer's_utopia.html</guid>
+  <pubDate>Mon, 15 Aug 2022 00:00:00 -0400</pubDate>
+
+  <description><![CDATA[<p>
+  Amidst all the chaos in the world there is a community of passionate programmers who are constantly working on interesting projects, learning new topics and have a great sense of camaraderie. People in this community, driven by their self motivation to become better programmers, do a lot of pair programming, meet with people who share interests to brainstorm ideas and give talks about their projects. This beautiful community is called as <a href="https://www.recurse.com/">Recurse Center</a>. 
+  </p>
+
+  <p>
+  Starting in May, 2022, I had the privilege of spending twelve weeks with the community (virtually) to learn and work on projects that caught my fancy. In this post, I will give an overview of my experience. 
+  Applying to RC
+  Initially, when I read through <a href="https://www.recurse.com/about">RC's philosophy</a>, I was delighted to know that such a place exists because I also had similar ideas about education. As a college student, I've always felt like attending classes, doing homeworks and the assigned projects, and writing exams were not adequate enough for me to learn a concept. I can be confident in my understanding of a concept only if I apply it in a project I'm working on as I was able to sincerely appreciate concepts like functional programming and high order functions only after writing a LISP interpreter. 
+  </p>
+
+  <p>
+  Due to my strong alignment with RC's philosophy, I believed I had a good chance to get admitted into RC and I indeed did. I was on cloud nine when I got admitted because it gave me a sense of validation for who I was as a person. 
+  First six weeks
+  In the first six weeks of my batch, I spent most of the time interacting with the community and reading <a href="https://www.cs.rochester.edu/~scott/pragmatics/">Programming Language Pragmatics</a>. I also contributed to <a href="https://github.com/SerenityOS/jakt">Jakt</a> programming language and was happy to have a few commits merged into a popular open source project. Finally, I gave a couple of talks about my interpreter project and <a href="https://youtu.be/ZgEDMpxWvN4">scanner theory</a> to improve my presentation skills. 
+  </p>
+  <div id="outline-container-org5f4612e" class="outline-3">
+  <h3 id="org5f4612e"><span class="section-number-3">4.1.</span> Compilers and Interpreters Implementation</h3>
+  <div class="outline-text-3" id="text-4-1">
+  <p>
+  In this weekly event, I met other Recursers interested in writing compilers and we discussed about Haskell, OCaml, Rust, logic languages, parser combinators, and interesting research papers in the field. This event introduced me to a number of other resources I could use to build upon what I learnt so far from reading Crafting Interpreters. By the end, I was grateful to have met people who share my interests. 
+  </p>
+  </div>
+  </div>
+  <div id="outline-container-org5ab5f06" class="outline-3">
+  <h3 id="org5ab5f06"><span class="section-number-3">4.2.</span> Music Consumption Group</h3>
+  <div class="outline-text-3" id="text-4-2">
+  <p>
+  A weekly social event where a bunch of Recursers hop on a Zoom call, queue a track of their choice and the host will play each track in order. The event was late in the evening so it was fun to listen to a variety of music while cooking dinner or fixing a gnarly bug. 
+  Last six weeks
+  I spent most of the time working on <a href="https://github.com/veera-sivarajan/bessy">Bessy</a>, a bytecode interpreter written in Rust. I frequently sought help from other Recursers and their guidance helped me to write tests for I/O functions and to add a <a href="https://veera.app/bessy/">web interface</a> for my interpreter by compiling it to Wasm.
+  </p>
+  </div>
+  </div>
+  <div id="outline-container-orgfffa895" class="outline-3">
+  <h3 id="orgfffa895"><span class="section-number-3">4.3.</span> Rust Rodeo</h3>
+  <div class="outline-text-3" id="text-4-3">
+  <p>
+  A weekly event to discuss everything related to Rust. Here we helped each other get unstuck on compiler errors and read through popular Rust code bases to improve our knowledge about the language and its ecosystem. Occasionally, someone gave a talk on something cool they learnt about Rust. Through the course of this event, I found myself learning more about generic types and trait system which in turn helped me to write more idiomatic Rust for Bessy.
+  </p>
+  </div>
+  </div>
+  <div id="outline-container-org7f1d6f9" class="outline-3">
+  <h3 id="org7f1d6f9"><span class="section-number-3">4.4.</span> Zig Zones</h3>
+  <div class="outline-text-3" id="text-4-4">
+  <p>
+  This was an interest group for Zig programming. Initially, I was curious to learn what Zig has to offer in terms of an improvement over C and was fascinated by its C interoperability as a first class feature. I played with the toolchain and, with the help of Recursers, I was able to compile a existing C code base using <code>zig cc</code> and also transpile it to Zig. You can read more about our process to translate a C project into Zig in Jeff Fowler&rsquo;s <a href="https://blog.jfo.click/zig-translate-c-and-linking-equal-best-friends/">&ldquo;Zig translate-c and linking equal best friends&rdquo;</a>.
+  </p>
+  </div>
+  </div>
+  <div id="outline-container-org23e90e8" class="outline-3">
+  <h3 id="org23e90e8"><span class="section-number-3">4.5.</span> Scone Production and Consumption Group</h3>
+  <div class="outline-text-3" id="text-4-5">
+  <p>
+  This was an occasional social event where I baked Scones along with other Recursers by following the <a href="https://www.seriouseats.com/bakery-style-cream-scones-with-chocolate-recipe">recipe</a> written by Stella Parks. This was my first attempt at baking and I really enjoyed the process even though my Scones ended up looking like giant cookies because I did not follow the recipe word for word :). Nevertheless, I see strong parallels between programming and cooking/baking and, for me, both the art forms evoke the same creative feeling.
+  Never Graduate
+  Finally, my batch ended in the first week of August, 2022. Doing a batch at RC was an unique and memorable experience for me. The environment was highly diverse and all Recursers were kind and supportive of each other&rsquo;s goals. I&rsquo;m grateful to the RC faculty for creating and maintaining this safe and happy place.
+  </p>
+
+  <p>
+  As a proud alumni of RC, I&rsquo;ll carry the spirit of RC everywhere I go and look forward to the day I can hangout at RC in-person.  
+  </p>
+  </div>
+  </div>
+  ]]></description>
+</item>
+<item>
+  <title>Rena's Memory Model</title>
+  <link>https://veera.app/rena's_memory_model.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/rena's_memory_model.html</guid>
+  <pubDate>Thu, 25 Nov 2021 00:00:00 -0500</pubDate>
+
+  <description><![CDATA[<p>
+  <a href="https://github.com/veera-sivarajan/rena">Rena</a> is my implementation of lox tree-walk interpreter in Rust. I'm rewriting it in Rust to familiarize myself with the borrow checker and the fancy toolchain it offers. In this post, I'll explain how I implemented a simple environment for the interpreter. 
+  Structure
+  The environment is structured as a vector of hashmaps and is initialized with an empty hashmap to represent the global scope. Every new block in the source code inserts an empty hashmap at the head of the vector and exiting out of a block removes a hashmap from the head. The environment combines these three properties to support nesting and shadowing of values in the memory.  
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-rust">pub struct Environment {
+  frame_list: Vec&lt;HashMap&lt;String, Value&gt;&gt;,
+  }
+
+  pub fn new() -&gt; Environment {
+  let mut frames = Vec::new();
+  frames.push(HashMap::new());
+
+  Environment {
+  frame_list: frames,
+  }
+  }
+
+  pub fn new_scope(&amp;mut self) {
+  self.frame_list.insert(0, HashMap::new());
+  }
+
+  pub fn exit_scope(&amp;mut self) {
+  self.frame_list.remove(0);
+  }
+  </pre>
+  </div>
+  <p>
+  Declaring New Values
+  When the interpreter encounters a new block in the parsed source code, it first calls <code>new_scope()</code> to initialize a new hashmap for the block. So when new values are declared inside the block, they can be safely inserted in the first hashmap of the vector which represents the innermost scope. 
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-rust">pub fn define(&amp;mut self, name: String, value: Value) -&gt; Result&lt;(), LoxError&gt; {
+  if let Some(frame) = self.frame_list.get_mut(0) {
+  frame.insert(name, value);
+  Ok(())
+  } else {
+  error!("Frame not available.")
+  }
+  }
+  </pre>
+  </div>
+  <p>
+  Fetching and Assigning Values
+  <code>fetch()</code> is used to fetch a value from the environment and <code>assign()</code> is used to assign a new value to a predefined key. Both the functions are required to climb up from the starting scope to the global scope until a hashmap containing the given key is found. This is accomplished by iterating through each hashmap in the vector and performing the fetch or assign operation only if a hashmap contains the key. If the key is not found in any hashmap, the value being searched for has not been declared.
+  </p>
+
+  <p>
+  For example, to fetch a variable <code>a</code> declared in the global scope and used inside a block statement, the interpreter will first check the first hashmap in the vector (innermost scope) for the variable name and will not find it. So it will proceed to check the second hashmap (global scope) and since this hashmap contains the variable's key the function will return the value associated with the key.  
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-rust">pub fn fetch(&amp;self, name: String) -&gt; Option&lt;&amp;Value&gt; {
+  for frame in &amp;self.frame_list {
+  if frame.contains_key(&amp;name) {
+  return frame.get(&amp;name);
+  }
+  }
+  None
+  }
+
+  pub fn assign(&amp;mut self, name: String, value: Value) -&gt; Result&lt;Value, LoxError&gt; {
+  for frame in &amp;mut self.frame_list {
+  if frame.contains_key(&amp;name) {
+  frame.insert(name, value.clone());
+  return Ok(value);
+  }
+  }
+  error!("Undefined variable.")
+  }
+  </pre>
+  </div>
+  <p>
+  The End
+  Here's a pictorial representation of the environment for the source code below. The first element represents the innermost scope and the following elements represent the enclosing outer scopes. 
+  <img src="imgs/scopes3.png" alt="scopes3.png">
+  </p>
+  <pre class="example">
+  var a = 1;
+  var b = 2;
+  {
+  var c = 100;
+  print a; // 1
+  {
+  var d = 4;
+  {
+  var e = 5;
+  c = 3;
+  print c; // 3
+  }
+  }
+  }
+  </pre>
+  <p>
+  Compared to the implementation provided in the book, my implementation sits well with the borrow checker and may be more performant and readable as it uses iteration instead of recursion to climb up the nested scopes. 
+  </p>
+
+  <p>
+  Now, back to hacking :^)
+  </p>
+
+  <p>
+  Edit
+  A comment by <a href="https://www.reddit.com/r/rust/comments/r2tblf/comment/hm84mvq/?utm_source=share&amp;utm_medium=web2x&amp;context=3">u/Training-Ad-9425</a> mentioned that my implementation is inefficient and after referring to the <a href="https://doc.rust-lang.org/std/collections/index.html#sequences">documentation</a>, I realized that inserting and removing an element from the head of a <code>Vec</code> is a \(O(n)\) operation.
+  </p>
+
+  <p>
+  To improve on that, I had two options:
+  Push and pop new scopes at the tail of the vector and reverse the sequence when traversing from inner to outer scope. This would allow new scopes to be added to the environment in \(O(1)\) and traversing will remain to be \(O(n)\). 
+  Replace the environment structure with <code>VecDeque</code> as it supports \(O(1)\) insertion and removal at both ends of the sequence.
+  </p>
+
+  <p>
+  I implemented the first option as it would give me a chance to play with iterator's methods. You can find the update source code in the remote repository linked above.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>Game of Light</title>
+  <link>https://veera.app/game_of_light.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/game_of_light.html</guid>
+  <pubDate>Mon, 01 Nov 2021 00:00:00 -0400</pubDate>
+
+  <description><![CDATA[<p>
+  For our final project, Hayden and I are building <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's Game of Life</a> simulator on a LED matrix. We will also add a controller which the audience can use to pause and play the simulation. With this project, we aim to understand how interesting patterns emerge from a small set of rules. The coordinates for the simulation will be computed on an Arduino board which will be connected to both the simulator and the controller. Along the way, we might also add features that tickles our fancy. Check this page by December, 2021 to view the final product.   
+  Update
+  After soldering countless wire tips to the LED matrix and Hayden's all-out effort on porting the <a href="https://github.com/veera-sivarajan/game-of-light/blob/master/gameOfLight.ino">software</a> to run on our hardware, we were able to finish the project on time and demo it during the final presentation. To see how our final project looked like, check out this <a href="https://youtu.be/IcmwVxqATL4">video</a> where we simulate a bunch of still life patterns in the game. 
+  Fin
+  CICS 256 has been a great learning experience as we got to work on a project of our choice instead of writing exams. I learned a great deal about electronics and how software and hardware interact with each other. I'm sure the skills I gained from this class will help me throughout my life. CICS 256 rocks! 
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>Adding Features To Lox</title>
+  <link>https://veera.app/adding_features_to_lox.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/adding_features_to_lox.html</guid>
+  <pubDate>Thu, 19 Aug 2021 00:00:00 -0400</pubDate>
+
+  <description><![CDATA[<p>
+  Finally, I got time to sit down and implement a tree-walk interpreter following Bob Nystrom's <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>. In this post, I'm going to explain some of the features I have added to the language. You can find my complete implementation <a href="https://github.com/veera-sivarajan/lang0">here</a>. I have also made a <a href="https://youtu.be/0P6VPOIKATg">video</a> demoing the features listed below.
+  </p>
+
+  <p>
+  <b>Note:</b> This post assumes that the reader has read Part II of Crafting Interpreters and is familiar with the implementation details. 
+  Anonymous Functions
+  By definition, anonymous functions or lambdas are functions without an associated name. They are used when the user wants to invoke a piece of code but don't want to reuse it. This feature also solves challenge #2 in chapter 10 <i>Functions</i>. In my implementation, a lambda can be written by using the <code>lambda</code> keyword followed by the parameters inside parentheses and the body of the function in braces.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-lox">// lambdas in lox
+  var square = lambda(num) { return num * num; };
+  print square(5); // 25
+  </pre>
+  </div>
+  <p>
+  A lambda is a primary expression that gets evaluated to a value of type <code>LambdaFunction</code>. Parsing it is exactly like parsing a function declaration but here the parser does not consume a name for the function. Finally, it wraps the parameters and the body of lambda in a AST node. 
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::lambda() {
+  consume(TokenType::LEFT_PAREN, "Expect '(' after 'lambda'.");
+  std::vector&lt;Token&gt; parameters;
+  if (!check(TokenType::RIGHT_PAREN)) {
+  do {
+  if (parameters.size() &gt;= 10) {
+  error(peek(), "Can't have more than 10 parameters.");
+  }
+  parameters.push_back(
+  consume(TokenType::IDENTIFIER, "Expect parameter name."));
+  } while (match(TokenType::COMMA));
+  }
+  consume(TokenType::RIGHT_PAREN, "Expect ')' after parameters.");
+  consume(TokenType::LEFT_BRACE, "Expect '{' before lambda body.");
+  std::vector&lt;std::shared_ptr&lt;Statement::Stmt&gt;&gt; body = block();
+  return std::make_shared&lt;Lambda&gt;(std::move(parameters), std::move(body));
+  }
+  </pre>
+  </div>
+  <p>
+  Since these expressions don't have a name and cannot be reused like a variable or a named function, the interpreter need not store the value of the function in its environment. Instead it would create a runtime's representation of an anonymous function using the parsed value and the environment of the lambda (to allow closures to work) and return the value.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">std::any Interpreter::visitLambdaExpr(std::shared_ptr&lt;Lambda&gt; expr) {
+  return std::make_shared&lt;LambdaFunction&gt;(expr, curr_env);
+  }
+  </pre>
+  </div>
+  <p>
+  Lists
+  To add a list data type into the language, the task can be divided into three small tasks:
+  </p>
+  <div id="outline-container-org930d866" class="outline-3">
+  <h3 id="org930d866"><span class="section-number-3">7.1.</span> Scanning</h3>
+  <div class="outline-text-3" id="text-7-1">
+  <p>
+  Introduce two new tokens to make the scanner handle list expressions and subscripts.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">case '[': addToken(TokenType::LEFT_BRACKET); break;
+  case ']': addToken(TokenType::RIGHT_BRACKET); break;
+  </pre>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-org050cbfa" class="outline-3">
+  <h3 id="org050cbfa"><span class="section-number-3">7.2.</span> Creating List Literals</h3>
+  <div class="outline-text-3" id="text-7-2">
+  <p>
+  Like numbers, string, <code>true</code> and <code>false</code>, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
+  </p>
+
+  <p>
+  To learn about the grammar for lists, I found Caleb&rsquo;s blog <a href="https://calebschoepp.com/blog/2020/adding-a-list-data-type-to-lox/">post</a> to be helpful. It explained all the details related to implementing lists in a clear and concise way.
+  </p>
+  </div>
+  <div id="outline-container-org53e2ee5" class="outline-4">
+  <h4 id="org53e2ee5"><span class="section-number-4">7.2.1.</span> Parsing Lists</h4>
+  <div class="outline-text-4" id="text-7-2-1">
+  <p>
+  Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the <code>]</code> and wraps the vector in a AST node.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::list() {
+  std::vector&lt;std::shared_ptr&lt;Expr&gt;&gt; values = {};
+  if (match(TokenType::RIGHT_BRACKET)) {
+  return std::make_shared&lt;List&gt;(values);
+  } else {
+  do {
+  if (values.size() &gt;= 100) {
+  error(peek(), "Can't have more than 100 elements in a list.");
+  }
+  std::shared_ptr&lt;Expr&gt; value = logicalOr();
+  values.push_back(value);
+  } while (match(TokenType::COMMA));
+  }
+  consume(TokenType::RIGHT_BRACKET, "Expect ']' at end of list.");
+  return std::make_shared&lt;List&gt;(values);
+  }
+  </pre>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-org3cbf6fd" class="outline-4">
+  <h4 id="org3cbf6fd"><span class="section-number-4">7.2.2.</span> Interpreting Lists</h4>
+  <div class="outline-text-4" id="text-7-2-2">
+  <p>
+  To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime&rsquo;s representation of a list. Finally, like interpreting any other kind of expression, the runtime&rsquo;s value is returned. 
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">std::any Interpreter::visitListExpr(std::shared_ptr&lt;List&gt; expr) {
+  auto list = std::make_shared&lt;ListType&gt;();
+  for (std::shared_ptr&lt;Expr&gt; &amp;value : expr-&gt;values) {
+  list-&gt;append(evaluate(value));
+  }
+  return list;
+  }
+  </pre>
+  </div>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-orgeafad1a" class="outline-3">
+  <h3 id="orgeafad1a"><span class="section-number-3">7.3.</span> Handling Subscript Expressions</h3>
+  <div class="outline-text-3" id="text-7-3">
+  <p>
+  Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>.
+  </p>
+
+  <p>
+  From the interpreter&rsquo;s point of view, the only difference between the two is the presence of a value expression. If the AST node has a value, it should assign it at index. Otherwise, it should return the value at index. So the trick is to make the parser pass a <code>nullptr</code> in the place of value expression when parsing a r-value and pass a value only when parsing a l-value. This allows the interpreter to easily differentiate between the two kinds of subscript expressions.
+  </p>
+  </div>
+  <div id="outline-container-orgd617bc6" class="outline-4">
+  <h4 id="orgd617bc6"><span class="section-number-4">7.3.1.</span> Parsing Subscripts</h4>
+  <div class="outline-text-4" id="text-7-3-1">
+  <p>
+  Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. <code>subscript()</code> calls <code>finishSubscript()</code> each time it sees a <code>[</code> to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a <code>nullptr</code> in the place of value expression to let the interpreter know that it is a r-value. 
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::finishSubscript(std::shared_ptr&lt;Expr&gt; name) {
+  std::shared_ptr&lt;Expr&gt; index = logicalOr();
+  Token paren = consume(TokenType::RIGHT_BRACKET,
+  "Expect ']' after arguments.");
+  return std::make_shared&lt;Subscript&gt;(name, index, nullptr, paren);
+  }
+
+  std::shared_ptr&lt;Expr&gt; Parser::subscript() {
+  std::shared_ptr&lt;Expr&gt; expr = primary();
+  while (true) {
+  if (match(TokenType::LEFT_BRACKET)) {
+  expr = finishSubscript(expr);
+  } else {
+  break;
+  }
+  }
+  return expr;
+  }
+  </pre>
+  </div>
+  <p>
+  As you may have noticed in the formal grammar, for parsing a l-value expression, the parser extends the <code>assignment</code> rule. If the parsed expression is of type <code>Subscript</code>, it wraps the list&rsquo;s name, index and value expression in a AST node. The list&rsquo;s name is stored as an expression without converting it into l-value because the methods used for manipulating the list act on a evaluated value of the list. 
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">std::shared_ptr&lt;Expr&gt; Parser::assignment() {
+  std::shared_ptr&lt;Expr&gt; expr = logicalOr();
+  if (match(TokenType::EQUAL)) {
+  Token equals = previous();
+  std::shared_ptr&lt;Expr&gt; value = assignment();
+  // parse variable assignment
+  } else if (Subscript *s = dynamic_cast&lt;Subscript *&gt;(expr.get())) {
+  return std::make_shared&lt;Subscript&gt;(s-&gt;name, s-&gt;index, value,
+  s-&gt;paren);
+  }
+  error(std::move(equals), "Invalid assignment target.");
+  }
+  return expr;
+  }
+  </pre>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-org9d8ca48" class="outline-4">
+  <h4 id="org9d8ca48"><span class="section-number-4">7.3.2.</span> Interpreting Subscripts</h4>
+  <div class="outline-text-4" id="text-7-3-2">
+  <p>
+  To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
+  </p>
+
+  <p>
+  Now the interpreter knows that the list and the index are of valid types and is ready interpret it. If the AST node has a value expression, the interpreter evaluates it and assigns it at the index. List&rsquo;s <code>setAtIndex()</code> method sets a value at a index under two condtions:
+  When index is equivalent to length of list: To append a value to the list.
+  When index is less than length of list and greater than zero: To assign a value at a index. 
+  If neither of those conditions evaluate to a truthy value, the method returns <code>false</code> and the interpreter throws a runtime error. 
+  </p>
+
+  <p>
+  If the node does <b>not</b> have a value it&rsquo;s a r-value and the interpreter is supposed to return the value at index. It returns the value using the list&rsquo;s method if index is within the range of the list. Otherwise, if the index is out of range, it returns a <code>nullptr</code>.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">std::any Interpreter::visitSubscriptExpr(std::shared_ptr&lt;Subscript&gt; expr) {
+  std::any name = evaluate(expr-&gt;name);
+  std::any index = evaluate(expr-&gt;index);
+  if (name.type() == typeid(std::shared_ptr&lt;ListType&gt;)) {
+  if (index.type() == typeid(double)) {
+  std::shared_ptr&lt;ListType&gt; list;
+  int castedIndex;
+  list = std::any_cast&lt;std::shared_ptr&lt;ListType&gt;&gt;(name);
+  castedIndex = std::any_cast&lt;double&gt;(index);
+  if (expr-&gt;value != nullptr) {
+  std::any value = evaluate(expr-&gt;value);
+  if (list-&gt;setAtIndex(castedIndex, value)) {
+  return value; 
+  } else {
+  throw RuntimeError{expr-&gt;paren, "Index out of range."};
+  }
+  } else {
+  if (castedIndex &gt;= list-&gt;length() || castedIndex &lt; 0) {
+  return nullptr;
+  }
+  return list-&gt;getEleAt(castedIndex);
+  }
+  } else {
+  throw RuntimeError{expr-&gt;paren, "Index should be of type int."};
+  }
+  } else {
+  throw RuntimeError{expr-&gt;paren, "Only lists can be subscripted."};
+  }
+  return {};
+  }
+  </pre>
+  </div>
+  <p>
+  I could have made the interpreter throw errors when indexing out of range but chose to return a <code>nullptr</code> because it helps in terminating a loop while iterating over a list. It might seem unsafe but the interpreter throws an error when a variable initialized with <code>nullptr</code> is used in an expression. So if the user tries to access a value out of range and uses it in some other expression, the program is guaranteed to fail. 
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-lox">// lox script to print all elements in a list
+  var list = [1, 2, 3, 4, 5];
+  for (var i = 0; list[i] != nil; i = i + 1) {
+  print list[i]; // 1 2 3 4 5
+  }
+  </pre>
+  </div>
+  <p>
+  Unused Variable Warnings
+  I also made the resolver throw warnings when there are unused variables in the local scope. This also solves challenge #3 in chapter 11 <i>Resolving and Binding</i>.
+  </p>
+
+  <p>
+  To implement this feature, a vector of <code>std::map</code> is used like a stack to track the nested (possibly) local scopes in scope. This is similar to the <code>scopes</code> stack used in the resolver but instead of storing a string and a boolean, here I store the variable as a token and the number of times it has been resolved. When the resolver enters a local scope it pushes an empty map into the vector and when it exits a scope it pops a map. Declaring a variable in the local scope inserts a element with variable token as key and <code>0</code> as value in the top most map. This value gets incremented by one whenever the corresponding variable is resolved locally. Finally, before exiting a local scope calling <code>checkUnusedVariables()</code> would iterate over all the pairs in the top most map and throw a warning when the value is equivalent to zero.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-cpp">void Resolver::checkUnusedVariables() {
+  std::map&lt;Token, int&gt; &amp;currentScope = identifiers.back();
+  for (auto const&amp; [key, val] : currentScope) {
+  if (val == 0) {
+  Error::warn(key, "Unused local variable.");
+  }
+  }
+  }
+  </pre>
+  </div>
+  <p>
+  Epilogue
+  I had so much fun working on this project and learnt a lot about programming languages and interpreters. Before reading this book, I did not know what actually happens when I run or compile my programs but now I have a better understanding of the underlying ideas and visualize a interpreter as follows:
+  </p>
+
+  <p>
+  Scanner:
+  Converts user input into list of tokens.
+  Parser:
+  Tokens into expression or statement AST node based on formal grammar.
+  Interpreter:
+  Evaluates a expression node to a value.
+  Executes a statement node to produce side effect.
+  Environment:
+  Stores the state of the program.
+  </p>
+
+  <p>
+  Next, I&rsquo;m looking forward to start working on the bytecode interpreter.
+  </p>
+  </div>
+  </div>
+  </div>
+  ]]></description>
+</item>
+<div id="footnotes">
+  <h2 class="footnotes">Footnotes: </h2>
+  <div id="text-footnotes">
+
+    <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Posting here with his consent.</p></div></div>
+
+    <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Statically typed languages have this requirement because the algorithm cannot determine which branch will get executed during runtime but it has to assign a type for the entire expression. In contrast, dynamically typed languages are more flexible as they can assign the type of conditional expression to the type of the branch that will get executed.</p></div></div>
+
+    <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">I'm not sure if this would work when classes and methods are implemented.</p></div></div>
+
+    <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">This is actually a bug because index number should not be of type <code>double</code></p></div></div>
+
+
+  </div>
+</div></channel>
+</rss>
