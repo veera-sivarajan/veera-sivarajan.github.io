@@ -1,6 +1,6 @@
 ;; ox-html.el.gz has to be evaluated everytime to get
 ;; correct syntax highlighting. 
-;; (require 'ox-rss)
+(require 'ox-rss)
 
 ;; (load-file "/home/veera/.emacs.d/elpa/org-plus-contrib-20210705/ox-html.el") 
 
@@ -25,6 +25,40 @@
       org-html-validation-link t
       org-html-doctype "html5"
       org-html-htmlize-output-type 'css)
+
+(defun rw/org-rss-publish-to-rss (plist filename pub-dir)
+  "Publish RSS with PLIST, only when FILENAME is 'rss.org'.
+PUB-DIR is when the output will be placed."
+  (if (equal "rss.org" (file-name-nondirectory filename))
+      (org-rss-publish-to-rss plist filename pub-dir)))
+
+(defun rw/format-rss-feed (title list)
+  "Generate RSS feed, as a string.
+TITLE is the title of the RSS feed.  LIST is an internal
+representation for the files to include, as returned by
+`org-list-to-lisp'.  PROJECT is the current project."
+  (concat "#+TITLE: " title "\n\n"
+          (org-list-to-subtree list 1 '(:icount "" :istart "")))) 
+
+(defun rw/format-rss-feed-entry (entry style project)
+  "Format ENTRY for the RSS feed.
+ENTRY is a file name.  STYLE is either 'list' or 'tree'.
+PROJECT is the current project."
+  (cond ((not (directory-name-p entry))
+         (let* ((file (org-publish--expand-file-name entry project))
+                (title (org-publish-find-title entry project))
+                (date (format-time-string "%Y-%m-%d" (org-publish-find-date entry project)))
+                (link (concat (file-name-sans-extension entry) ".html")))
+           (with-temp-buffer
+             (insert (format "* %s\n" title))
+             (org-set-property "RSS_PERMALINK" link)
+             (org-set-property "PUBDATE" date)
+             (insert-file-contents file)
+             (buffer-string))))
+        ((eq style 'tree)
+         ;; Return only last subdir.
+         (file-name-nondirectory (directory-file-name entry)))
+        (t entry)))
 
 (defun me/website-html-preamble (plist)
   "PLIST: An entry."
@@ -79,7 +113,7 @@ PROJECT: `posts in this case."
          :recursive nil 
          :publishing-function org-html-publish-to-html
          :publishing-directory "~/Projects/Blog/docs/"
-         :exclude ,(regexp-opt '("README.org" "draft" "404.org"))
+         :exclude ,(regexp-opt '("README.org" "draft" "404.org" "rss.org"))
          :html-preamble me/website-html-preamble
          :html-postamble me/website-html-postamble
          :auto-sitemap t
@@ -88,6 +122,24 @@ PROJECT: `posts in this case."
          :sitemap-format-entry me/org-sitemap-format-entry
          :sitemap-style list
          :sitemap-sort-files anti-chronologically)
+        ("rss-feed"
+         :base-directory "~/Projects/Blog/local/"
+         :base-extension "org"
+         :recursive nil
+         :publishing-function rw/org-rss-publish-to-rss
+         :publishing-directory "/home/veera/Projects/Blog/docs/"
+         :exclude ,(regexp-opt '("README.org" "draft" "404.org" "index.org"))
+         :rss-extension "xml"
+         :html-link-home "https://veera.app/"
+         :html-link-use-abs-url t
+         :html-link-org-files-as-html t
+         :auto-sitemap t
+         :sitemap-filename "rss.org"
+         :sitemap-title "core dump"
+         :sitemap-style list
+         :sitemap-sort-files anti-chronologically
+         :sitemap-function rw/format-rss-feed
+         :sitemap-format-entry rw/format-rss-feed-entry)
         ("about"
          :base-directory "~/Projects/Blog/local/about/"
          :base-extension "org"
@@ -110,5 +162,5 @@ PROJECT: `posts in this case."
          :publishing-directory "~/Projects/Blog/docs/imgs/"
          :publishing-function org-publish-attachment
          :recursive t)
-        ("all" :components ("posts" "about" "css"  "images"))))
+        ("all" :components ("posts" "about" "css"  "images" "rss-feed"))))
 
