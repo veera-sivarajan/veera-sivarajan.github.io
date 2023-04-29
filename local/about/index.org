@@ -1,8 +1,8 @@
 #+TITLE: About Me
 #+DATE: <2022-04-12 Tue>  
 
-I'm Veera (he/him), a computer science student at UMass Amherst. I'm passionate about compilers, programming languages and developer tools. I enjoy rewriting [[https://github.com/veera-sivarajan][tools]] from scratch as it allows me to understand all the layers of abstraction in the system. I'm also a member of the enthusiastic programming community at [[https://www.recurse.com/][Recurse Center]].
+I'm Veera (he/him), a computer science student at UMass Amherst. I'm passionate about compilers, programming languages and developer tools. I enjoy rewriting [[https://github.com/veera-sivarajan][tools]] from scratch as it allows me to understand all the layers of abstraction in the system. 
 
 Outside of programming, I love to run long distances or play [[https://youtu.be/I7XNeGwZhj4][Table Tennis]].
-* Hire Me                                                            
+* Hire Me
 I'm looking for a job involving compilers or developer tools. I currently work as an IOS developer and have experience using Rust and C++ for my personal projects. Here is my [[https://veera.app/imgs/veera-vitae.pdf][curriculum vitae]].
