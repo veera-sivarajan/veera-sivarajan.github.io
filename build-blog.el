@@ -68,10 +68,10 @@ PROJECT is the current project."
                                (org-export-get-date plist this-date-format))))
   (if (string= (substring (buffer-name) 0 5) "index")
       (with-temp-buffer
-        (insert-file-contents "~/Projects/Blog/html/preamble.html")
+        (insert-file-contents "~/projects/Blog/html/preamble.html")
         (buffer-string))
     (with-temp-buffer
-      (insert-file-contents "~/Projects/Blog/html/nav.html")
+      (insert-file-contents "~/projects/Blog/html/nav.html")
       (buffer-string)))) 
 
 (defun me/website-html-postamble (plist)
@@ -79,7 +79,7 @@ PROJECT is the current project."
   (concat (format
            (with-temp-buffer
              (insert-file-contents
-              "~/Projects/Blog/html/postamble.html") (buffer-string))
+              "~/projects/Blog/html/postamble.html") (buffer-string))
            (format-time-string "%Y-%b-%d %a %H:%M")
            (plist-get plist :creator))))
 
@@ -108,11 +108,11 @@ PROJECT: `posts in this case."
 
 (setq org-publish-project-alist
       `(("posts"
-         :base-directory "~/Projects/Blog/local/"
+         :base-directory "~/projects/Blog/local/"
          :base-extension "org"
          :recursive nil 
          :publishing-function org-html-publish-to-html
-         :publishing-directory "~/Projects/Blog/docs/"
+         :publishing-directory "~/projects/Blog/docs/"
          :exclude ,(regexp-opt '("README.org" "draft" "404.org" "rss.org"))
          :html-preamble me/website-html-preamble
          :html-postamble me/website-html-postamble
@@ -123,11 +123,11 @@ PROJECT: `posts in this case."
          :sitemap-style list
          :sitemap-sort-files anti-chronologically)
         ("rss-feed"
-         :base-directory "~/Projects/Blog/local/"
+         :base-directory "~/projects/Blog/local/"
          :base-extension "org"
          :recursive nil
          :publishing-function rw/org-rss-publish-to-rss
-         :publishing-directory "/home/veera/Projects/Blog/docs/"
+         :publishing-directory "/home/veera/projects/Blog/docs/"
          :exclude ,(regexp-opt '("README.org" "draft" "404.org" "index.org"))
          :rss-extension "xml"
          :html-link-home "https://veera.app/"
@@ -141,25 +141,25 @@ PROJECT: `posts in this case."
          :sitemap-function rw/format-rss-feed
          :sitemap-format-entry rw/format-rss-feed-entry)
         ("about"
-         :base-directory "~/Projects/Blog/local/about/"
+         :base-directory "~/projects/Blog/local/about/"
          :base-extension "org"
          :exclude ,(regexp-opt '("README.org" "draft"))
          :index-filename "index.org"
          :recursive nil
          :publishing-function org-html-publish-to-html
-         :publishing-directory "~/Projects/Blog/docs/about"
+         :publishing-directory "~/projects/Blog/docs/about"
          :html-preamble me/website-html-preamble
          :html-postamble me/website-html-postamble)
         ("css"
-         :base-directory "~/Projects/Blog/local/css/"
+         :base-directory "~/projects/Blog/local/css/"
          :base-extension "css"
          :publishing-function org-publish-attachment
-         :publishing-directory "~/Projects/Blog/docs/css/"
+         :publishing-directory "~/projects/Blog/docs/css/"
          :recursive nil)
         ("images"
-         :base-directory "~/Projects/Blog/local/imgs/"
+         :base-directory "~/projects/Blog/local/imgs/"
          :base-extension ,site-attachments
-         :publishing-directory "~/Projects/Blog/docs/imgs/"
+         :publishing-directory "~/projects/Blog/docs/imgs/"
          :publishing-function org-publish-attachment
          :recursive t)
         ("all" :components ("posts" "about" "css"  "images" "rss-feed"))))

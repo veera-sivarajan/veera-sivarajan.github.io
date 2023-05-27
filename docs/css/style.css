@@ -1,19 +1,41 @@
-html,
-body {
-    background-color: black;
-    min-height: 100%;
-    line-height: 1.5;
+:root {
+    --bg-color: #ffffff;
+    --fg-color: #000000;
+    --border-color: #000000;
 }
 
+@media(prefers-color-scheme:dark) {
+    :root {
+        --bg-color: #000000;
+        --fg-color: #ffffff;
+        --border-color: #a9a9a9;
+    }
+    
+    a {
+        color: #00ffff;
+        text-decoration: none;
+    }
+
+    a:visited, a:hover, a:focus, a:active {
+        color: #00c5cd;
+    }
+    
+    ::selection {
+        background-color:  var(--fg-color);
+        color: var(--bg-color);
+    }
+
+}
+
+html,
 body {
-    color: #fafafa;
+    background-color: var(--bg-color);
+    min-height: 100%;
+    line-height: 1.5;
+    color: var(--fg-color);
     font-family: "Helvetica";
 }
 
-::selection {
-    background-color:  white;
-    color: black;
-}
 
 /* Responsive content positioning */
 @media only screen and (min-width: 1020px) /* Large screens */
@@ -60,45 +82,22 @@ pre, blockquote, ul, ol, p, table{
 h1, h2{margin-top: 2rem; line-height: 2rem;}
 h3, h4, h5, h6{margin-top: 1rem;}
 
-
-/* Links  */
-a {
-    color: #00ffff;
-    text-decoration: none;
-}
-
-a:visited, a:hover, a:focus, a:active {
-    color: #00c5cd;
-}
-
 /* Code */
 pre, .verse {
     font-family: "Courier New";
     padding: .5rem;
-    background: #0d0d0d;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
     padding: 0.5rem;
     border-radius: 0.2rem;
     font-size: 0.9rem;
-    color: #EEE;
+    color: var(--fg-color);
     overflow-x: auto;
-}
-
-.org-function-name {
-    color: white;
-    font-weight: bold;
-}
-
-.org-rainbow-delimiters-depth-1{
-    color: #2ecc40;
-}
-
-.org-rainbow-delimiters-depth-2{
-    color: #08c;
 }
 
 /* Blockquotes */
 blockquote {
-    border-left: 3px solid #00c5cd;
+    border-left: 2px solid var(--border-color);
     padding-left: 1rem;
 }
 
@@ -106,38 +105,10 @@ li{
     list-style-position: inside;
 }
 
-/* Tags */
-.tag{
-    margin-top: 0.5rem;
-    display: block;
-    color: white;
-    font-size: var(--font-size-xsmall);
-}
-
-.tag > span{
-		font-weight: 400;
-    font-size: 0.8rem;
-    background-color: #444;
-    text-transform: uppercase;
-    border-radius: 2px;
-    width: fit-content;
-    height: auto;
-    padding: 1px 5px;
-}
-
-/* Keywords */
-.todo{
-    color: #2ecc40;
-}
-
-.done{
-    color: #444;
-}
-
 /* Overflows */
 .outline-text-2, .outline-text-3, .outline-text-4{
-	  max-width: 100%;
-	  overflow-x: auto;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 /* Table */
@@ -165,14 +136,14 @@ nav {
     text-align: left;
     display: flex;
     justify-content: space-around;
-    border: 1px solid gray;
+    border: 1px solid var(--border-color);
 }
 
 /* inline code */
 :not(pre) > code {
     font-size: 0.9rem;
-    color: white;
-    background-color: #363636;
+    color: var(--fg-color);
+    background-color: var(--bg-color);
     padding: 2px;
     font-family: "Courier New";
 }
@@ -187,3 +158,4 @@ figcaption {
     text-align: center;
     font-size: 0.8rem;
 }
+
