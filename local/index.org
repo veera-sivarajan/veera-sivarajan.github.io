@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2023-Jun-30:
+  *[[file:codegen.org][Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly]]*
 - 2023-May-07:
   *[[file:idempotence.org][Idempotency in the Wild]]*
 - 2023-Apr-06:

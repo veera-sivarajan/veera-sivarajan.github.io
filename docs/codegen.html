@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2023-Jun-30 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly</title>
+<meta name="author" content="Veera Sivarajan" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="./css/style.css"/>
+</head>
+<body>
+<header id="top" class="status">
+<nav>
+  <a href="https://github.com/veera-sivarajan">Github</a>
+  <a href="/">Home</a>
+  <a href="/about/">About</a>
+  <a href="mailto:sveera.2001@gmail.com">Email</a>
+</nav>  
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly</h1>
+<p class="subtitle" role="doc-subtitle">2023-Jun-30</p>
+</header><p>
+<a href="https://github.com/veera-sivarajan/boba">Boba</a> is a compiler I&rsquo;m writing to learn how high-level language constructs can be expressed in assembly. It compiles Rust-like source code to 64-bit x86 instruction set. This post will describe the current status of the project.
+</p>
+<section id="outline-container-org894146a" class="outline-2">
+<h2 id="org894146a"><span class="section-number-2">1.</span> Language Overview</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+The language&rsquo;s syntax looks like Rust, but semantically its a lot like C with one big difference: here, the compiler does not care about declaration order in the global scope, so functions can be called before they are defined in the source code.
+</p>
+<div class="org-src-container">
+<pre class="src src-rust">// Example program that can be compiled with Boba
+fn main() -&gt; i64 {
+    println(factorial(5));
+    return 0;
+}
+
+fn factorial(num: i64) -&gt; i64 {
+    if num &lt;= 1 {
+        return 1;
+    } else {
+        return num * factorial(num - 1);
+    }
+}
+</pre>
+</div>
+</div>
+</section>
+<section id="outline-container-org834f1e5" class="outline-2">
+<h2 id="org834f1e5"><span class="section-number-2">2.</span> Compiler Architecture</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+The compiler follows a traditional multi-pass architecture:
+</p>
+<ol class="org-ol">
+<li>Scanner walks through every character in the source code and builds a list of tokens.</li>
+<li>Parser builds a high-level AST by parsing the tokens with a recursive descent LL(1) parser. This step is very similar to parsing Lox in Crafting Interpreters.</li>
+<li>Analyzer performs a bunch of static checks to verify that all the variables and functions in use are defined. Also, local variable names are resolved to their offset from the base register pointer <code>%rbp</code>. This step returns a low-level AST iff there are no semantic errors in the source code.</li>
+<li>Code generator iterates over every node in the low-level AST and translates it to assembly.</li>
+</ol>
+
+<p>
+The high-level AST has token information which can be used to point an error message to a particular line and column number in the source code but the low-level AST gets rid of all token information and only knows about labels and offset from base pointer. The generated assembly is linked with the C standard library and converted to an ELF executable with the help of <code>gcc</code>. This allowed me to implement <code>println()</code> as a built-in function that calls <code>printf()</code>. Also, in theory, the generated code can call any C function because it follows the System V calling convention but I have not tested it yet.
+</p>
+</div>
+</section>
+<section id="outline-container-orgf0fe1f1" class="outline-2">
+<h2 id="orgf0fe1f1"><span class="section-number-2">3.</span> Future Work</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+There aren&rsquo;t any optimization passes, so the generated code is verbose and inefficient. For example, a simple local variable declaration <code>let x = 10</code> gets translated into:
+</p>
+<div class="org-src-container">
+<pre class="src src-asm">movq  $10, %rbx
+movq  %rbx, -8(%rbp)
+</pre>
+</div>
+<p>
+This is because the code generator generates code for every node in the low-level AST. It has no way to know that those two instructions are related and can be combined into one. Also, there is no type system as 64-bit signed number is the only data type supported by the compiler.
+</p>
+</div>
+</section>
+<section id="outline-container-org63c1358" class="outline-2">
+<h2 id="org63c1358"><span class="section-number-2">4.</span> Reference</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Chapters 10 - 12 in <a href="https://www3.nd.edu/~dthain/compilerbook/">Introduction to Compilers and Language Design</a> by Douglas Thain gave me a good idea about assembly language, code generation and optimization.
+</p>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+  Last updated on 2023-Jun-30 Fri 22:51. <br>
+</div>
+</footer>
+</body>
+</html>
