@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2023-Jun-30 -->
+<!-- 2023-Jul-01 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly</title>
+<title>Boba Devlog #0: Compiling Pseudo-Rust to x86 Assembly</title>
 <meta name="author" content="Veera Sivarajan" />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="./css/style.css"/>
@@ -20,13 +20,13 @@
 </header>
 <main id="content" class="content">
 <header>
-<h1 class="title">Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly</h1>
+<h1 class="title">Boba Devlog #0: Compiling Pseudo-Rust to x86 Assembly</h1>
 <p class="subtitle" role="doc-subtitle">2023-Jun-30</p>
 </header><p>
 <a href="https://github.com/veera-sivarajan/boba">Boba</a> is a compiler I&rsquo;m writing to learn how high-level language constructs can be expressed in assembly. It compiles Rust-like source code to 64-bit x86 instruction set. This post will describe the current status of the project.
 </p>
-<section id="outline-container-org894146a" class="outline-2">
-<h2 id="org894146a"><span class="section-number-2">1.</span> Language Overview</h2>
+<section id="outline-container-orgb9667da" class="outline-2">
+<h2 id="orgb9667da"><span class="section-number-2">1.</span> Language Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The language&rsquo;s syntax looks like Rust, but semantically its a lot like C with one big difference: here, the compiler does not care about declaration order in the global scope, so functions can be called before they are defined in the source code.
@@ -49,8 +49,8 @@ fn factorial(num: i64) -&gt; i64 {
 </div>
 </div>
 </section>
-<section id="outline-container-org834f1e5" class="outline-2">
-<h2 id="org834f1e5"><span class="section-number-2">2.</span> Compiler Architecture</h2>
+<section id="outline-container-orgccb3efa" class="outline-2">
+<h2 id="orgccb3efa"><span class="section-number-2">2.</span> Compiler Architecture</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 The compiler follows a traditional multi-pass architecture:
@@ -67,8 +67,8 @@ The high-level AST has token information which can be used to point an error mes
 </p>
 </div>
 </section>
-<section id="outline-container-orgf0fe1f1" class="outline-2">
-<h2 id="orgf0fe1f1"><span class="section-number-2">3.</span> Future Work</h2>
+<section id="outline-container-orgac4f893" class="outline-2">
+<h2 id="orgac4f893"><span class="section-number-2">3.</span> Future Work</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 There aren&rsquo;t any optimization passes, so the generated code is verbose and inefficient. For example, a simple local variable declaration <code>let x = 10</code> gets translated into:
@@ -83,8 +83,8 @@ This is because the code generator generates code for every node in the low-leve
 </p>
 </div>
 </section>
-<section id="outline-container-org63c1358" class="outline-2">
-<h2 id="org63c1358"><span class="section-number-2">4.</span> Reference</h2>
+<section id="outline-container-org65b86e6" class="outline-2">
+<h2 id="org65b86e6"><span class="section-number-2">4.</span> Reference</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Chapters 10 - 12 in <a href="https://www3.nd.edu/~dthain/compilerbook/">Introduction to Compilers and Language Design</a> by Douglas Thain gave me a good idea about assembly language, code generation and optimization.
@@ -94,7 +94,7 @@ Chapters 10 - 12 in <a href="https://www3.nd.edu/~dthain/compilerbook/">Introduc
 </main>
 <footer id="postamble" class="status">
 <div class='footer'>
-  Last updated on 2023-Jun-30 Fri 22:51. <br>
+  Last updated on 2023-Jul-01 Sat 09:18. <br>
 </div>
 </footer>
 </body>

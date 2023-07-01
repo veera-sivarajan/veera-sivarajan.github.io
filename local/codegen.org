@@ -1,5 +1,5 @@
 #+SETUPFILE: ../basic-setup.org 
-#+TITLE: Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly
+#+TITLE: Boba Devlog #0: Compiling Pseudo-Rust to x86 Assembly
 #+DATE: <2023-06-30 Fri> 
 
 [[https://github.com/veera-sivarajan/boba][Boba]] is a compiler I'm writing to learn how high-level language constructs can be expressed in assembly. It compiles Rust-like source code to 64-bit x86 instruction set. This post will describe the current status of the project.
