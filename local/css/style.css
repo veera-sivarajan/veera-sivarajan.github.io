@@ -42,6 +42,7 @@ body {
 {
     body{
         padding: 10vh 25vw;
+        font-size: 1.3em;
     }
 }
 
@@ -90,9 +91,9 @@ pre, .verse {
     border: 1px solid var(--border-color);
     padding: 0.5rem;
     border-radius: 0.2rem;
-    font-size: 0.9rem;
     color: var(--fg-color);
     overflow-x: auto;
+    font-size: 1.0em;
 }
 
 /* Blockquotes */
@@ -141,11 +142,11 @@ nav {
 
 /* inline code */
 :not(pre) > code {
-    font-size: 0.9rem;
     color: var(--fg-color);
     background-color: var(--bg-color);
     padding: 2px;
     font-family: "Courier New";
+    font-size: 1.0em;
 }
 
 footer {

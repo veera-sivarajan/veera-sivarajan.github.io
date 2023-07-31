@@ -1,10 +1,38 @@
 #+TITLE: core dump
 
-* Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly
+* Boba Devlog #1: Sliding In a Type Checker
+:PROPERTIES:
+:RSS_PERMALINK: type_checking.html
+:PUBDATE:  2023-07-31
+:ID:       b2de6a81-0299-41b8-9de6-bab7f8a85f93
+:END:
+#+setupfile: ../basic-setup.org
+[[https://github.com/veera-sivarajan/boba/tree/main][Boba]] is a compiler project I'm working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. Check out the [[https://github.com/veera-sivarajan/boba/blob/main/language.org][language documentation]] to know more about syntax and semantics of the language.
+
+This month I implemented a type checker and it helped me to make a number of improvements to the language. Now, the compiler can handle more primitive data types and also a Rust style format string for print statements. In this post, I will explain everything I learnt over the month.
+Learning x86-64 Assembly
+Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I'd write a simple C program and compile it using ~gcc -O0 -fverbose-asm -S~. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
+Type Checking
+Initially, I thought I should implement Hindley-Milner type inference algorithm to infer the types of all expressions because the language is implicitly typed. But, after reading a [[https://lobste.rs/s/ewxw1i/less_technical_introductions_type#c_hotmwn][comment]] by matklad, I realized I don't need that since there are no generics in my language. 
+
+Therefore, my current implementation walks through every node in the AST like a tree-walk interpreter but instead of evaluating primary expressions to their values, it evaluates them to their types. For example, the expression ~Expr::Number(23)~ evaluates to ~Type::Number~. The types are then bubbled-up the AST and checked if they are equal to the expected type. If a type does not match the expected type, an appropriate error is added to a list and type checker continues to check the rest of the program. After the whole program is analyzed, the compiler prints out all the errors in the list. If there is no error, the AST along with all the type information is passed on to the code generator to generate the assembly. The code generator will use the type information of each expression to choose the correct instruction suffix and register size. As an example, the code generator will choose ~movl~ and ~%eax~ for returning a 32 bit number type instead of ~movq~ and ~%rax~.
+Fancy Print Statement 
+Additionally, implementing a type checker paved way for Rust style fancy format strings in print statements even though the compiler calls ~printf()~ to display values to ~stdout~.
+#+begin_src rust
+  println("{}. Your name is: {}", some_number, some_string);
+#+end_src
+Since the compiler can infer the types of both ~some_number~ and ~some_string~, the format string is replaced with appropriate C format specifiers and compiled to ~"%d. Your name is: %s\n~ before being passed as first argument to ~printf()~. Finally, the values to be printed get passed as subsequent arguments to ~printf()~ without any changes because the primitive types in my language are compatible with C ABI.
+Fixing Stack Alignment
+I first encountered this bug when calling ~printf()~. The program would abruptly crash when a function has a certain number of local variables and it was very confusing because there wasn't anything wrong in the generated assembly in terms of space allocated on the stack or using the correct instructions.
+
+Turns out the System V ABI requires the stack to be aligned to a 16 byte boundary inside every function. So my mistake was allocating the exact amount of space required for local variables as a function with three boolean values will allocate three bytes plus forty eight bytes for callee saved registers and leave the stack misaligned. To fix this, the code generator rounds the sum of space required for local variables and callee saved registers to the nearest multiple of 16 before allocating. In the function epilogue, the rounded up amount of space gets deallocated from the stack.
+
+This solved the issue and now the programs don't crash for any number of local variables.
+* Boba Devlog #0: Compiling Pseudo-Rust to x86 Assembly
 :PROPERTIES:
 :RSS_PERMALINK: codegen.html
-:PUBDATE:  2023-06-30
-:ID:       53420397-f04a-459a-ad55-607830708ce5
+:PUBDATE:  2023-06-29
+:ID:       1d1551b0-9e25-47d1-866b-6017659bc28e
 :END:
 #+setupfile: ../basic-setup.org
 [[https://github.com/veera-sivarajan/boba][Boba]] is a compiler I'm writing to learn how high-level language constructs can be expressed in assembly. It compiles Rust-like source code to 64-bit x86 instruction set. This post will describe the current status of the project.
@@ -45,8 +73,8 @@ Chapters 10 - 12 in [[https://www3.nd.edu/~dthain/compilerbook/][Introduction to
 * Idempotency in the Wild
 :PROPERTIES:
 :RSS_PERMALINK: idempotence.html
-:PUBDATE:  2023-05-07
-:ID:       eb631b6e-0ad3-4b2d-859f-4434eb8a09e3
+:PUBDATE:  2023-05-06
+:ID:       1608a0ee-2f48-4e04-b322-3e330caa2cf2
 :END:
 #+setupfile: ../basic-setup.org
 I learned about /idempotence/ when reading some blog post about Lisp. It is used to denote operations which have the same effect for any number of times they are executed. For example, emptying a glass of water.
@@ -59,8 +87,8 @@ I came across a neat real-life example of an idempotent system on my bus ride to
 * Professor Eliot Moss on the Design and Implementation of CLU
 :PROPERTIES:
 :RSS_PERMALINK: clu.html
-:PUBDATE:  2023-04-06
-:ID:       e8b6b47b-2f13-4996-810a-bb3c65d34312
+:PUBDATE:  2023-04-05
+:ID:       1a339355-b386-46b3-8a03-b0bde24893e5
 :END:
 #+setupfile: ../basic-setup.org
 In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
@@ -124,8 +152,8 @@ Cheers - E
 * Tracking Music History
 :PROPERTIES:
 :RSS_PERMALINK: tracking_music_history.html
-:PUBDATE:  2023-03-25
-:ID:       b2f947e5-da84-4368-84a4-b182c2fb416a
+:PUBDATE:  2023-03-24
+:ID:       d2c4a5b6-d056-461f-aaeb-283d2339c1e1
 :END:
 #+setupfile: ../basic-setup.org
 I have all my music downloaded on the computer and listen to them using a lightweight music player. This setup worked fine for a while but soon I felt a need for a way to track my music listening history. I wanted a simple tool to log all the music I listen to and view it through an interface that allows me to query using different parameters. 
@@ -139,7 +167,7 @@ To conclude, despite it being a [[https://github.com/veera-sivarajan/music-daemo
 :PROPERTIES:
 :RSS_PERMALINK: type_inference.html
 :PUBDATE:  2023-01-31
-:ID:       8a6fe25b-8698-455e-9837-f156e95c7b36
+:ID:       12c9506d-cc74-4d50-949c-c3ab495e4c0a
 :END:
 #+setupfile: ../basic-setup.org
 Dabbling with Haskell inspired me to learn about type inference. So this last week I spent some time reading through literature on type systems and [[https://github.com/veera-sivarajan/type-inferencer][implemented]] the Hindley-Milner algorithm for a toy expression language using Rust. In this post, I will give an implementation focused explanation of the algorithm. 
@@ -147,7 +175,7 @@ Hindley-Milner
 The type inference algorithm takes the AST as input and outputs the type for each expression in the tree. Much like a detective, who solves a case by collecting all the available evidence and then finding the relation between them to come to a conclusion, the algorithm creates a mapping between each expression and its expected type and then finds the types for all expressions using the relation between the generated mappings. Formally, the first step is termed as /constraint generation/ and the latter is /unification/.
 ** Constraint Generation
 :PROPERTIES:
-:ID:       6b371d73-502b-4bea-ba33-5890957e6f49
+:ID:       84f47418-c3fe-4a64-9f0a-a0db218fbb27
 :END:
 A constraint is a mapping between an expression and its expected type. To generate constraints for an AST, the algorithm recursively visits every expression in the tree and maps it to an expected type. Primitive expressions like numbers, booleans and identifiers, can be straightforwardly mapped to their respective types since any symbol parsed as, for example, a number is guaranteed to be of type number. It gets more interesting when generating constraints for nested expressions. 
 
@@ -156,7 +184,7 @@ Each sub-expression is constrained to an expected type based on its value. For e
 All sub-expressions and the root expression are mapped to their expected types based on their position in the AST.  For example, if there is a sub-expression ~1~ in the condition part of conditional expression, it will be mapped to type ~Bool~.
 *** Binary Add Expression
 :PROPERTIES:
-:ID:       a461423d-8067-4cef-a865-5ba1c2b0ec97
+:ID:       81af63fa-ba65-4920-9035-bea0ef18d3cb
 :END:
 For the binary add expression, generate constraints for the left and right operands and then map each operand and the add expression to type number. For example, the following are the constraints generated for the incorrect expression ~1 + false~.
 #+begin_src shell
@@ -168,7 +196,7 @@ For the binary add expression, generate constraints for the left and right opera
 #+end_src
 *** Conditional Expression
 :PROPERTIES:
-:ID:       0654383d-85d8-4ab6-947a-4ae879cc8c19
+:ID:       87e5a419-4baf-49c9-b13a-96104b562413
 :END:
 For conditional expressions, there are three expectations for its types:
 Condition should be of type boolean.
@@ -186,7 +214,7 @@ To express these expectations in terms of constraints, start by generating const
 #+end_src
 *** Functions
 :PROPERTIES:
-:ID:       a06b2f47-ee11-4a63-86de-e5ef96931162
+:ID:       cbd00684-1ff5-48de-a44b-73109584c175
 :END:
 A function definition is constrained as an arrow type with parameters as domain and body as range. As you may be familiar by now, start by generating constraints for parameters and body to determine their types. Then, map the function definition to an arrow type with parameters as domain and body as range. For the expression ~lambda(x) x + 2~, the constraints are:
 #+begin_src shell
@@ -211,12 +239,12 @@ Similarly, a function call is also constrained as an arrow type with arguments a
 #+end_src
 ** Unification
 :PROPERTIES:
-:ID:       139f0325-556c-425f-95d4-d8a54404e521
+:ID:       852ba203-6f04-426a-8ab7-3061b92b5509
 :END:
 The meat of type inference happens during unification. In this step, the algorithm iterates through the list of constraints and outputs either a type error, if any, or the type for each expression.
 *** Substitution
 :PROPERTIES:
-:ID:       f4c16b08-cc03-4341-a9d3-0a23a90f0f10
+:ID:       c4841cac-d029-45fe-ae78-0ad944189268
 :END:
 The core idea of unification is a simple concept called substitution. Assume we have the following set of constraints for a function definition ~(lambda(x) x + 2)~.
 #+begin_src shell
@@ -231,12 +259,12 @@ After unification, the RHS of constraint #4 will be substituted with types asser
 #+end_src
 *** Occurs Check
 :PROPERTIES:
-:ID:       830e737b-aef3-4e7b-946b-43f9eb30afe4
+:ID:       4445a08c-25b7-4048-926f-ca39c6813454
 :END:
 We substitute a term A with term B to ensure that expressions progressively get mapped to a more specific type. But if term B contains term A, the replacement is redundant and can lead to infinite unifications. To prevent this, ensure that term B does not contain term A anywhere in its nested structure before each substitution.
 *** Algorithm
 :PROPERTIES:
-:ID:       24ce6fea-cc2b-4b0b-9da5-e33484beb2c9
+:ID:       2b3de9a3-cda2-4fa6-a9d7-07045212e91d
 :END:
 The goal of unification is to make the required substitution for each constraint. The algorithm to accomplish this can be better explained through psuedocode:
 #+begin_src python
@@ -271,8 +299,8 @@ Chapter 15.3.2 in [[https://cs.brown.edu/courses/cs173/2012/book/types.html#%28p
 * A Programmer's Utopia
 :PROPERTIES:
 :RSS_PERMALINK: a_programmer's_utopia.html
-:PUBDATE:  2022-08-15
-:ID:       ea61cbe9-0eb0-444c-9ab0-df5e5ccce00e
+:PUBDATE:  2022-08-14
+:ID:       87ba93ec-c369-47f1-8dec-c42271977199
 :END:
 #+setupfile: ../basic-setup.org
 Amidst all the chaos in the world there is a community of passionate programmers who are constantly working on interesting projects, learning new topics and have a great sense of camaraderie. People in this community, driven by their self motivation to become better programmers, do a lot of pair programming, meet with people who share interests to brainstorm ideas and give talks about their projects. This beautiful community is called as [[https://www.recurse.com/][Recurse Center]]. 
@@ -286,29 +314,29 @@ First six weeks
 In the first six weeks of my batch, I spent most of the time interacting with the community and reading [[https://www.cs.rochester.edu/~scott/pragmatics/][Programming Language Pragmatics]]. I also contributed to [[https://github.com/SerenityOS/jakt][Jakt]] programming language and was happy to have a few commits merged into a popular open source project. Finally, I gave a couple of talks about my interpreter project and [[https://youtu.be/ZgEDMpxWvN4][scanner theory]] to improve my presentation skills. 
 ** Compilers and Interpreters Implementation
 :PROPERTIES:
-:ID:       aa75eb9a-4982-44e0-9644-fc2521cffdc5
+:ID:       4d84251e-fab2-4da3-96e5-d9e420a58cd4
 :END:
 In this weekly event, I met other Recursers interested in writing compilers and we discussed about Haskell, OCaml, Rust, logic languages, parser combinators, and interesting research papers in the field. This event introduced me to a number of other resources I could use to build upon what I learnt so far from reading Crafting Interpreters. By the end, I was grateful to have met people who share my interests. 
 ** Music Consumption Group 
 :PROPERTIES:
-:ID:       b231a581-a34a-4eb9-aa02-03c52a4fbf1d
+:ID:       d157d7df-60d5-4e71-843d-f97d4e46f59a
 :END:
 A weekly social event where a bunch of Recursers hop on a Zoom call, queue a track of their choice and the host will play each track in order. The event was late in the evening so it was fun to listen to a variety of music while cooking dinner or fixing a gnarly bug. 
 Last six weeks
 I spent most of the time working on [[https://github.com/veera-sivarajan/bessy][Bessy]], a bytecode interpreter written in Rust. I frequently sought help from other Recursers and their guidance helped me to write tests for I/O functions and to add a [[https://veera.app/bessy/][web interface]] for my interpreter by compiling it to Wasm.
 ** Rust Rodeo
 :PROPERTIES:
-:ID:       a72ce8c4-567c-4121-bddd-315567561177
+:ID:       1558b987-add1-43d1-b27f-823f638a02d4
 :END:
 A weekly event to discuss everything related to Rust. Here we helped each other get unstuck on compiler errors and read through popular Rust code bases to improve our knowledge about the language and its ecosystem. Occasionally, someone gave a talk on something cool they learnt about Rust. Through the course of this event, I found myself learning more about generic types and trait system which in turn helped me to write more idiomatic Rust for Bessy.
 ** Zig Zones
 :PROPERTIES:
-:ID:       8875cdc8-bf98-4056-820f-f1e95def19b8
+:ID:       d13d9a45-927d-4269-8304-f03df25bb120
 :END:
 This was an interest group for Zig programming. Initially, I was curious to learn what Zig has to offer in terms of an improvement over C and was fascinated by its C interoperability as a first class feature. I played with the toolchain and, with the help of Recursers, I was able to compile a existing C code base using ~zig cc~ and also transpile it to Zig. You can read more about our process to translate a C project into Zig in Jeff Fowler's [[https://blog.jfo.click/zig-translate-c-and-linking-equal-best-friends/]["Zig translate-c and linking equal best friends"]].
 ** Scone Production and Consumption Group
 :PROPERTIES:
-:ID:       515d26a5-c643-4f68-8565-7c7679478250
+:ID:       5b88011a-ba4b-4e22-be52-0086b2d3ec86
 :END:
 This was an occasional social event where I baked Scones along with other Recursers by following the [[https://www.seriouseats.com/bakery-style-cream-scones-with-chocolate-recipe][recipe]] written by Stella Parks. This was my first attempt at baking and I really enjoyed the process even though my Scones ended up looking like giant cookies because I did not follow the recipe word for word :). Nevertheless, I see strong parallels between programming and cooking/baking and, for me, both the art forms evoke the same creative feeling.
 Never Graduate
@@ -319,7 +347,7 @@ As a proud alumni of RC, I'll carry the spirit of RC everywhere I go and look fo
 :PROPERTIES:
 :RSS_PERMALINK: rena's_memory_model.html
 :PUBDATE:  2021-11-25
-:ID:       8b79004d-5ab8-4dc7-a20c-f1441a02b19e
+:ID:       8c916c4e-ebc9-4241-bc8c-a76c5f2f61d0
 :END:
 #+setupfile: ../basic-setup.org
 [[https://github.com/veera-sivarajan/rena][Rena]] is my implementation of lox tree-walk interpreter in Rust. I'm rewriting it in Rust to familiarize myself with the borrow checker and the fancy toolchain it offers. In this post, I'll explain how I implemented a simple environment for the interpreter. 
@@ -417,8 +445,8 @@ I implemented the first option as it would give me a chance to play with iterato
 * Game of Light
 :PROPERTIES:
 :RSS_PERMALINK: game_of_light.html
-:PUBDATE:  2021-11-01
-:ID:       a90ce6ef-3a10-4d1f-becd-e6dda318c056
+:PUBDATE:  2021-10-31
+:ID:       eb53a8b0-9b2a-4c26-991c-b9d232b2c6d8
 :END:
 #+setupfile: ../basic-setup.org
 For our final project, Hayden and I are building [[https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life][Conway's Game of Life]] simulator on a LED matrix. We will also add a controller which the audience can use to pause and play the simulation. With this project, we aim to understand how interesting patterns emerge from a small set of rules. The coordinates for the simulation will be computed on an Arduino board which will be connected to both the simulator and the controller. Along the way, we might also add features that tickles our fancy. Check this page by December, 2021 to view the final product.   
@@ -429,8 +457,8 @@ CICS 256 has been a great learning experience as we got to work on a project of 
 * Adding Features To Lox
 :PROPERTIES:
 :RSS_PERMALINK: adding_features_to_lox.html
-:PUBDATE:  2021-08-19
-:ID:       e8c80d63-87ed-4c49-a88e-2ec68a88ffcc
+:PUBDATE:  2021-08-18
+:ID:       a475c420-ad27-49df-b9b7-d9d4eafeabd6
 :END:
 #+setupfile: ../basic-setup.org
 Finally, I got time to sit down and implement a tree-walk interpreter following Bob Nystrom's [[https://craftinginterpreters.com/][Crafting Interpreters]]. In this post, I'm going to explain some of the features I have added to the language. You can find my complete implementation [[https://github.com/veera-sivarajan/lang0][here]]. I have also made a [[https://youtu.be/0P6VPOIKATg][video]] demoing the features listed below.
@@ -473,7 +501,7 @@ Lists
 To add a list data type into the language, the task can be divided into three small tasks:
 ** Scanning
 :PROPERTIES:
-:ID:       5587c7d7-206d-460f-b9f7-287edfabdcae
+:ID:       f12f1749-4dec-47f4-a17f-a55d2173ffc9
 :END:
 Introduce two new tokens to make the scanner handle list expressions and subscripts.
 #+begin_src cpp
@@ -482,14 +510,14 @@ Introduce two new tokens to make the scanner handle list expressions and subscri
 #+end_src
 ** Creating List Literals
 :PROPERTIES:
-:ID:       fbc791eb-a18b-4809-8ee0-8e0ae37456a2
+:ID:       c5e8f531-3cfc-470d-892b-a4e774976517
 :END:
 Like numbers, string, ~true~ and ~false~, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
 
 To learn about the grammar for lists, I found Caleb's blog [[https://calebschoepp.com/blog/2020/adding-a-list-data-type-to-lox/][post]] to be helpful. It explained all the details related to implementing lists in a clear and concise way.
 *** Parsing Lists
 :PROPERTIES:
-:ID:       70750168-8972-4e95-8332-084e75485c7d
+:ID:       0ec98898-a29d-45e8-8521-f9dc3b5db71a
 :END:
  Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the ~]~ and wraps the vector in a AST node.
 #+begin_src cpp
@@ -512,7 +540,7 @@ To learn about the grammar for lists, I found Caleb's blog [[https://calebschoep
 #+end_src
 *** Interpreting Lists
 :PROPERTIES:
-:ID:       a3802385-7cf3-4446-a624-f17262fb99e8
+:ID:       d665a312-5dfa-403c-84d5-bbca6e1d429b
 :END:
 To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime's representation of a list. Finally, like interpreting any other kind of expression, the runtime's value is returned. 
 #+begin_src cpp
@@ -526,14 +554,14 @@ To interpret a list literal, the interpreter iterates through each element in th
 #+end_src
 ** Handling Subscript Expressions
 :PROPERTIES:
-:ID:       ee9741c1-058f-41a1-a385-72c6df73073e
+:ID:       69504114-8cd0-4a14-8eb1-551eeeedd672
 :END:
 Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick[fn::I'm not sure if this would work when classes and methods are implemented.].
 
 From the interpreter's point of view, the only difference between the two is the presence of a value expression. If the AST node has a value, it should assign it at index. Otherwise, it should return the value at index. So the trick is to make the parser pass a =nullptr= in the place of value expression when parsing a r-value and pass a value only when parsing a l-value. This allows the interpreter to easily differentiate between the two kinds of subscript expressions.
 *** Parsing Subscripts
 :PROPERTIES:
-:ID:       9ae0ec73-b64a-45ea-9ff2-ea84d0bc114b
+:ID:       957f01dd-89c3-40b6-a81e-dad1b81fc684
 :END:
 Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. ~subscript()~ calls ~finishSubscript()~ each time it sees a ~[~ to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a =nullptr= in the place of value expression to let the interpreter know that it is a r-value. 
 #+begin_src cpp
@@ -575,7 +603,7 @@ As you may have noticed in the formal grammar, for parsing a l-value expression,
 #+end_src
 *** Interpreting Subscripts
 :PROPERTIES:
-:ID:       7c3d0bfe-35db-4b9c-afd6-4b5d1867c4aa
+:ID:       a3640838-2083-4cd9-aaec-eeabdf2e31b3
 :END:
 To interpret a subscript expression, the interpreter first evaluates the list's name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list's name to the runtime's representation of a list and the index to ~int~ from ~double~[fn::This is actually a bug because index number should not be of type ~double~]. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
 

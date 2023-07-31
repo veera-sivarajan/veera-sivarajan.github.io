@@ -14,8 +14,8 @@
   <link>https://veera.app/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Fri, 30 Jun 2023 22:58:19 -0400</pubDate>
-  <lastBuildDate>Fri, 30 Jun 2023 22:58:19 -0400</lastBuildDate>
+  <pubDate>Mon, 31 Jul 2023 14:41:48 -0500</pubDate>
+  <lastBuildDate>Mon, 31 Jul 2023 14:41:48 -0500</lastBuildDate>
   <generator>Emacs 28.1 Org-mode 9.5.2</generator>
   <webMaster>sveera.2001@gmail.com (Veera Sivarajan)</webMaster>
   <image>
@@ -26,363 +26,406 @@
 
 
   <item>
-    <title>Boba Devlog #0: Compiling Pseudo-Rust Code to x86 Assembly</title>
-    <link>https://veera.app/codegen.html</link>
+    <title>Boba Devlog #1: Sliding In a Type Checker</title>
+    <link>https://veera.app/type_checking.html</link>
     <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
-    <guid isPermaLink="false">https://veera.app/codegen.html</guid>
-    <pubDate>Fri, 30 Jun 2023 00:00:00 -0400</pubDate>
+    <guid isPermaLink="false">https://veera.app/type_checking.html</guid>
+    <pubDate>Mon, 31 Jul 2023 00:00:00 -0500</pubDate>
 
     <description><![CDATA[<p>
-    <a href="https://github.com/veera-sivarajan/boba">Boba</a> is a compiler I'm writing to learn how high-level language constructs can be expressed in assembly. It compiles Rust-like source code to 64-bit x86 instruction set. This post will describe the current status of the project.
-    Language Overview
-    The language's syntax looks like Rust, but semantically its a lot like C with one big difference: here, the compiler does not care about declaration order in the global scope, so functions can be called before they are defined in the source code.
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-rust">// Example program that can be compiled with Boba
-    fn main() -&gt; i64 {
-    println(factorial(5));
-    return 0;
-    }
-
-    fn factorial(num: i64) -&gt; i64 {
-    if num &lt;= 1 {
-    return 1;
-    } else {
-    return num * factorial(num - 1);
-    }
-    }
-    </pre>
-    </div>
-    <p>
-    Compiler Architecture
-    The compiler follows a traditional multi-pass architecture:
-    Scanner walks through every character in the source code and builds a list of tokens.
-    Parser builds a high-level AST by parsing the tokens with a recursive descent LL(1) parser. This step is very similar to parsing Lox in Crafting Interpreters.
-    Analyzer performs a bunch of static checks to verify that all the variables and functions in use are defined. Also, local variable names are resolved to their offset from the base register pointer <code>%rbp</code>. This step returns a low-level AST iff there are no semantic errors in the source code.
-    Code generator iterates over every node in the low-level AST and translates it to assembly.
+    <a href="https://github.com/veera-sivarajan/boba/tree/main">Boba</a> is a compiler project I'm working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. Check out the <a href="https://github.com/veera-sivarajan/boba/blob/main/language.org">language documentation</a> to know more about syntax and semantics of the language.
     </p>
 
     <p>
-    The high-level AST has token information which can be used to point an error message to a particular line and column number in the source code but the low-level AST gets rid of all token information and only knows about labels and offset from base pointer. The generated assembly is linked with the C standard library and converted to an ELF executable with the help of <code>gcc</code>. This allowed me to implement <code>println()</code> as a built-in function that calls <code>printf()</code>. Also, in theory, the generated code can call any C function because it follows the System V calling convention but I have not tested it yet.
-    Future Work
-    There aren't any optimization passes, so the generated code is verbose and inefficient. For example, a simple local variable declaration <code>let x = 10</code> gets translated into:
+    This month I implemented a type checker and it helped me to make a number of improvements to the language. Now, the compiler can handle more primitive data types and also a Rust style format string for print statements. In this post, I will explain everything I learnt over the month.
+    Learning x86-64 Assembly
+    Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I'd write a simple C program and compile it using <code>gcc -O0 -fverbose-asm -S</code>. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
+    Type Checking
+    Initially, I thought I should implement Hindley-Milner type inference algorithm to infer the types of all expressions because the language is implicitly typed. But, after reading a <a href="https://lobste.rs/s/ewxw1i/less_technical_introductions_type#c_hotmwn">comment</a> by matklad, I realized I don't need that since there are no generics in my language. 
+    </p>
+
+    <p>
+    Therefore, my current implementation walks through every node in the AST like a tree-walk interpreter but instead of evaluating primary expressions to their values, it evaluates them to their types. For example, the expression <code>Expr::Number(23)</code> evaluates to <code>Type::Number</code>. The types are then bubbled-up the AST and checked if they are equal to the expected type. If a type does not match the expected type, an appropriate error is added to a list and type checker continues to check the rest of the program. After the whole program is analyzed, the compiler prints out all the errors in the list. If there is no error, the AST along with all the type information is passed on to the code generator to generate the assembly. The code generator will use the type information of each expression to choose the correct instruction suffix and register size. As an example, the code generator will choose <code>movl</code> and <code>%eax</code> for returning a 32 bit number type instead of <code>movq</code> and <code>%rax</code>.
+    Fancy Print Statement 
+    Additionally, implementing a type checker paved way for Rust style fancy format strings in print statements even though the compiler calls <code>printf()</code> to display values to <code>stdout</code>.
     </p>
     <div class="org-src-container">
-    <pre class="src src-asm">movq  $10, %rbx
-    movq  %rbx, -8(%rbp)
+    <pre class="src src-rust">println("{}. Your name is: {}", some_number, some_string);
     </pre>
     </div>
     <p>
-    This is because the code generator generates code for every node in the low-level AST. It has no way to know that those two instructions are related and can be combined into one. Also, there is no type system as 64-bit signed number is the only data type supported by the compiler.
-    Reference
-    Chapters 10 - 12 in <a href="https://www3.nd.edu/~dthain/compilerbook/">Introduction to Compilers and Language Design</a> by Douglas Thain gave me a good idea about assembly language, code generation and optimization.
+    Since the compiler can infer the types of both <code>some_number</code> and <code>some_string</code>, the format string is replaced with appropriate C format specifiers and compiled to <code>"%d. Your name is: %s\n</code> before being passed as first argument to <code>printf()</code>. Finally, the values to be printed get passed as subsequent arguments to <code>printf()</code> without any changes because the primitive types in my language are compatible with C ABI.
+    Fixing Stack Alignment
+    I first encountered this bug when calling <code>printf()</code>. The program would abruptly crash when a function has a certain number of local variables and it was very confusing because there wasn't anything wrong in the generated assembly in terms of space allocated on the stack or using the correct instructions.
+    </p>
+
+    <p>
+    Turns out the System V ABI requires the stack to be aligned to a 16 byte boundary inside every function. So my mistake was allocating the exact amount of space required for local variables as a function with three boolean values will allocate three bytes plus forty eight bytes for callee saved registers and leave the stack misaligned. To fix this, the code generator rounds the sum of space required for local variables and callee saved registers to the nearest multiple of 16 before allocating. In the function epilogue, the rounded up amount of space gets deallocated from the stack.
+    </p>
+
+    <p>
+    This solved the issue and now the programs don't crash for any number of local variables.
     </p>
     ]]></description>
-  </item>
-  <item>
-    <title>Idempotency in the Wild</title>
-    <link>https://veera.app/idempotence.html</link>
-    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
-    <guid isPermaLink="false">https://veera.app/idempotence.html</guid>
-    <pubDate>Sun, 07 May 2023 00:00:00 -0400</pubDate>
+</item>
+<item>
+  <title>Boba Devlog #0: Compiling Pseudo-Rust to x86 Assembly</title>
+  <link>https://veera.app/codegen.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/codegen.html</guid>
+  <pubDate>Thu, 29 Jun 2023 00:00:00 -0500</pubDate>
 
-    <description><![CDATA[<p>
-    I learned about <i>idempotence</i> when reading some blog post about Lisp. It is used to denote operations which have the same effect for any number of times they are executed. For example, emptying a glass of water.
-    </p>
+  <description><![CDATA[<p>
+  <a href="https://github.com/veera-sivarajan/boba">Boba</a> is a compiler I'm writing to learn how high-level language constructs can be expressed in assembly. It compiles Rust-like source code to 64-bit x86 instruction set. This post will describe the current status of the project.
+  Language Overview
+  The language's syntax looks like Rust, but semantically its a lot like C with one big difference: here, the compiler does not care about declaration order in the global scope, so functions can be called before they are defined in the source code.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-rust">// Example program that can be compiled with Boba
+  fn main() -&gt; i64 {
+  println(factorial(5));
+  return 0;
+  }
 
-    <p>
-    I came across a neat real-life example of an idempotent system on my bus ride to home after classes. There is a chord that runs through the length of the bus which the riders can pull to request the driver to stop at the next stop. When a rider pulls the chord, it immediately makes a loud announcement on the speakers to notify all the riders that the bus is about to stop. Until the bus arrives at the next stop, subsequent chord pulls will not make any announcement but instead flash a <a href="#orgb672188">stop requested sign</a> on the LED display to signal that the driver is aware of the stop request. Thereby, any number of stop requests will make only one announcement.
-    </p>
+  fn factorial(num: i64) -&gt; i64 {
+  if num &lt;= 1 {
+  return 1;
+  } else {
+  return num * factorial(num - 1);
+  }
+  }
+  </pre>
+  </div>
+  <p>
+  Compiler Architecture
+  The compiler follows a traditional multi-pass architecture:
+  Scanner walks through every character in the source code and builds a list of tokens.
+  Parser builds a high-level AST by parsing the tokens with a recursive descent LL(1) parser. This step is very similar to parsing Lox in Crafting Interpreters.
+  Analyzer performs a bunch of static checks to verify that all the variables and functions in use are defined. Also, local variable names are resolved to their offset from the base register pointer <code>%rbp</code>. This step returns a low-level AST iff there are no semantic errors in the source code.
+  Code generator iterates over every node in the low-level AST and translates it to assembly.
+  </p>
+
+  <p>
+  The high-level AST has token information which can be used to point an error message to a particular line and column number in the source code but the low-level AST gets rid of all token information and only knows about labels and offset from base pointer. The generated assembly is linked with the C standard library and converted to an ELF executable with the help of <code>gcc</code>. This allowed me to implement <code>println()</code> as a built-in function that calls <code>printf()</code>. Also, in theory, the generated code can call any C function because it follows the System V calling convention but I have not tested it yet.
+  Future Work
+  There aren't any optimization passes, so the generated code is verbose and inefficient. For example, a simple local variable declaration <code>let x = 10</code> gets translated into:
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-asm">movq  $10, %rbx
+  movq  %rbx, -8(%rbp)
+  </pre>
+  </div>
+  <p>
+  This is because the code generator generates code for every node in the low-level AST. It has no way to know that those two instructions are related and can be combined into one. Also, there is no type system as 64-bit signed number is the only data type supported by the compiler.
+  Reference
+  Chapters 10 - 12 in <a href="https://www3.nd.edu/~dthain/compilerbook/">Introduction to Compilers and Language Design</a> by Douglas Thain gave me a good idea about assembly language, code generation and optimization.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>Idempotency in the Wild</title>
+  <link>https://veera.app/idempotence.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/idempotence.html</guid>
+  <pubDate>Sat, 06 May 2023 00:00:00 -0500</pubDate>
+
+  <description><![CDATA[<p>
+  I learned about <i>idempotence</i> when reading some blog post about Lisp. It is used to denote operations which have the same effect for any number of times they are executed. For example, emptying a glass of water.
+  </p>
+
+  <p>
+  I came across a neat real-life example of an idempotent system on my bus ride to home after classes. There is a chord that runs through the length of the bus which the riders can pull to request the driver to stop at the next stop. When a rider pulls the chord, it immediately makes a loud announcement on the speakers to notify all the riders that the bus is about to stop. Until the bus arrives at the next stop, subsequent chord pulls will not make any announcement but instead flash a <a href="#org47096c2">stop requested sign</a> on the LED display to signal that the driver is aware of the stop request. Thereby, any number of stop requests will make only one announcement.
+  </p>
 
 
-    <figure id="orgb672188">
-    <img src="./imgs/stop-requested.jpg" alt="stop-requested.jpg">
+  <figure id="org47096c2">
+  <img src="./imgs/stop-requested.jpg" alt="stop-requested.jpg">
 
-    <figcaption><span class="figure-number">Figure 1: </span>stop requested sign</figcaption>
-    </figure>
-    ]]></description>
-  </item>
-  <item>
-    <title>Professor Eliot Moss on the Design and Implementation of CLU</title>
-    <link>https://veera.app/clu.html</link>
-    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
-    <guid isPermaLink="false">https://veera.app/clu.html</guid>
-    <pubDate>Thu, 06 Apr 2023 00:00:00 -0400</pubDate>
+  <figcaption><span class="figure-number">Figure 1: </span>stop requested sign</figcaption>
+  </figure>
+  ]]></description>
+</item>
+<item>
+  <title>Professor Eliot Moss on the Design and Implementation of CLU</title>
+  <link>https://veera.app/clu.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/clu.html</guid>
+  <pubDate>Wed, 05 Apr 2023 00:00:00 -0500</pubDate>
 
-    <description><![CDATA[<p>
-    In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
-    </p>
+  <description><![CDATA[<p>
+  In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
+  </p>
 
-    <p>
-    Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>:
-    </p>
+  <p>
+  Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>:
+  </p>
 
-    <p class="verse">
-    Hello, Veera!<br>
-    <br>
-    &gt; I came across the CLU programming language when researching about how<br>
-    &gt; iterators came into being and was excited to see that you have contributed<br>
-    &gt; to the design and implementation of CLU.<br>
-    <br>
-    Yes, though I came on somewhat in the middle of the language design effort.<br>
-    <br>
-    &gt; Can you please tell me about your experience working on the language? And<br>
-    &gt; how do you feel about it now that CLU's ideas are adopted in almost every<br>
-    &gt; modern programming language?<br>
-    <br>
-    Prior to working on Clu I had coded in Basic, Fortran, Lisp, and C.  The key<br>
-    innovation of Clu was its emphasis on <b>abstract data types</b>, which wrapped<br>
-    together (into a "cluster", hence the name Clu) a data structure definition<br>
-    and operations on that data structure into a higher level thing.<br>
-    Object-orientation is similar in that you can have private parts of your data<br>
-    structure and then write methods.  What OO languages add to what Clu did is<br>
-    inheritance / extension of one type by another.  (Clu did have a nice system<br>
-    of <b>parameterized</b> types, similar to Java's type parameters.)<br>
-    <br>
-    Another nice thing Clu had was a way to extend the builtin operators, like +,<br>
-    to any data type - we called that "syntactic sugar".  It's a bit like what you<br>
-    can do in C++, minus the complicated overloading.<br>
-    <br>
-    Coming back to what you led with: iterators.  We realized that people do like<br>
-    to iterate over organized collections of things, and also that if we did <b>not</b><br>
-    provide something like iterators then data abstraction would not be so nice<br>
-    since people would tend to expose internal data structure to support the<br>
-    iteration.  Clu's iterators are as easy to <b>use</b> as those of Java, but much<br>
-    easier to <b>write</b> because of the yield statement.  In Java, you have to come<br>
-    up with a way of representing the state of the iteration explicitly, while in<br>
-    Clu it is implicit in the local variables, etc., of the running iterator.  It<br>
-    did require a more co-routine / lambda function kind of implementation (the<br>
-    caller of an iterator has to provide a place for the iterator to "call" back<br>
-    into the loop body).<br>
-    <br>
-    Clu was also a garbage collected language - I wrote the first garbage<br>
-    collector for it (in assembly language, no less!).  Storage management errors,<br>
-    and just the general mess of tracking your storage, makes it harder to write<br>
-    programs.  In Clu, many of us had the novel experience of having a program<br>
-    work the first time it compiled (!).  Clu's nice collection of builtin types<br>
-    and the functions provided for them also made many things easier to code, an<br>
-    example being strings.  (This was part where I took the design lead, as I<br>
-    recall.)<br>
-    <br>
-    Overall, it was quite an elegant language, if I say so myself.  And for<br>
-    someone who works in the PL area, having a grad school experience of being on<br>
-    a good language design and implementation team was great!  I am grateful to<br>
-    all of them, and of course our advisor and group leader, Barbara Liskov.<br>
-    <br>
-    Cheers - E<br>
-    </p>
-    ]]></description>
-  </item>
-  <item>
-    <title>Tracking Music History</title>
-    <link>https://veera.app/tracking_music_history.html</link>
-    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
-    <guid isPermaLink="false">https://veera.app/tracking_music_history.html</guid>
-    <pubDate>Sat, 25 Mar 2023 00:00:00 -0400</pubDate>
+  <p class="verse">
+  Hello, Veera!<br>
+  <br>
+  &gt; I came across the CLU programming language when researching about how<br>
+  &gt; iterators came into being and was excited to see that you have contributed<br>
+  &gt; to the design and implementation of CLU.<br>
+  <br>
+  Yes, though I came on somewhat in the middle of the language design effort.<br>
+  <br>
+  &gt; Can you please tell me about your experience working on the language? And<br>
+  &gt; how do you feel about it now that CLU's ideas are adopted in almost every<br>
+  &gt; modern programming language?<br>
+  <br>
+  Prior to working on Clu I had coded in Basic, Fortran, Lisp, and C.  The key<br>
+  innovation of Clu was its emphasis on <b>abstract data types</b>, which wrapped<br>
+  together (into a "cluster", hence the name Clu) a data structure definition<br>
+  and operations on that data structure into a higher level thing.<br>
+  Object-orientation is similar in that you can have private parts of your data<br>
+  structure and then write methods.  What OO languages add to what Clu did is<br>
+  inheritance / extension of one type by another.  (Clu did have a nice system<br>
+  of <b>parameterized</b> types, similar to Java's type parameters.)<br>
+  <br>
+  Another nice thing Clu had was a way to extend the builtin operators, like +,<br>
+  to any data type - we called that "syntactic sugar".  It's a bit like what you<br>
+  can do in C++, minus the complicated overloading.<br>
+  <br>
+  Coming back to what you led with: iterators.  We realized that people do like<br>
+  to iterate over organized collections of things, and also that if we did <b>not</b><br>
+  provide something like iterators then data abstraction would not be so nice<br>
+  since people would tend to expose internal data structure to support the<br>
+  iteration.  Clu's iterators are as easy to <b>use</b> as those of Java, but much<br>
+  easier to <b>write</b> because of the yield statement.  In Java, you have to come<br>
+  up with a way of representing the state of the iteration explicitly, while in<br>
+  Clu it is implicit in the local variables, etc., of the running iterator.  It<br>
+  did require a more co-routine / lambda function kind of implementation (the<br>
+  caller of an iterator has to provide a place for the iterator to "call" back<br>
+  into the loop body).<br>
+  <br>
+  Clu was also a garbage collected language - I wrote the first garbage<br>
+  collector for it (in assembly language, no less!).  Storage management errors,<br>
+  and just the general mess of tracking your storage, makes it harder to write<br>
+  programs.  In Clu, many of us had the novel experience of having a program<br>
+  work the first time it compiled (!).  Clu's nice collection of builtin types<br>
+  and the functions provided for them also made many things easier to code, an<br>
+  example being strings.  (This was part where I took the design lead, as I<br>
+  recall.)<br>
+  <br>
+  Overall, it was quite an elegant language, if I say so myself.  And for<br>
+  someone who works in the PL area, having a grad school experience of being on<br>
+  a good language design and implementation team was great!  I am grateful to<br>
+  all of them, and of course our advisor and group leader, Barbara Liskov.<br>
+  <br>
+  Cheers - E<br>
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>Tracking Music History</title>
+  <link>https://veera.app/tracking_music_history.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/tracking_music_history.html</guid>
+  <pubDate>Fri, 24 Mar 2023 00:00:00 -0500</pubDate>
 
-    <description><![CDATA[<p>
-    I have all my music downloaded on the computer and listen to them using a lightweight music player. This setup worked fine for a while but soon I felt a need for a way to track my music listening history. I wanted a simple tool to log all the music I listen to and view it through an interface that allows me to query using different parameters. 
-    </p>
+  <description><![CDATA[<p>
+  I have all my music downloaded on the computer and listen to them using a lightweight music player. This setup worked fine for a while but soon I felt a need for a way to track my music listening history. I wanted a simple tool to log all the music I listen to and view it through an interface that allows me to query using different parameters. 
+  </p>
 
-    <p>
-    So I wrote a small daemon that watches for music files I open using <code>inotify</code> API and logs the song title along with current date and time to a local SQLite database. To view my listening history, I wrote a web interface that can query the database through a bunch GET routes. For example, accessing the <code>/top/5</code> route will display my top five most listened tracks in a HTML table decorated with minimal CSS.
-    </p>
+  <p>
+  So I wrote a small daemon that watches for music files I open using <code>inotify</code> API and logs the song title along with current date and time to a local SQLite database. To view my listening history, I wrote a web interface that can query the database through a bunch GET routes. For example, accessing the <code>/top/5</code> route will display my top five most listened tracks in a HTML table decorated with minimal CSS.
+  </p>
 
-    <p>
-    The daemon was built using the <a href="https://docs.rs/daemonize/latest/daemonize/">daemonize</a> library as it gives nice declarative APIs to configure and spin up a daemon quickly. For the web interface, I used <a href="https://rocket.rs/">Rocket.rs</a> as using attributes to match against paths and the built-in mechanism to pass database connection between various request handlers made the application simple and easy to understand.
-    </p>
+  <p>
+  The daemon was built using the <a href="https://docs.rs/daemonize/latest/daemonize/">daemonize</a> library as it gives nice declarative APIs to configure and spin up a daemon quickly. For the web interface, I used <a href="https://rocket.rs/">Rocket.rs</a> as using attributes to match against paths and the built-in mechanism to pass database connection between various request handlers made the application simple and easy to understand.
+  </p>
 
-    <p>
-    To conclude, despite it being a <a href="https://github.com/veera-sivarajan/music-daemon">small project</a>, I learnt a lot and had fun working on it.
-    </p>
-    ]]></description>
-  </item>
-  <item>
-    <title>Type Inference</title>
-    <link>https://veera.app/type_inference.html</link>
-    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
-    <guid isPermaLink="false">https://veera.app/type_inference.html</guid>
-    <pubDate>Tue, 31 Jan 2023 00:00:00 -0500</pubDate>
+  <p>
+  To conclude, despite it being a <a href="https://github.com/veera-sivarajan/music-daemon">small project</a>, I learnt a lot and had fun working on it.
+  </p>
+  ]]></description>
+</item>
+<item>
+  <title>Type Inference</title>
+  <link>https://veera.app/type_inference.html</link>
+  <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+  <guid isPermaLink="false">https://veera.app/type_inference.html</guid>
+  <pubDate>Tue, 31 Jan 2023 00:00:00 -0500</pubDate>
 
-    <description><![CDATA[<p>
-    Dabbling with Haskell inspired me to learn about type inference. So this last week I spent some time reading through literature on type systems and <a href="https://github.com/veera-sivarajan/type-inferencer">implemented</a> the Hindley-Milner algorithm for a toy expression language using Rust. In this post, I will give an implementation focused explanation of the algorithm. 
-    Hindley-Milner
-    The type inference algorithm takes the AST as input and outputs the type for each expression in the tree. Much like a detective, who solves a case by collecting all the available evidence and then finding the relation between them to come to a conclusion, the algorithm creates a mapping between each expression and its expected type and then finds the types for all expressions using the relation between the generated mappings. Formally, the first step is termed as <i>constraint generation</i> and the latter is <i>unification</i>.
-    </p>
-    <div id="outline-container-orgc8c43b1" class="outline-3">
-    <h3 id="orgc8c43b1"><span class="section-number-3">5.1.</span> Constraint Generation</h3>
-    <div class="outline-text-3" id="text-5-1">
-    <p>
-    A constraint is a mapping between an expression and its expected type. To generate constraints for an AST, the algorithm recursively visits every expression in the tree and maps it to an expected type. Primitive expressions like numbers, booleans and identifiers, can be straightforwardly mapped to their respective types since any symbol parsed as, for example, a number is guaranteed to be of type number. It gets more interesting when generating constraints for nested expressions. 
-    </p>
+  <description><![CDATA[<p>
+  Dabbling with Haskell inspired me to learn about type inference. So this last week I spent some time reading through literature on type systems and <a href="https://github.com/veera-sivarajan/type-inferencer">implemented</a> the Hindley-Milner algorithm for a toy expression language using Rust. In this post, I will give an implementation focused explanation of the algorithm. 
+  Hindley-Milner
+  The type inference algorithm takes the AST as input and outputs the type for each expression in the tree. Much like a detective, who solves a case by collecting all the available evidence and then finding the relation between them to come to a conclusion, the algorithm creates a mapping between each expression and its expected type and then finds the types for all expressions using the relation between the generated mappings. Formally, the first step is termed as <i>constraint generation</i> and the latter is <i>unification</i>.
+  </p>
+  <div id="outline-container-org50a51a9" class="outline-3">
+  <h3 id="org50a51a9"><span class="section-number-3">6.1.</span> Constraint Generation</h3>
+  <div class="outline-text-3" id="text-6-1">
+  <p>
+  A constraint is a mapping between an expression and its expected type. To generate constraints for an AST, the algorithm recursively visits every expression in the tree and maps it to an expected type. Primitive expressions like numbers, booleans and identifiers, can be straightforwardly mapped to their respective types since any symbol parsed as, for example, a number is guaranteed to be of type number. It gets more interesting when generating constraints for nested expressions. 
+  </p>
 
-    <p>
-    Constraints for nested expressions are generated in two steps:
-    Each sub-expression is constrained to an expected type based on its value. For example, the sub-expression <code>1</code> in a conditional expression will be mapped to type <code>Number</code>.
-    All sub-expressions and the root expression are mapped to their expected types based on their position in the AST.  For example, if there is a sub-expression <code>1</code> in the condition part of conditional expression, it will be mapped to type <code>Bool</code>.
-    </p>
-    </div>
-    <div id="outline-container-orgea65197" class="outline-4">
-    <h4 id="orgea65197"><span class="section-number-4">5.1.1.</span> Binary Add Expression</h4>
-    <div class="outline-text-4" id="text-5-1-1">
-    <p>
-    For the binary add expression, generate constraints for the left and right operands and then map each operand and the add expression to type number. For example, the following are the constraints generated for the incorrect expression <code>1 + false</code>.
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-shell">1         = Number
-    false     = Bool
-    1         = Number
-    false     = Number
-    1 + false = Number
-    </pre>
-    </div>
-    </div>
-    </div>
-    <div id="outline-container-orgdf6e4d0" class="outline-4">
-    <h4 id="orgdf6e4d0"><span class="section-number-4">5.1.2.</span> Conditional Expression</h4>
-    <div class="outline-text-4" id="text-5-1-2">
-    <p>
-    For conditional expressions, there are three expectations for its types:
-    Condition should be of type boolean.
-    <a id="orgdfc3a8c"></a>Both the branches should be of same type<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
-    <a id="org5f9898b"></a>Type of conditional expression should be of same type as its branches.
-    </p>
+  <p>
+  Constraints for nested expressions are generated in two steps:
+  Each sub-expression is constrained to an expected type based on its value. For example, the sub-expression <code>1</code> in a conditional expression will be mapped to type <code>Number</code>.
+  All sub-expressions and the root expression are mapped to their expected types based on their position in the AST.  For example, if there is a sub-expression <code>1</code> in the condition part of conditional expression, it will be mapped to type <code>Bool</code>.
+  </p>
+  </div>
+  <div id="outline-container-orgafdec12" class="outline-4">
+  <h4 id="orgafdec12"><span class="section-number-4">6.1.1.</span> Binary Add Expression</h4>
+  <div class="outline-text-4" id="text-6-1-1">
+  <p>
+  For the binary add expression, generate constraints for the left and right operands and then map each operand and the add expression to type number. For example, the following are the constraints generated for the incorrect expression <code>1 + false</code>.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-shell">1         = Number
+  false     = Bool
+  1         = Number
+  false     = Number
+  1 + false = Number
+  </pre>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-org72aa854" class="outline-4">
+  <h4 id="org72aa854"><span class="section-number-4">6.1.2.</span> Conditional Expression</h4>
+  <div class="outline-text-4" id="text-6-1-2">
+  <p>
+  For conditional expressions, there are three expectations for its types:
+  Condition should be of type boolean.
+  <a id="org2a94c2a"></a>Both the branches should be of same type<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>.
+  <a id="org912143a"></a>Type of conditional expression should be of same type as its branches.
+  </p>
 
-    <p>
-    To express these expectations in terms of constraints, start by generating constraints for the condition and the two branches. Then, map the condition to type boolean and the conditional expression to then and else branch to denote expectations <a href="#orgdfc3a8c">5.1.2</a> and <a href="#org5f9898b">5.1.2</a> from above. The constraints generated for the expression <code>if true {1} else {2}</code> are:
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-shell">true                 = Bool
-    1                    = Number
-    2                    = Number
-    true                 = Bool
-    if true {1} else {2} = 1
-    if true {1} else {2} = 2
-    </pre>
-    </div>
-    </div>
-    </div>
-    <div id="outline-container-orga5ed708" class="outline-4">
-    <h4 id="orga5ed708"><span class="section-number-4">5.1.3.</span> Functions</h4>
-    <div class="outline-text-4" id="text-5-1-3">
-    <p>
-    A function definition is constrained as an arrow type with parameters as domain and body as range. As you may be familiar by now, start by generating constraints for parameters and body to determine their types. Then, map the function definition to an arrow type with parameters as domain and body as range. For the expression <code>lambda(x) x + 2</code>, the constraints are:
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-shell">x                 = x
-    2                 = Number
-    x                 = Number
-    2                 = Number
-    x + 2             = Number
-    (lambda(x) x + 2) = x -&gt; x + 2
-    </pre>
-    </div>
+  <p>
+  To express these expectations in terms of constraints, start by generating constraints for the condition and the two branches. Then, map the condition to type boolean and the conditional expression to then and else branch to denote expectations <a href="#org2a94c2a">6.1.2</a> and <a href="#org912143a">6.1.2</a> from above. The constraints generated for the expression <code>if true {1} else {2}</code> are:
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-shell">true                 = Bool
+  1                    = Number
+  2                    = Number
+  true                 = Bool
+  if true {1} else {2} = 1
+  if true {1} else {2} = 2
+  </pre>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-orgf6558fe" class="outline-4">
+  <h4 id="orgf6558fe"><span class="section-number-4">6.1.3.</span> Functions</h4>
+  <div class="outline-text-4" id="text-6-1-3">
+  <p>
+  A function definition is constrained as an arrow type with parameters as domain and body as range. As you may be familiar by now, start by generating constraints for parameters and body to determine their types. Then, map the function definition to an arrow type with parameters as domain and body as range. For the expression <code>lambda(x) x + 2</code>, the constraints are:
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-shell">x                 = x
+  2                 = Number
+  x                 = Number
+  2                 = Number
+  x + 2             = Number
+  (lambda(x) x + 2) = x -&gt; x + 2
+  </pre>
+  </div>
 
-    <p>
-    Similarly, a function call is also constrained as an arrow type with arguments as domain and the call expression as range because the expected type of a call expression is the type returned by calling the function with given arguments. So, generate constraints for the calling function, arguments and then map the function expression to an arrow type with arguments as domain and the call expression as range. For example, calling the function defined above with argument <code>10</code> will generate:
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-shell">x                 = x
-    2                 = Number
-    x                 = Number
-    2                 = Number
-    x + 2             = Number
-    (lambda(x) x + 2) = x -&gt; x + 2
-    10                = Number
-    (lambda(x) x + 2) = 10 -&gt; Call&lt;(lambda(x) x + 2)(10)&gt;
-    </pre>
-    </div>
-    </div>
-    </div>
-    </div>
-    <div id="outline-container-org69acee8" class="outline-3">
-    <h3 id="org69acee8"><span class="section-number-3">5.2.</span> Unification</h3>
-    <div class="outline-text-3" id="text-5-2">
-    <p>
-    The meat of type inference happens during unification. In this step, the algorithm iterates through the list of constraints and outputs either a type error, if any, or the type for each expression.
-    </p>
-    </div>
-    <div id="outline-container-org17b92c0" class="outline-4">
-    <h4 id="org17b92c0"><span class="section-number-4">5.2.1.</span> Substitution</h4>
-    <div class="outline-text-4" id="text-5-2-1">
-    <p>
-    The core idea of unification is a simple concept called substitution. Assume we have the following set of constraints for a function definition <code>(lambda(x) x + 2)</code>.
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-shell">1. x                 = Number
-    2. 2                 = Number
-    3. x + 2             = Number
-    4. (lambda(x) x + 2) = x -&gt; x + 2
-    </pre>
-    </div>
-    <p>
-    After unification, the RHS of constraint #4 will be substituted with types asserted by previous constraints. The parameter <code>x</code> will be substituted with type <code>Number</code> as stated by constraint #1 and the body <code>x + 2</code> will also be substituted with type <code>Number</code> as stated by constraint #3.
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-shell">(lambda(x) x + 2) :: Number -&gt; Number
-    </pre>
-    </div>
-    </div>
-    </div>
-    <div id="outline-container-org3eb26ee" class="outline-4">
-    <h4 id="org3eb26ee"><span class="section-number-4">5.2.2.</span> Occurs Check</h4>
-    <div class="outline-text-4" id="text-5-2-2">
-    <p>
-    We substitute a term A with term B to ensure that expressions progressively get mapped to a more specific type. But if term B contains term A, the replacement is redundant and can lead to infinite unifications. To prevent this, ensure that term B does not contain term A anywhere in its nested structure before each substitution.
-    </p>
-    </div>
-    </div>
-    <div id="outline-container-org1d530d7" class="outline-4">
-    <h4 id="org1d530d7"><span class="section-number-4">5.2.3.</span> Algorithm</h4>
-    <div class="outline-text-4" id="text-5-2-3">
-    <p>
-    The goal of unification is to make the required substitution for each constraint. The algorithm to accomplish this can be better explained through psuedocode:
-    </p>
-    <div class="org-src-container">
-    <pre class="src src-python">substitution list = []
-    for LHS and RHS in each constraint:
-    if LHS == RHS:
-    continue
-    else if LHS is not a type:
-    substitute all occurrences of LHS with RHS in both constraint and substitution list
-    add the substitution LHS -&gt; RHS to substitution list
-    else if RHS is not a type:
-    substitute all occurrences of RHS with LHS in both constraint and substitution list
-    add the substitution RHS -&gt; LHS to substitution list
-    else if both LHS and RHS are arrow types:
-    create a new constraint mapping domain of LHS with domain of RHS
-    create a new constraint mapping range of LHS with range of RHS
-    add both constraints to constraint list 
-    else:
-    it's a type error as LHS and RHS cannot be unified
-    </pre>
-    </div>
-    <p>
-    <b>Notes</b>
-    When replacing all occurrences of LHS with RHS or vice versa, ensure that replacement occurs in both LHS and RHS of constraint and substitution list.
-    The implementation can take advantage of nested structure of ASTs and implement unification and all supporting functions recursively.
-    Conclusion
-    It took me about a week to understand and implement this algorithm. In the end, it felt magical to programmatically infer all the types for an untyped language. 
-    </p>
+  <p>
+  Similarly, a function call is also constrained as an arrow type with arguments as domain and the call expression as range because the expected type of a call expression is the type returned by calling the function with given arguments. So, generate constraints for the calling function, arguments and then map the function expression to an arrow type with arguments as domain and the call expression as range. For example, calling the function defined above with argument <code>10</code> will generate:
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-shell">x                 = x
+  2                 = Number
+  x                 = Number
+  2                 = Number
+  x + 2             = Number
+  (lambda(x) x + 2) = x -&gt; x + 2
+  10                = Number
+  (lambda(x) x + 2) = 10 -&gt; Call&lt;(lambda(x) x + 2)(10)&gt;
+  </pre>
+  </div>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-org1cb23b8" class="outline-3">
+  <h3 id="org1cb23b8"><span class="section-number-3">6.2.</span> Unification</h3>
+  <div class="outline-text-3" id="text-6-2">
+  <p>
+  The meat of type inference happens during unification. In this step, the algorithm iterates through the list of constraints and outputs either a type error, if any, or the type for each expression.
+  </p>
+  </div>
+  <div id="outline-container-orgd7daa6d" class="outline-4">
+  <h4 id="orgd7daa6d"><span class="section-number-4">6.2.1.</span> Substitution</h4>
+  <div class="outline-text-4" id="text-6-2-1">
+  <p>
+  The core idea of unification is a simple concept called substitution. Assume we have the following set of constraints for a function definition <code>(lambda(x) x + 2)</code>.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-shell">1. x                 = Number
+  2. 2                 = Number
+  3. x + 2             = Number
+  4. (lambda(x) x + 2) = x -&gt; x + 2
+  </pre>
+  </div>
+  <p>
+  After unification, the RHS of constraint #4 will be substituted with types asserted by previous constraints. The parameter <code>x</code> will be substituted with type <code>Number</code> as stated by constraint #1 and the body <code>x + 2</code> will also be substituted with type <code>Number</code> as stated by constraint #3.
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-shell">(lambda(x) x + 2) :: Number -&gt; Number
+  </pre>
+  </div>
+  </div>
+  </div>
+  <div id="outline-container-org97f6925" class="outline-4">
+  <h4 id="org97f6925"><span class="section-number-4">6.2.2.</span> Occurs Check</h4>
+  <div class="outline-text-4" id="text-6-2-2">
+  <p>
+  We substitute a term A with term B to ensure that expressions progressively get mapped to a more specific type. But if term B contains term A, the replacement is redundant and can lead to infinite unifications. To prevent this, ensure that term B does not contain term A anywhere in its nested structure before each substitution.
+  </p>
+  </div>
+  </div>
+  <div id="outline-container-org46b9dd5" class="outline-4">
+  <h4 id="org46b9dd5"><span class="section-number-4">6.2.3.</span> Algorithm</h4>
+  <div class="outline-text-4" id="text-6-2-3">
+  <p>
+  The goal of unification is to make the required substitution for each constraint. The algorithm to accomplish this can be better explained through psuedocode:
+  </p>
+  <div class="org-src-container">
+  <pre class="src src-python">substitution list = []
+  for LHS and RHS in each constraint:
+  if LHS == RHS:
+  continue
+  else if LHS is not a type:
+  substitute all occurrences of LHS with RHS in both constraint and substitution list
+  add the substitution LHS -&gt; RHS to substitution list
+  else if RHS is not a type:
+  substitute all occurrences of RHS with LHS in both constraint and substitution list
+  add the substitution RHS -&gt; LHS to substitution list
+  else if both LHS and RHS are arrow types:
+  create a new constraint mapping domain of LHS with domain of RHS
+  create a new constraint mapping range of LHS with range of RHS
+  add both constraints to constraint list 
+  else:
+  it's a type error as LHS and RHS cannot be unified
+  </pre>
+  </div>
+  <p>
+  <b>Notes</b>
+  When replacing all occurrences of LHS with RHS or vice versa, ensure that replacement occurs in both LHS and RHS of constraint and substitution list.
+  The implementation can take advantage of nested structure of ASTs and implement unification and all supporting functions recursively.
+  Conclusion
+  It took me about a week to understand and implement this algorithm. In the end, it felt magical to programmatically infer all the types for an untyped language. 
+  </p>
 
-    <p>
-    Refer to the following resources to learn more about this algorithm:
-    Chapter 30 in <a href="https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf">Programming Languages: Application and Interpretation (first edition)</a> for step by step examples of constraint generation and unification.
-    Chapter 15.3.2 in <a href="https://cs.brown.edu/courses/cs173/2012/book/types.html#%28part._.Type_.Inference%29">Programming Languages: Application and Interpretation (second edition)</a> for an explanation of the algorithm using Typed Racket. 
-    <a href="https://eli.thegreenplace.net/2018/unification/">Unification</a> by Eli Bendersky talks a bit about efficiency.
-    <a href="https://github.com/vkz/PLAI/blob/master/type-unify.rkt">type-unify.rkt</a> for a complete implementation in Typed Racket. 
-    </p>
-    </div>
-    </div>
-    </div>
-    ]]></description>
+  <p>
+  Refer to the following resources to learn more about this algorithm:
+  Chapter 30 in <a href="https://cs.brown.edu/~sk/Publications/Books/ProgLangs/2007-04-26/plai-2007-04-26.pdf">Programming Languages: Application and Interpretation (first edition)</a> for step by step examples of constraint generation and unification.
+  Chapter 15.3.2 in <a href="https://cs.brown.edu/courses/cs173/2012/book/types.html#%28part._.Type_.Inference%29">Programming Languages: Application and Interpretation (second edition)</a> for an explanation of the algorithm using Typed Racket. 
+  <a href="https://eli.thegreenplace.net/2018/unification/">Unification</a> by Eli Bendersky talks a bit about efficiency.
+  <a href="https://github.com/vkz/PLAI/blob/master/type-unify.rkt">type-unify.rkt</a> for a complete implementation in Typed Racket. 
+  </p>
+  </div>
+  </div>
+  </div>
+  ]]></description>
 </item>
 <item>
   <title>A Programmer's Utopia</title>
   <link>https://veera.app/a_programmer's_utopia.html</link>
   <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
   <guid isPermaLink="false">https://veera.app/a_programmer's_utopia.html</guid>
-  <pubDate>Mon, 15 Aug 2022 00:00:00 -0400</pubDate>
+  <pubDate>Sun, 14 Aug 2022 00:00:00 -0500</pubDate>
 
   <description><![CDATA[<p>
   Amidst all the chaos in the world there is a community of passionate programmers who are constantly working on interesting projects, learning new topics and have a great sense of camaraderie. People in this community, driven by their self motivation to become better programmers, do a lot of pair programming, meet with people who share interests to brainstorm ideas and give talks about their projects. This beautiful community is called as <a href="https://www.recurse.com/">Recurse Center</a>. 
@@ -399,17 +442,17 @@
   First six weeks
   In the first six weeks of my batch, I spent most of the time interacting with the community and reading <a href="https://www.cs.rochester.edu/~scott/pragmatics/">Programming Language Pragmatics</a>. I also contributed to <a href="https://github.com/SerenityOS/jakt">Jakt</a> programming language and was happy to have a few commits merged into a popular open source project. Finally, I gave a couple of talks about my interpreter project and <a href="https://youtu.be/ZgEDMpxWvN4">scanner theory</a> to improve my presentation skills. 
   </p>
-  <div id="outline-container-org7ed1b7b" class="outline-3">
-  <h3 id="org7ed1b7b"><span class="section-number-3">6.1.</span> Compilers and Interpreters Implementation</h3>
-  <div class="outline-text-3" id="text-6-1">
+  <div id="outline-container-org99c3372" class="outline-3">
+  <h3 id="org99c3372"><span class="section-number-3">7.1.</span> Compilers and Interpreters Implementation</h3>
+  <div class="outline-text-3" id="text-7-1">
   <p>
   In this weekly event, I met other Recursers interested in writing compilers and we discussed about Haskell, OCaml, Rust, logic languages, parser combinators, and interesting research papers in the field. This event introduced me to a number of other resources I could use to build upon what I learnt so far from reading Crafting Interpreters. By the end, I was grateful to have met people who share my interests. 
   </p>
   </div>
   </div>
-  <div id="outline-container-orgbb73e87" class="outline-3">
-  <h3 id="orgbb73e87"><span class="section-number-3">6.2.</span> Music Consumption Group</h3>
-  <div class="outline-text-3" id="text-6-2">
+  <div id="outline-container-orgb70058c" class="outline-3">
+  <h3 id="orgb70058c"><span class="section-number-3">7.2.</span> Music Consumption Group</h3>
+  <div class="outline-text-3" id="text-7-2">
   <p>
   A weekly social event where a bunch of Recursers hop on a Zoom call, queue a track of their choice and the host will play each track in order. The event was late in the evening so it was fun to listen to a variety of music while cooking dinner or fixing a gnarly bug. 
   Last six weeks
@@ -417,25 +460,25 @@
   </p>
   </div>
   </div>
-  <div id="outline-container-org7955141" class="outline-3">
-  <h3 id="org7955141"><span class="section-number-3">6.3.</span> Rust Rodeo</h3>
-  <div class="outline-text-3" id="text-6-3">
+  <div id="outline-container-org35ab363" class="outline-3">
+  <h3 id="org35ab363"><span class="section-number-3">7.3.</span> Rust Rodeo</h3>
+  <div class="outline-text-3" id="text-7-3">
   <p>
   A weekly event to discuss everything related to Rust. Here we helped each other get unstuck on compiler errors and read through popular Rust code bases to improve our knowledge about the language and its ecosystem. Occasionally, someone gave a talk on something cool they learnt about Rust. Through the course of this event, I found myself learning more about generic types and trait system which in turn helped me to write more idiomatic Rust for Bessy.
   </p>
   </div>
   </div>
-  <div id="outline-container-org6a333ad" class="outline-3">
-  <h3 id="org6a333ad"><span class="section-number-3">6.4.</span> Zig Zones</h3>
-  <div class="outline-text-3" id="text-6-4">
+  <div id="outline-container-org6c78a15" class="outline-3">
+  <h3 id="org6c78a15"><span class="section-number-3">7.4.</span> Zig Zones</h3>
+  <div class="outline-text-3" id="text-7-4">
   <p>
   This was an interest group for Zig programming. Initially, I was curious to learn what Zig has to offer in terms of an improvement over C and was fascinated by its C interoperability as a first class feature. I played with the toolchain and, with the help of Recursers, I was able to compile a existing C code base using <code>zig cc</code> and also transpile it to Zig. You can read more about our process to translate a C project into Zig in Jeff Fowler&rsquo;s <a href="https://blog.jfo.click/zig-translate-c-and-linking-equal-best-friends/">&ldquo;Zig translate-c and linking equal best friends&rdquo;</a>.
   </p>
   </div>
   </div>
-  <div id="outline-container-org66b09e5" class="outline-3">
-  <h3 id="org66b09e5"><span class="section-number-3">6.5.</span> Scone Production and Consumption Group</h3>
-  <div class="outline-text-3" id="text-6-5">
+  <div id="outline-container-orgb7eaed7" class="outline-3">
+  <h3 id="orgb7eaed7"><span class="section-number-3">7.5.</span> Scone Production and Consumption Group</h3>
+  <div class="outline-text-3" id="text-7-5">
   <p>
   This was an occasional social event where I baked Scones along with other Recursers by following the <a href="https://www.seriouseats.com/bakery-style-cream-scones-with-chocolate-recipe">recipe</a> written by Stella Parks. This was my first attempt at baking and I really enjoyed the process even though my Scones ended up looking like giant cookies because I did not follow the recipe word for word :). Nevertheless, I see strong parallels between programming and cooking/baking and, for me, both the art forms evoke the same creative feeling.
   Never Graduate
@@ -578,7 +621,7 @@
   <link>https://veera.app/game_of_light.html</link>
   <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
   <guid isPermaLink="false">https://veera.app/game_of_light.html</guid>
-  <pubDate>Mon, 01 Nov 2021 00:00:00 -0400</pubDate>
+  <pubDate>Sun, 31 Oct 2021 00:00:00 -0500</pubDate>
 
   <description><![CDATA[<p>
   For our final project, Hayden and I are building <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Conway's Game of Life</a> simulator on a LED matrix. We will also add a controller which the audience can use to pause and play the simulation. With this project, we aim to understand how interesting patterns emerge from a small set of rules. The coordinates for the simulation will be computed on an Arduino board which will be connected to both the simulator and the controller. Along the way, we might also add features that tickles our fancy. Check this page by December, 2021 to view the final product.   
@@ -594,7 +637,7 @@
   <link>https://veera.app/adding_features_to_lox.html</link>
   <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
   <guid isPermaLink="false">https://veera.app/adding_features_to_lox.html</guid>
-  <pubDate>Thu, 19 Aug 2021 00:00:00 -0400</pubDate>
+  <pubDate>Wed, 18 Aug 2021 00:00:00 -0500</pubDate>
 
   <description><![CDATA[<p>
   Finally, I got time to sit down and implement a tree-walk interpreter following Bob Nystrom's <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>. In this post, I'm going to explain some of the features I have added to the language. You can find my complete implementation <a href="https://github.com/veera-sivarajan/lang0">here</a>. I have also made a <a href="https://youtu.be/0P6VPOIKATg">video</a> demoing the features listed below.
@@ -647,9 +690,9 @@
   Lists
   To add a list data type into the language, the task can be divided into three small tasks:
   </p>
-  <div id="outline-container-org5242ec6" class="outline-3">
-  <h3 id="org5242ec6"><span class="section-number-3">9.1.</span> Scanning</h3>
-  <div class="outline-text-3" id="text-9-1">
+  <div id="outline-container-orga4bfbef" class="outline-3">
+  <h3 id="orga4bfbef"><span class="section-number-3">10.1.</span> Scanning</h3>
+  <div class="outline-text-3" id="text-10-1">
   <p>
   Introduce two new tokens to make the scanner handle list expressions and subscripts.
   </p>
@@ -660,9 +703,9 @@
   </div>
   </div>
   </div>
-  <div id="outline-container-org0697f4b" class="outline-3">
-  <h3 id="org0697f4b"><span class="section-number-3">9.2.</span> Creating List Literals</h3>
-  <div class="outline-text-3" id="text-9-2">
+  <div id="outline-container-org6d9fcd8" class="outline-3">
+  <h3 id="org6d9fcd8"><span class="section-number-3">10.2.</span> Creating List Literals</h3>
+  <div class="outline-text-3" id="text-10-2">
   <p>
   Like numbers, string, <code>true</code> and <code>false</code>, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
   </p>
@@ -671,9 +714,9 @@
   To learn about the grammar for lists, I found Caleb&rsquo;s blog <a href="https://calebschoepp.com/blog/2020/adding-a-list-data-type-to-lox/">post</a> to be helpful. It explained all the details related to implementing lists in a clear and concise way.
   </p>
   </div>
-  <div id="outline-container-org1b63b54" class="outline-4">
-  <h4 id="org1b63b54"><span class="section-number-4">9.2.1.</span> Parsing Lists</h4>
-  <div class="outline-text-4" id="text-9-2-1">
+  <div id="outline-container-orgecc536b" class="outline-4">
+  <h4 id="orgecc536b"><span class="section-number-4">10.2.1.</span> Parsing Lists</h4>
+  <div class="outline-text-4" id="text-10-2-1">
   <p>
   Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the <code>]</code> and wraps the vector in a AST node.
   </p>
@@ -698,9 +741,9 @@
   </div>
   </div>
   </div>
-  <div id="outline-container-org99468cb" class="outline-4">
-  <h4 id="org99468cb"><span class="section-number-4">9.2.2.</span> Interpreting Lists</h4>
-  <div class="outline-text-4" id="text-9-2-2">
+  <div id="outline-container-org87fe682" class="outline-4">
+  <h4 id="org87fe682"><span class="section-number-4">10.2.2.</span> Interpreting Lists</h4>
+  <div class="outline-text-4" id="text-10-2-2">
   <p>
   To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime&rsquo;s representation of a list. Finally, like interpreting any other kind of expression, the runtime&rsquo;s value is returned. 
   </p>
@@ -717,9 +760,9 @@
   </div>
   </div>
   </div>
-  <div id="outline-container-orgb5bec73" class="outline-3">
-  <h3 id="orgb5bec73"><span class="section-number-3">9.3.</span> Handling Subscript Expressions</h3>
-  <div class="outline-text-3" id="text-9-3">
+  <div id="outline-container-org06a62fd" class="outline-3">
+  <h3 id="org06a62fd"><span class="section-number-3">10.3.</span> Handling Subscript Expressions</h3>
+  <div class="outline-text-3" id="text-10-3">
   <p>
   Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>.
   </p>
@@ -728,9 +771,9 @@
   From the interpreter&rsquo;s point of view, the only difference between the two is the presence of a value expression. If the AST node has a value, it should assign it at index. Otherwise, it should return the value at index. So the trick is to make the parser pass a <code>nullptr</code> in the place of value expression when parsing a r-value and pass a value only when parsing a l-value. This allows the interpreter to easily differentiate between the two kinds of subscript expressions.
   </p>
   </div>
-  <div id="outline-container-org1b8eda7" class="outline-4">
-  <h4 id="org1b8eda7"><span class="section-number-4">9.3.1.</span> Parsing Subscripts</h4>
-  <div class="outline-text-4" id="text-9-3-1">
+  <div id="outline-container-org0b197a2" class="outline-4">
+  <h4 id="org0b197a2"><span class="section-number-4">10.3.1.</span> Parsing Subscripts</h4>
+  <div class="outline-text-4" id="text-10-3-1">
   <p>
   Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. <code>subscript()</code> calls <code>finishSubscript()</code> each time it sees a <code>[</code> to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a <code>nullptr</code> in the place of value expression to let the interpreter know that it is a r-value. 
   </p>
@@ -777,9 +820,9 @@
   </div>
   </div>
   </div>
-  <div id="outline-container-orga2e57cf" class="outline-4">
-  <h4 id="orga2e57cf"><span class="section-number-4">9.3.2.</span> Interpreting Subscripts</h4>
-  <div class="outline-text-4" id="text-9-3-2">
+  <div id="outline-container-org9d257e8" class="outline-4">
+  <h4 id="org9d257e8"><span class="section-number-4">10.3.2.</span> Interpreting Subscripts</h4>
+  <div class="outline-text-4" id="text-10-3-2">
   <p>
   To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
   </p>

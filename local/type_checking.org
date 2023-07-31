@@ -1,0 +1,25 @@
+#+SETUPFILE: ../basic-setup.org 
+#+TITLE: Boba Devlog #1: Sliding In a Type Checker 
+#+DATE:<2023-07-31 Mon> 
+
+[[https://github.com/veera-sivarajan/boba/tree/main][Boba]] is a compiler project I'm working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. Check out the [[https://github.com/veera-sivarajan/boba/blob/main/language.org][language documentation]] to know more about syntax and semantics of the language.
+
+This month I implemented a type checker and it helped me to make a number of improvements to the language. Now, the compiler can handle more primitive data types and also a Rust style format string for print statements. In this post, I will explain everything I learnt over the month.
+* Learning x86-64 Assembly
+Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I'd write a simple C program and compile it using ~gcc -O0 -fverbose-asm -S~. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
+* Type Checking
+Initially, I thought I should implement Hindley-Milner type inference algorithm to infer the types of all expressions because the language is implicitly typed. But, after reading a [[https://lobste.rs/s/ewxw1i/less_technical_introductions_type#c_hotmwn][comment]] by matklad, I realized I don't need that since there are no generics in my language. 
+
+Therefore, my current implementation walks through every node in the AST like a tree-walk interpreter but instead of evaluating primary expressions to their values, it evaluates them to their types. For example, the expression ~Expr::Number(23)~ evaluates to ~Type::Number~. The types are then bubbled-up the AST and checked if they are equal to the expected type. If a type does not match the expected type, an appropriate error is added to a list and type checker continues to check the rest of the program. After the whole program is analyzed, the compiler prints out all the errors in the list. If there is no error, the AST along with all the type information is passed on to the code generator to generate the assembly. The code generator will use the type information of each expression to choose the correct instruction suffix and register size. As an example, the code generator will choose ~movl~ and ~%eax~ for returning a 32 bit number type instead of ~movq~ and ~%rax~.
+* Fancy Print Statement 
+Additionally, implementing a type checker paved way for Rust style fancy format strings in print statements even though the compiler calls ~printf()~ to display values to ~stdout~.
+#+BEGIN_SRC rust
+  println("{}. Your name is: {}", some_number, some_string);
+#+END_SRC
+Since the compiler can infer the types of both ~some_number~ and ~some_string~, the format string is replaced with appropriate C format specifiers and compiled to ~"%d. Your name is: %s\n~ before being passed as first argument to ~printf()~. Finally, the values to be printed get passed as subsequent arguments to ~printf()~ without any changes because the primitive types in my language are compatible with C ABI.
+* Fixing Stack Alignment
+I first encountered this bug when calling ~printf()~. The program would abruptly crash when a function has a certain number of local variables and it was very confusing because there wasn't anything wrong in the generated assembly in terms of space allocated on the stack or using the correct instructions.
+
+Turns out the System V ABI requires the stack to be aligned to a 16 byte boundary inside every function. So my mistake was allocating the exact amount of space required for local variables as a function with three boolean values will allocate three bytes plus forty eight bytes for callee saved registers and leave the stack misaligned. To fix this, the code generator rounds the sum of space required for local variables and callee saved registers to the nearest multiple of 16 before allocating. In the function epilogue, the rounded up amount of space gets deallocated from the stack.
+
+This solved the issue and now the programs don't crash for any number of local variables.
