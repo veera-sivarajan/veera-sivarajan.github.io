@@ -14,8 +14,8 @@
   <link>https://veera.app/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Mon, 31 Jul 2023 14:41:48 -0500</pubDate>
-  <lastBuildDate>Mon, 31 Jul 2023 14:41:48 -0500</lastBuildDate>
+  <pubDate>Tue, 01 Aug 2023 00:35:28 -0500</pubDate>
+  <lastBuildDate>Tue, 01 Aug 2023 00:35:28 -0500</lastBuildDate>
   <generator>Emacs 28.1 Org-mode 9.5.2</generator>
   <webMaster>sveera.2001@gmail.com (Veera Sivarajan)</webMaster>
   <image>
@@ -54,7 +54,7 @@
     </pre>
     </div>
     <p>
-    Since the compiler can infer the types of both <code>some_number</code> and <code>some_string</code>, the format string is replaced with appropriate C format specifiers and compiled to <code>"%d. Your name is: %s\n</code> before being passed as first argument to <code>printf()</code>. Finally, the values to be printed get passed as subsequent arguments to <code>printf()</code> without any changes because the primitive types in my language are compatible with C ABI.
+    Since the compiler can infer the types of both <code>some_number</code> and <code>some_string</code>, the format string is replaced with appropriate C format specifiers and compiled to <code>"%d. Your name is: %s\n"</code> before being passed as first argument to <code>printf()</code>. Finally, the values to be printed get passed as subsequent arguments to <code>printf()</code> without any changes because the primitive types in my language are compatible with C ABI.
     Fixing Stack Alignment
     I first encountered this bug when calling <code>printf()</code>. The program would abruptly crash when a function has a certain number of local variables and it was very confusing because there wasn't anything wrong in the generated assembly in terms of space allocated on the stack or using the correct instructions.
     </p>

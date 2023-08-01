@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2023-Jul-31 -->
+<!-- 2023-Aug-01 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Boba Devlog #1: Sliding In a Type Checker</title>
+<title>Boba Devlog #1: Sliding in a Type Checker</title>
 <meta name="author" content="Veera Sivarajan" />
 <meta name="generator" content="Org Mode" />
 <link rel="stylesheet" type="text/css" href="./css/style.css"/>
@@ -20,7 +20,7 @@
 </header>
 <main id="content" class="content">
 <header>
-<h1 class="title">Boba Devlog #1: Sliding In a Type Checker</h1>
+<h1 class="title">Boba Devlog #1: Sliding in a Type Checker</h1>
 <p class="subtitle" role="doc-subtitle">2023-Jul-31</p>
 </header><p>
 <a href="https://github.com/veera-sivarajan/boba/tree/main">Boba</a> is a compiler project I&rsquo;m working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. Check out the <a href="https://github.com/veera-sivarajan/boba/blob/main/language.org">language documentation</a> to know more about syntax and semantics of the language.
@@ -60,7 +60,7 @@ Additionally, implementing a type checker paved way for Rust style fancy format 
 </pre>
 </div>
 <p>
-Since the compiler can infer the types of both <code>some_number</code> and <code>some_string</code>, the format string is replaced with appropriate C format specifiers and compiled to <code>"%d. Your name is: %s\n</code> before being passed as first argument to <code>printf()</code>. Finally, the values to be printed get passed as subsequent arguments to <code>printf()</code> without any changes because the primitive types in my language are compatible with C ABI.
+Since the compiler can infer the types of both <code>some_number</code> and <code>some_string</code>, the format string is replaced with appropriate C format specifiers and compiled to <code>"%d. Your name is: %s\n"</code> before being passed as first argument to <code>printf()</code>. Finally, the values to be printed get passed as subsequent arguments to <code>printf()</code> without any changes because the primitive types in my language are compatible with C ABI.
 </p>
 </div>
 </section>
@@ -83,7 +83,7 @@ This solved the issue and now the programs don&rsquo;t crash for any number of l
 </main>
 <footer id="postamble" class="status">
 <div class='footer'>
-  Last updated on 2023-Jul-31 Mon 14:41. <br>
+  Last updated on 2023-Aug-01 Tue 00:35. <br>
 </div>
 </footer>
 </body>

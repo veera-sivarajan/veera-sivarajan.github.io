@@ -1,5 +1,5 @@
 #+SETUPFILE: ../basic-setup.org 
-#+TITLE: Boba Devlog #1: Sliding In a Type Checker 
+#+TITLE: Boba Devlog #1: Sliding in a Type Checker 
 #+DATE:<2023-07-31 Mon> 
 
 [[https://github.com/veera-sivarajan/boba/tree/main][Boba]] is a compiler project I'm working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. Check out the [[https://github.com/veera-sivarajan/boba/blob/main/language.org][language documentation]] to know more about syntax and semantics of the language.
@@ -16,7 +16,7 @@ Additionally, implementing a type checker paved way for Rust style fancy format 
 #+BEGIN_SRC rust
   println("{}. Your name is: {}", some_number, some_string);
 #+END_SRC
-Since the compiler can infer the types of both ~some_number~ and ~some_string~, the format string is replaced with appropriate C format specifiers and compiled to ~"%d. Your name is: %s\n~ before being passed as first argument to ~printf()~. Finally, the values to be printed get passed as subsequent arguments to ~printf()~ without any changes because the primitive types in my language are compatible with C ABI.
+Since the compiler can infer the types of both ~some_number~ and ~some_string~, the format string is replaced with appropriate C format specifiers and compiled to ~"%d. Your name is: %s\n"~ before being passed as first argument to ~printf()~. Finally, the values to be printed get passed as subsequent arguments to ~printf()~ without any changes because the primitive types in my language are compatible with C ABI.
 * Fixing Stack Alignment
 I first encountered this bug when calling ~printf()~. The program would abruptly crash when a function has a certain number of local variables and it was very confusing because there wasn't anything wrong in the generated assembly in terms of space allocated on the stack or using the correct instructions.
 
