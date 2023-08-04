@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2023-Aug-01 -->
+<!-- 2023-Aug-04 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Boba Devlog #1: Sliding in a Type Checker</title>
@@ -33,7 +33,7 @@ This month I implemented a type checker and it helped me to make a number of imp
 <h2 id="orga29aa19"><span class="section-number-2">1.</span> Learning x86-64 Assembly</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I&rsquo;d write a simple C program and compile it using <code>gcc -O0 -fverbose-asm -S</code>. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
+Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I&rsquo;d write a simple C program and compile it using <code>gcc -O0 -fverbose-asm -S</code>. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent unoptimized assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
 </p>
 </div>
 </section>
@@ -83,7 +83,7 @@ This solved the issue and now the programs don&rsquo;t crash for any number of l
 </main>
 <footer id="postamble" class="status">
 <div class='footer'>
-  Last updated on 2023-Aug-01 Tue 00:35. <br>
+  Last updated on 2023-Aug-04 Fri 09:46. <br>
 </div>
 </footer>
 </body>

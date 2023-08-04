@@ -14,8 +14,8 @@
   <link>https://veera.app/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Tue, 01 Aug 2023 00:35:28 -0500</pubDate>
-  <lastBuildDate>Tue, 01 Aug 2023 00:35:28 -0500</lastBuildDate>
+  <pubDate>Fri, 04 Aug 2023 09:46:54 -0500</pubDate>
+  <lastBuildDate>Fri, 04 Aug 2023 09:46:54 -0500</lastBuildDate>
   <generator>Emacs 28.1 Org-mode 9.5.2</generator>
   <webMaster>sveera.2001@gmail.com (Veera Sivarajan)</webMaster>
   <image>
@@ -39,7 +39,7 @@
     <p>
     This month I implemented a type checker and it helped me to make a number of improvements to the language. Now, the compiler can handle more primitive data types and also a Rust style format string for print statements. In this post, I will explain everything I learnt over the month.
     Learning x86-64 Assembly
-    Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I'd write a simple C program and compile it using <code>gcc -O0 -fverbose-asm -S</code>. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
+    Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I'd write a simple C program and compile it using <code>gcc -O0 -fverbose-asm -S</code>. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent unoptimized assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
     Type Checking
     Initially, I thought I should implement Hindley-Milner type inference algorithm to infer the types of all expressions because the language is implicitly typed. But, after reading a <a href="https://lobste.rs/s/ewxw1i/less_technical_introductions_type#c_hotmwn">comment</a> by matklad, I realized I don't need that since there are no generics in my language. 
     </p>
