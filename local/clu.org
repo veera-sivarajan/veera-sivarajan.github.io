@@ -4,7 +4,7 @@
 
 In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
 
-Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response[fn::Posting here with his consent.]:
+Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response[fn::Posting here with his permission.]:
 
 #+BEGIN_VERSE
 Hello, Veera!
