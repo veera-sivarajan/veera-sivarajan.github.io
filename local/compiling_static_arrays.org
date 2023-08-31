@@ -1,0 +1,33 @@
+#+SETUPFILE: ../basic-setup.org 
+#+TITLE: Compiling Arrays
+#+DATE: Aug 29, 2023
+
+Boba is a compiler project I'm working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. In this post, I'd like to explain how it compiles arrays.
+
+1. Describe the semantics of Arrays
+2. Array layout in memory - 1d and 2d
+3. Talk about seg fault when returning a function local array
+4. Indexing into array
+5. Compile time formatting to print arrays
+6. Arrays decay to pointers
+
+* Syntax and Semantics of Array
+The syntax for arrays resembles that of Rust and the semantics follow that of C.
+
+An array is a collection of elements stored in a contiguous block of memory on the stack. It evaluates to a pointer to the first element in the array and this pointer can be assigned to other variables, passed into functions and used in subscript expressions to access any element of the array. But, returning an array (pointer) from a function will result in garbage values or segmentation fault. When an array is passed into a print statement, it will print all the elements in the array.
+#+BEGIN_SRC rust
+  fn sum(array: [i32; 5]) -> i32 {
+      let mut total = 0;
+      for (let mut i = 0; i < 5; i = i + 1) {
+          total = total + array[i];
+      }
+      return total;
+  }
+
+  fn main() {
+      let array = [1, 2, 3, 4, 5];
+      let total = sum(array);
+      println("Sum of {} = {}", array, total); // Sum of [1, 2, 3, 4, 5] = 15
+  }
+#+END_SRC
+* Memory Layout
