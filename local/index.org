@@ -1,26 +1,28 @@
 #+TITLE: Core Dump
 
+- 2023-Sep-04:
+  *[[file:array.org][Boba Devlog #2: Compiling Arrays]]*
 - 2023-Jul-31:
   *[[file:type_checking.org][Boba Devlog #1: Sliding In a Type Checker]]*
-- 2023-Jun-29:
+- 2023-Jun-30:
   *[[file:codegen.org][Boba Devlog #0: Compiling Pseudo-Rust to x86 Assembly]]*
-- 2023-May-06:
+- 2023-May-07:
   *[[file:idempotence.org][Idempotency in the Wild]]*
-- 2023-Apr-05:
+- 2023-Apr-06:
   *[[file:clu.org][Professor Eliot Moss on the Design and Implementation of CLU]]*
-- 2023-Mar-24:
+- 2023-Mar-25:
   *[[file:tracking_music_history.org][Tracking Music History]]*
 - 2023-Jan-31:
   *[[file:type_inference.org][Type Inference]]*
-- 2022-Aug-14:
+- 2022-Aug-15:
   *[[file:a_programmer's_utopia.org][A Programmer's Utopia]]*
 - 2021-Nov-25:
   *[[file:rena's_memory_model.org][Rena's Memory Model]]*
-- 2021-Oct-31:
+- 2021-Nov-01:
   *[[file:game_of_light.org][Game of Light]]*
-- 2021-Aug-18:
+- 2021-Aug-19:
   *[[file:adding_features_to_lox.org][Adding Features To Lox]]*
-- 2021-Mar-28:
+- 2021-Mar-29:
   *[[file:my_emacs_journey.org][My Emacs Journey]]*
 - 2021-Mar-06:
   *[[file:hello.org][Hello]]*
