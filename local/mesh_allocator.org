@@ -1,0 +1,28 @@
+#+SETUPFILE: ../basic-setup.org 
+#+TITLE: Understanding Mesh Allocator
+#+DATE:<2024-01-24 Wed> 
+I recently read about the [[https://github.com/plasma-umass/Mesh][Mesh memory allocator]] and was fascinated by its ability to perform compaction without changing the addresses of allocated objects.
+
+In this post, I will briefly summarize how Mesh allocator works. For more details about its algorithms and implementation, refer to the [[https://raw.githubusercontent.com/plasma-umass/Mesh/master/mesh-pldi19-powers.pdf][paper (PDF)]] by Bobby Powers et al. or watch this [[https://www.youtube.com/watch?v=xb0mVfnvkp0][talk]].
+* Fragmentation
+Applications written in manually memory managed languages might fail to allocate memory, even when the required amount of space is available in memory. This problem is known as memory [[https://en.wikipedia.org/wiki/Fragmentation_(computing)][fragmentation]] and can be solved by compaction, where all allocated objects are moved together to make a contiguous block of free space available.
+
+Garbage collected languages can solve this by stopping program execution to compact allocated objects and update all pointers to point to the relocated objects. But, languages which expose raw pointers to the programmer don't have this luxury as it is impossible to trace and update all the pointers.
+
+Therefore, to reduce memory fragmentation for applications written in manually memory managed languages, compaction should occur without changing the pointers' values and this is exactly where Mesh shines.
+* Compaction Without Relocation
+The Mesh allocator performs compaction without relocation by taking advantage of the fact that pointers are virtual memory addresses pointing to objects on physical memory. This allows the allocator to move objects in the physical memory and update the virtual to physical memory mapping without changing the virtual memory address of allocated objects.
+
+There are three core concepts behind the Mesh allocator:
+** Meshing
+Meshing is the phase where objects are relocated in physical memory. It randomly selects physical memory pages with objects allocated at non-overlapping offsets and merges (meshes) them together by copying all objects from one page to another. The copied objects retain their original offsets. Then, the page from which content was moved is given back to the operating system; effectively reducing memory consumption.
+
+This does not affect performance as meshing is performed concurrently without stopping program execution.
+** Updating Virtual to Physical Address Mapping
+After meshing, the process's page table is updated to remap the virtual memory addresses of moved objects to the new physical addresses. However, the program is unaware of this change because the virtual memory addresses (pointers) remain the same since the offsets of objects have not changed.
+** Randomized Allocation
+Memory allocation is randomly spread throughout a page to facilitate meshing by increasing the chances of pages having objects allocated at non-overlapping offsets. This doesn't [[https://news.ycombinator.com/item?id=19182779#19185084][seem]] to affect cache performance as allocations returned from popular memory allocators are not contiguous either.
+* Conclusion
+This memory allocator has proven to significantly reduce the memory consumption of Firefox and Redis with only a small increase in performance overhead.
+
+I'm amazed at how simple and easy-to-understand techniques can significantly reduce fragmentation while maintaining performance, without requiring any changes to the codebase.
