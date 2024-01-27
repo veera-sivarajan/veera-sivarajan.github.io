@@ -155,6 +155,13 @@ footer {
     font-size: 0.7rem;
 }
 
+
+#umaring {
+    margin: 0px;
+    text-align: center;
+    font-size: 1.0rem;
+}
+
 figcaption {
     text-align: center;
     font-size: 0.8rem;

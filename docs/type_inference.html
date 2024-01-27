@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2023-Jan-31 -->
+<!-- 2024-Jan-27 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Type Inference</title>
@@ -12,7 +12,7 @@
 <body>
 <header id="top" class="status">
 <nav>
-  <a href="https://github.com/veera-sivarajan">Github</a>
+  <a href="https://github.com/veera-sivarajan">GitHub</a>
   <a href="/">Home</a>
   <a href="/about/">About</a>
   <a href="mailto:sveera.2001@gmail.com">Email</a>
@@ -25,15 +25,15 @@
 </header><p>
 Dabbling with Haskell inspired me to learn about type inference. So this last week I spent some time reading through literature on type systems and <a href="https://github.com/veera-sivarajan/type-inferencer">implemented</a> the Hindley-Milner algorithm for a toy expression language using Rust. In this post, I will give an implementation focused explanation of the algorithm. 
 </p>
-<section id="outline-container-org58b5a34" class="outline-2">
-<h2 id="org58b5a34"><span class="section-number-2">1.</span> Hindley-Milner</h2>
+<section id="outline-container-orga36bdcc" class="outline-2">
+<h2 id="orga36bdcc"><span class="section-number-2">1.</span> Hindley-Milner</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The type inference algorithm takes the AST as input and outputs the type for each expression in the tree. Much like a detective, who solves a case by collecting all the available evidence and then finding the relation between them to come to a conclusion, the algorithm creates a mapping between each expression and its expected type and then finds the types for all expressions using the relation between the generated mappings. Formally, the first step is termed as <i>constraint generation</i> and the latter is <i>unification</i>.
 </p>
 </div>
-<div id="outline-container-org23a6c20" class="outline-3">
-<h3 id="org23a6c20"><span class="section-number-3">1.1.</span> Constraint Generation</h3>
+<div id="outline-container-org3a4a638" class="outline-3">
+<h3 id="org3a4a638"><span class="section-number-3">1.1.</span> Constraint Generation</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 A constraint is a mapping between an expression and its expected type. To generate constraints for an AST, the algorithm recursively visits every expression in the tree and maps it to an expected type. Primitive expressions like numbers, booleans and identifiers, can be straightforwardly mapped to their respective types since any symbol parsed as, for example, a number is guaranteed to be of type number. It gets more interesting when generating constraints for nested expressions. 
@@ -47,8 +47,8 @@ Constraints for nested expressions are generated in two steps:
 <li>All sub-expressions and the root expression are mapped to their expected types based on their position in the AST.  For example, if there is a sub-expression <code>1</code> in the condition part of conditional expression, it will be mapped to type <code>Bool</code>.</li>
 </ol>
 </div>
-<div id="outline-container-orgea977cb" class="outline-4">
-<h4 id="orgea977cb"><span class="section-number-4">1.1.1.</span> Binary Add Expression</h4>
+<div id="outline-container-orgb9e9536" class="outline-4">
+<h4 id="orgb9e9536"><span class="section-number-4">1.1.1.</span> Binary Add Expression</h4>
 <div class="outline-text-4" id="text-1-1-1">
 <p>
 For the binary add expression, generate constraints for the left and right operands and then map each operand and the add expression to type number. For example, the following are the constraints generated for the incorrect expression <code>1 + false</code>.
@@ -63,20 +63,20 @@ false     = Number
 </div>
 </div>
 </div>
-<div id="outline-container-org5574bfa" class="outline-4">
-<h4 id="org5574bfa"><span class="section-number-4">1.1.2.</span> Conditional Expression</h4>
+<div id="outline-container-org7c9bacc" class="outline-4">
+<h4 id="org7c9bacc"><span class="section-number-4">1.1.2.</span> Conditional Expression</h4>
 <div class="outline-text-4" id="text-1-1-2">
 <p>
 For conditional expressions, there are three expectations for its types:
 </p>
 <ol class="org-ol">
 <li>Condition should be of type boolean.</li>
-<li><a id="org77b3ce2"></a>Both the branches should be of same type<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>.</li>
-<li><a id="org6a89835"></a>Type of conditional expression should be of same type as its branches.</li>
+<li><a id="org48bd6d2"></a>Both the branches should be of same type<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>.</li>
+<li><a id="org1139bec"></a>Type of conditional expression should be of same type as its branches.</li>
 </ol>
 
 <p>
-To express these expectations in terms of constraints, start by generating constraints for the condition and the two branches. Then, map the condition to type boolean and the conditional expression to then and else branch to denote expectations <a href="#org77b3ce2">2</a> and <a href="#org6a89835">3</a> from above. The constraints generated for the expression <code>if true {1} else {2}</code> are:
+To express these expectations in terms of constraints, start by generating constraints for the condition and the two branches. Then, map the condition to type boolean and the conditional expression to then and else branch to denote expectations <a href="#org48bd6d2">2</a> and <a href="#org1139bec">3</a> from above. The constraints generated for the expression <code>if true {1} else {2}</code> are:
 </p>
 <div class="org-src-container">
 <pre class="src src-shell">true                 = Bool
@@ -89,8 +89,8 @@ if true {1} else {2} = 2
 </div>
 </div>
 </div>
-<div id="outline-container-org5d6e4ab" class="outline-4">
-<h4 id="org5d6e4ab"><span class="section-number-4">1.1.3.</span> Functions</h4>
+<div id="outline-container-org697585e" class="outline-4">
+<h4 id="org697585e"><span class="section-number-4">1.1.3.</span> Functions</h4>
 <div class="outline-text-4" id="text-1-1-3">
 <p>
 A function definition is constrained as an arrow type with parameters as domain and body as range. As you may be familiar by now, start by generating constraints for parameters and body to determine their types. Then, map the function definition to an arrow type with parameters as domain and body as range. For the expression <code>lambda(x) x + 2</code>, the constraints are:
@@ -122,15 +122,15 @@ x + 2             = Number
 </div>
 </div>
 </div>
-<div id="outline-container-orge03d20b" class="outline-3">
-<h3 id="orge03d20b"><span class="section-number-3">1.2.</span> Unification</h3>
+<div id="outline-container-orgfe882f2" class="outline-3">
+<h3 id="orgfe882f2"><span class="section-number-3">1.2.</span> Unification</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 The meat of type inference happens during unification. In this step, the algorithm iterates through the list of constraints and outputs either a type error, if any, or the type for each expression.
 </p>
 </div>
-<div id="outline-container-orgbe32879" class="outline-4">
-<h4 id="orgbe32879"><span class="section-number-4">1.2.1.</span> Substitution</h4>
+<div id="outline-container-orgee01d51" class="outline-4">
+<h4 id="orgee01d51"><span class="section-number-4">1.2.1.</span> Substitution</h4>
 <div class="outline-text-4" id="text-1-2-1">
 <p>
 The core idea of unification is a simple concept called substitution. Assume we have the following set of constraints for a function definition <code>(lambda(x) x + 2)</code>.
@@ -151,16 +151,16 @@ After unification, the RHS of constraint #4 will be substituted with types asser
 </div>
 </div>
 </div>
-<div id="outline-container-orgacf4363" class="outline-4">
-<h4 id="orgacf4363"><span class="section-number-4">1.2.2.</span> Occurs Check</h4>
+<div id="outline-container-org4978422" class="outline-4">
+<h4 id="org4978422"><span class="section-number-4">1.2.2.</span> Occurs Check</h4>
 <div class="outline-text-4" id="text-1-2-2">
 <p>
 We substitute a term A with term B to ensure that expressions progressively get mapped to a more specific type. But if term B contains term A, the replacement is redundant and can lead to infinite unifications. To prevent this, ensure that term B does not contain term A anywhere in its nested structure before each substitution.
 </p>
 </div>
 </div>
-<div id="outline-container-orgb7bd7c0" class="outline-4">
-<h4 id="orgb7bd7c0"><span class="section-number-4">1.2.3.</span> Algorithm</h4>
+<div id="outline-container-orgeec0ae9" class="outline-4">
+<h4 id="orgeec0ae9"><span class="section-number-4">1.2.3.</span> Algorithm</h4>
 <div class="outline-text-4" id="text-1-2-3">
 <p>
 The goal of unification is to make the required substitution for each constraint. The algorithm to accomplish this can be better explained through psuedocode:
@@ -195,8 +195,8 @@ for LHS and RHS in each constraint:
 </div>
 </div>
 </section>
-<section id="outline-container-org410a4bf" class="outline-2">
-<h2 id="org410a4bf"><span class="section-number-2">2.</span> Conclusion</h2>
+<section id="outline-container-org7f66640" class="outline-2">
+<h2 id="org7f66640"><span class="section-number-2">2.</span> Conclusion</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 It took me about a week to understand and implement this algorithm. In the end, it felt magical to programmatically infer all the types for an untyped language. 
@@ -223,8 +223,10 @@ Refer to the following resources to learn more about this algorithm:
 </div>
 </div></main>
 <footer id="postamble" class="status">
+<script id="umaring_js" src="https://umaring.hamy.cc/ring.js?id=veera"></script>
+<div id="umaring"></div>
 <div class='footer'>
-  Last updated on 2023-Jan-31 Tue 10:16. <br>
+  Last updated on 2024-Jan-27 Sat 11:21. <br>
 </div>
 </footer>
 </body>
