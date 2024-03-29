@@ -5,5 +5,5 @@ I'm Veera (he/him), a computer science undergraduate passionate about compilers,
 
 Outside of programming, I love to run long distances or play [[https://youtu.be/I7XNeGwZhj4][Table Tennis]].
 * Hire Me
-I'm looking for a job involving compilers or developer tools. I worked as an IOS developer for the past two years and have experience using Rust and C++ for my personal projects. Here is my [[https://veera.app/imgs/veera-vitae.pdf][curriculum vitae]].
+I'm looking for a job involving compilers or developer tools. I worked as an IOS developer for the past two years and have experience using Rust and C++ for my personal projects. Here is my [[https://veera.app/imgs/veera-sivarajan-resume-dt.pdf][curriculum vitae]].
 
