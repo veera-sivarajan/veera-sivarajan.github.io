@@ -14,9 +14,9 @@
   <link>https://veera.app/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Fri, 29 Mar 2024 11:21:55 -0400</pubDate>
-  <lastBuildDate>Fri, 29 Mar 2024 11:21:55 -0400</lastBuildDate>
-  <generator>Emacs 28.1 Org-mode 9.5.2</generator>
+  <pubDate>Sun, 21 Apr 2024 19:20:36 -0400</pubDate>
+  <lastBuildDate>Sun, 21 Apr 2024 19:20:36 -0400</lastBuildDate>
+  <generator>Emacs 27.1 Org-mode 9.3</generator>
   <webMaster>sveera.2001@gmail.com (Veera Sivarajan)</webMaster>
   <image>
     <url>https://orgmode.org/img/org-mode-unicorn-logo.png</url>
@@ -25,6 +25,43 @@
   </image>
 
 
+  <item>
+    <title>Understanding a Trait Selection Bug</title>
+    <link>https://veera.app/trait_selection_bug.html</link>
+    <author>sveera.2001@gmail.com (Veera Sivarajan)</author>
+    <guid isPermaLink="false">https://veera.app/trait_selection_bug.html</guid>
+    <pubDate>Sun, 21 Apr 2024 00:00:00 -0400</pubDate>
+
+    <description><![CDATA[<p>
+    Recently, I ran into <a href="https://github.com/rust-lang/rust/issues/122595">rust-lang/issues/#24066</a> and spent some time analysing the underlying trait selection mechanism. In this blog post, I'll briefly explain why this bug prevents the following snippet from compiling.
+    </p>
+
+    <div class="org-src-container">
+    <pre class="src src-rust">fn add&lt;T&gt;() where
+    u32: std::ops::Add&lt;T, Output = T&gt;
+    {
+    let _ = 1_u32 + 1_u32;
+    }
+    </pre>
+    </div>
+
+    <p>
+    Inside the compiler, the <code>rustc_hir_typeck</code> crate handles lookup of methods for binary operations. When it encounters the expression <code>1_u32 + 1_u32</code>, it does something peculiar: instead of directly looking up for a method that adds an <code>u32</code> to another <code>u32</code>, it searches for a method that can add an <code>u32</code> to a type inference variable <code>$0</code>. This allows the compiler to either borrow or take ownership of the value on the RHS of the binary expression based on the available methods<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
+    </p>
+
+    <p>
+    The request "find a method to add an <code>u32</code> with the type inference variable <code>$0</code>" is handled by the <code>rustc_trait_selection</code> crate, which selects an appropriate method from a collection of candidates. Here, traits specified in the where clause are given a higher precedence over other candidates<sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>. I believe this heuristic is followed as the programmer is expected to specify only the necessary traits in the where clause.
+    </p>
+
+    <p>
+    Thus, for the expression <code>1_u32 + 1_u32</code>, the method which adds an <code>u32</code> and a type variable <code>T</code> is chosen because any type can be unified with the type inference variable <code>$0</code>. This attempts to unify the <code>u32</code> on the RHS with type variable <code>T</code> and emits a type mismatch error.
+    </p>
+
+    <p>
+    Guess, this is an other instance where a compiler leans towards soundness over completeness.
+    </p>
+    ]]></description>
+  </item>
   <item>
     <title>Understanding Mesh Allocator</title>
     <link>https://veera.app/mesh_allocator.html</link>
@@ -56,8 +93,8 @@
     There are three core concepts behind the Mesh allocator:
     </p>
     <div id="outline-container-org4604778" class="outline-3">
-    <h3 id="org4604778"><span class="section-number-3">1.1.</span> Meshing</h3>
-    <div class="outline-text-3" id="text-1-1">
+    <h3 id="org4604778"><span class="section-number-3">2.1</span> Meshing</h3>
+    <div class="outline-text-3" id="text-2-1">
     <p>
     Meshing is the phase where objects are relocated in physical memory. It randomly selects physical memory pages with objects allocated at non-overlapping offsets and merges (meshes) them together by copying all objects from one page to another. The copied objects retain their original offsets. Then, the page from which content was moved is given back to the operating system; effectively reducing memory consumption.
     </p>
@@ -68,16 +105,16 @@
     </div>
     </div>
     <div id="outline-container-orgb1580b7" class="outline-3">
-    <h3 id="orgb1580b7"><span class="section-number-3">1.2.</span> Updating Virtual to Physical Address Mapping</h3>
-    <div class="outline-text-3" id="text-1-2">
+    <h3 id="orgb1580b7"><span class="section-number-3">2.2</span> Updating Virtual to Physical Address Mapping</h3>
+    <div class="outline-text-3" id="text-2-2">
     <p>
     After meshing, the process&rsquo;s page table is updated to remap the virtual memory addresses of moved objects to the new physical addresses. However, the program is unaware of this change because the virtual memory addresses (pointers) remain the same since the offsets of objects have not changed.
     </p>
     </div>
     </div>
     <div id="outline-container-org87b648f" class="outline-3">
-    <h3 id="org87b648f"><span class="section-number-3">1.3.</span> Randomized Allocation</h3>
-    <div class="outline-text-3" id="text-1-3">
+    <h3 id="org87b648f"><span class="section-number-3">2.3</span> Randomized Allocation</h3>
+    <div class="outline-text-3" id="text-2-3">
     <p>
     Memory allocation is randomly spread throughout a page to facilitate meshing by increasing the chances of pages having objects allocated at non-overlapping offsets. This doesn&rsquo;t <a href="https://news.ycombinator.com/item?id=19182779#19185084">seem</a> to affect cache performance as allocations returned from popular memory allocators are not contiguous either.
     Conclusion
@@ -128,8 +165,8 @@
   To understand how arrays can be expressed in assembly, it helped me a lot to visualize the memory layout of arrays.
   </p>
   <div id="outline-container-org795ef65" class="outline-3">
-  <h3 id="org795ef65"><span class="section-number-3">2.1.</span> One-dimensional Array</h3>
-  <div class="outline-text-3" id="text-2-1">
+  <h3 id="org795ef65"><span class="section-number-3">3.1</span> One-dimensional Array</h3>
+  <div class="outline-text-3" id="text-3-1">
   <p>
   The code <code>let a = [1, 2, 3, 4];</code> will have the following memory representation:
   <img src="./imgs/one-d-array.png" alt="one-d-array.png">
@@ -142,8 +179,8 @@
   </div>
   </div>
   <div id="outline-container-org5b00bc5" class="outline-3">
-  <h3 id="org5b00bc5"><span class="section-number-3">2.2.</span> Two-dimensional Array</h3>
-  <div class="outline-text-3" id="text-2-2">
+  <h3 id="org5b00bc5"><span class="section-number-3">3.2</span> Two-dimensional Array</h3>
+  <div class="outline-text-3" id="text-3-2">
   <p>
   The representation of a two-dimensional array is similar to an one-dimensional array but there is a level of indirection to take care of. For example, the code <code>let a = [[1, 2], [3, 4]];</code> will be represented as:
   <img src="./imgs/two-d-array.png" alt="two-d-array.png">
@@ -174,7 +211,7 @@
   </div>
 
   <p>
-  A small obstruction to express the transformation in assembly is the System V ABI calling convention where the first six arguments to a function are passed in registers and the rest are pushed onto the stack in reverse order. But, for an array where the first few elements are passed in registers and the rest are pushed onto the stack, it is complicated for the compiler to evaluate the first few elements in left-to-right order and then evaluate the rest that goes onto the stack in right-to-left order<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>. 
+  A small obstruction to express the transformation in assembly is the System V ABI calling convention where the first six arguments to a function are passed in registers and the rest are pushed onto the stack in reverse order. But, for an array where the first few elements are passed in registers and the rest are pushed onto the stack, it is complicated for the compiler to evaluate the first few elements in left-to-right order and then evaluate the rest that goes onto the stack in right-to-left order<sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>. 
   </p>
 
   <p>
@@ -316,7 +353,7 @@
   </p>
 
   <p>
-  Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response<sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>:
+  Luckily, I got to take a compilers class with Prof. Eliot Moss last Spring and ask him about his experience working on the design and implementation of the language. The following was his response<sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>:
   </p>
 
   <p class="verse">
@@ -412,8 +449,8 @@
   The type inference algorithm takes the AST as input and outputs the type for each expression in the tree. Much like a detective, who solves a case by collecting all the available evidence and then finding the relation between them to come to a conclusion, the algorithm creates a mapping between each expression and its expected type and then finds the types for all expressions using the relation between the generated mappings. Formally, the first step is termed as <i>constraint generation</i> and the latter is <i>unification</i>.
   </p>
   <div id="outline-container-org3be9a25" class="outline-3">
-  <h3 id="org3be9a25"><span class="section-number-3">8.1.</span> Constraint Generation</h3>
-  <div class="outline-text-3" id="text-8-1">
+  <h3 id="org3be9a25"><span class="section-number-3">9.1</span> Constraint Generation</h3>
+  <div class="outline-text-3" id="text-9-1">
   <p>
   A constraint is a mapping between an expression and its expected type. To generate constraints for an AST, the algorithm recursively visits every expression in the tree and maps it to an expected type. Primitive expressions like numbers, booleans and identifiers, can be straightforwardly mapped to their respective types since any symbol parsed as, for example, a number is guaranteed to be of type number. It gets more interesting when generating constraints for nested expressions. 
   </p>
@@ -425,8 +462,8 @@
   </p>
   </div>
   <div id="outline-container-org9c32ac0" class="outline-4">
-  <h4 id="org9c32ac0"><span class="section-number-4">8.1.1.</span> Binary Add Expression</h4>
-  <div class="outline-text-4" id="text-8-1-1">
+  <h4 id="org9c32ac0"><span class="section-number-4">9.1.1</span> Binary Add Expression</h4>
+  <div class="outline-text-4" id="text-9-1-1">
   <p>
   For the binary add expression, generate constraints for the left and right operands and then map each operand and the add expression to type number. For example, the following are the constraints generated for the incorrect expression <code>1 + false</code>.
   </p>
@@ -441,17 +478,17 @@
   </div>
   </div>
   <div id="outline-container-orge6c7957" class="outline-4">
-  <h4 id="orge6c7957"><span class="section-number-4">8.1.2.</span> Conditional Expression</h4>
-  <div class="outline-text-4" id="text-8-1-2">
+  <h4 id="orge6c7957"><span class="section-number-4">9.1.2</span> Conditional Expression</h4>
+  <div class="outline-text-4" id="text-9-1-2">
   <p>
   For conditional expressions, there are three expectations for its types:
   Condition should be of type boolean.
-  <a id="org97f1b5d"></a>Both the branches should be of same type<sup><a id="fnr.3" class="footref" href="#fn.3" role="doc-backlink">3</a></sup>.
+  <a id="org97f1b5d"></a>Both the branches should be of same type<sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>.
   <a id="orgf7fba61"></a>Type of conditional expression should be of same type as its branches.
   </p>
 
   <p>
-  To express these expectations in terms of constraints, start by generating constraints for the condition and the two branches. Then, map the condition to type boolean and the conditional expression to then and else branch to denote expectations <a href="#org97f1b5d">8.1.2</a> and <a href="#orgf7fba61">8.1.2</a> from above. The constraints generated for the expression <code>if true {1} else {2}</code> are:
+  To express these expectations in terms of constraints, start by generating constraints for the condition and the two branches. Then, map the condition to type boolean and the conditional expression to then and else branch to denote expectations <a href="#org97f1b5d">9.1.2</a> and <a href="#orgf7fba61">9.1.2</a> from above. The constraints generated for the expression <code>if true {1} else {2}</code> are:
   </p>
   <div class="org-src-container">
   <pre class="src src-shell">true                 = Bool
@@ -465,8 +502,8 @@
   </div>
   </div>
   <div id="outline-container-orgd93050a" class="outline-4">
-  <h4 id="orgd93050a"><span class="section-number-4">8.1.3.</span> Functions</h4>
-  <div class="outline-text-4" id="text-8-1-3">
+  <h4 id="orgd93050a"><span class="section-number-4">9.1.3</span> Functions</h4>
+  <div class="outline-text-4" id="text-9-1-3">
   <p>
   A function definition is constrained as an arrow type with parameters as domain and body as range. As you may be familiar by now, start by generating constraints for parameters and body to determine their types. Then, map the function definition to an arrow type with parameters as domain and body as range. For the expression <code>lambda(x) x + 2</code>, the constraints are:
   </p>
@@ -498,15 +535,15 @@
   </div>
   </div>
   <div id="outline-container-orgee0c087" class="outline-3">
-  <h3 id="orgee0c087"><span class="section-number-3">8.2.</span> Unification</h3>
-  <div class="outline-text-3" id="text-8-2">
+  <h3 id="orgee0c087"><span class="section-number-3">9.2</span> Unification</h3>
+  <div class="outline-text-3" id="text-9-2">
   <p>
   The meat of type inference happens during unification. In this step, the algorithm iterates through the list of constraints and outputs either a type error, if any, or the type for each expression.
   </p>
   </div>
   <div id="outline-container-org135b43f" class="outline-4">
-  <h4 id="org135b43f"><span class="section-number-4">8.2.1.</span> Substitution</h4>
-  <div class="outline-text-4" id="text-8-2-1">
+  <h4 id="org135b43f"><span class="section-number-4">9.2.1</span> Substitution</h4>
+  <div class="outline-text-4" id="text-9-2-1">
   <p>
   The core idea of unification is a simple concept called substitution. Assume we have the following set of constraints for a function definition <code>(lambda(x) x + 2)</code>.
   </p>
@@ -527,16 +564,16 @@
   </div>
   </div>
   <div id="outline-container-org0b858cc" class="outline-4">
-  <h4 id="org0b858cc"><span class="section-number-4">8.2.2.</span> Occurs Check</h4>
-  <div class="outline-text-4" id="text-8-2-2">
+  <h4 id="org0b858cc"><span class="section-number-4">9.2.2</span> Occurs Check</h4>
+  <div class="outline-text-4" id="text-9-2-2">
   <p>
   We substitute a term A with term B to ensure that expressions progressively get mapped to a more specific type. But if term B contains term A, the replacement is redundant and can lead to infinite unifications. To prevent this, ensure that term B does not contain term A anywhere in its nested structure before each substitution.
   </p>
   </div>
   </div>
   <div id="outline-container-org3eb978a" class="outline-4">
-  <h4 id="org3eb978a"><span class="section-number-4">8.2.3.</span> Algorithm</h4>
-  <div class="outline-text-4" id="text-8-2-3">
+  <h4 id="org3eb978a"><span class="section-number-4">9.2.3</span> Algorithm</h4>
+  <div class="outline-text-4" id="text-9-2-3">
   <p>
   The goal of unification is to make the required substitution for each constraint. The algorithm to accomplish this can be better explained through psuedocode:
   </p>
@@ -602,16 +639,16 @@
   In the first six weeks of my batch, I spent most of the time interacting with the community and reading <a href="https://www.cs.rochester.edu/~scott/pragmatics/">Programming Language Pragmatics</a>. I also contributed to <a href="https://github.com/SerenityOS/jakt">Jakt</a> programming language and was happy to have a few commits merged into a popular open source project. Finally, I gave a couple of talks about my interpreter project and <a href="https://youtu.be/ZgEDMpxWvN4">scanner theory</a> to improve my presentation skills. 
   </p>
   <div id="outline-container-org30f7714" class="outline-3">
-  <h3 id="org30f7714"><span class="section-number-3">9.1.</span> Compilers and Interpreters Implementation</h3>
-  <div class="outline-text-3" id="text-9-1">
+  <h3 id="org30f7714"><span class="section-number-3">10.1</span> Compilers and Interpreters Implementation</h3>
+  <div class="outline-text-3" id="text-10-1">
   <p>
   In this weekly event, I met other Recursers interested in writing compilers and we discussed about Haskell, OCaml, Rust, logic languages, parser combinators, and interesting research papers in the field. This event introduced me to a number of other resources I could use to build upon what I learnt so far from reading Crafting Interpreters. By the end, I was grateful to have met people who share my interests. 
   </p>
   </div>
   </div>
   <div id="outline-container-orgfdf24db" class="outline-3">
-  <h3 id="orgfdf24db"><span class="section-number-3">9.2.</span> Music Consumption Group</h3>
-  <div class="outline-text-3" id="text-9-2">
+  <h3 id="orgfdf24db"><span class="section-number-3">10.2</span> Music Consumption Group</h3>
+  <div class="outline-text-3" id="text-10-2">
   <p>
   A weekly social event where a bunch of Recursers hop on a Zoom call, queue a track of their choice and the host will play each track in order. The event was late in the evening so it was fun to listen to a variety of music while cooking dinner or fixing a gnarly bug. 
   Last six weeks
@@ -620,24 +657,24 @@
   </div>
   </div>
   <div id="outline-container-org7b7fa4c" class="outline-3">
-  <h3 id="org7b7fa4c"><span class="section-number-3">9.3.</span> Rust Rodeo</h3>
-  <div class="outline-text-3" id="text-9-3">
+  <h3 id="org7b7fa4c"><span class="section-number-3">10.3</span> Rust Rodeo</h3>
+  <div class="outline-text-3" id="text-10-3">
   <p>
   A weekly event to discuss everything related to Rust. Here we helped each other get unstuck on compiler errors and read through popular Rust code bases to improve our knowledge about the language and its ecosystem. Occasionally, someone gave a talk on something cool they learnt about Rust. Through the course of this event, I found myself learning more about generic types and trait system which in turn helped me to write more idiomatic Rust for Bessy.
   </p>
   </div>
   </div>
   <div id="outline-container-org077dd01" class="outline-3">
-  <h3 id="org077dd01"><span class="section-number-3">9.4.</span> Zig Zones</h3>
-  <div class="outline-text-3" id="text-9-4">
+  <h3 id="org077dd01"><span class="section-number-3">10.4</span> Zig Zones</h3>
+  <div class="outline-text-3" id="text-10-4">
   <p>
   This was an interest group for Zig programming. Initially, I was curious to learn what Zig has to offer in terms of an improvement over C and was fascinated by its C interoperability as a first class feature. I played with the toolchain and, with the help of Recursers, I was able to compile a existing C code base using <code>zig cc</code> and also transpile it to Zig. You can read more about our process to translate a C project into Zig in Jeff Fowler&rsquo;s <a href="https://blog.jfo.click/zig-translate-c-and-linking-equal-best-friends/">&ldquo;Zig translate-c and linking equal best friends&rdquo;</a>.
   </p>
   </div>
   </div>
   <div id="outline-container-orgbab80b0" class="outline-3">
-  <h3 id="orgbab80b0"><span class="section-number-3">9.5.</span> Scone Production and Consumption Group</h3>
-  <div class="outline-text-3" id="text-9-5">
+  <h3 id="orgbab80b0"><span class="section-number-3">10.5</span> Scone Production and Consumption Group</h3>
+  <div class="outline-text-3" id="text-10-5">
   <p>
   This was an occasional social event where I baked Scones along with other Recursers by following the <a href="https://www.seriouseats.com/bakery-style-cream-scones-with-chocolate-recipe">recipe</a> written by Stella Parks. This was my first attempt at baking and I really enjoyed the process even though my Scones ended up looking like giant cookies because I did not follow the recipe word for word :). Nevertheless, I see strong parallels between programming and cooking/baking and, for me, both the art forms evoke the same creative feeling.
   Never Graduate
@@ -850,8 +887,8 @@
   To add a list data type into the language, the task can be divided into three small tasks:
   </p>
   <div id="outline-container-org2fc0dd8" class="outline-3">
-  <h3 id="org2fc0dd8"><span class="section-number-3">12.1.</span> Scanning</h3>
-  <div class="outline-text-3" id="text-12-1">
+  <h3 id="org2fc0dd8"><span class="section-number-3">13.1</span> Scanning</h3>
+  <div class="outline-text-3" id="text-13-1">
   <p>
   Introduce two new tokens to make the scanner handle list expressions and subscripts.
   </p>
@@ -863,8 +900,8 @@
   </div>
   </div>
   <div id="outline-container-org1c242f1" class="outline-3">
-  <h3 id="org1c242f1"><span class="section-number-3">12.2.</span> Creating List Literals</h3>
-  <div class="outline-text-3" id="text-12-2">
+  <h3 id="org1c242f1"><span class="section-number-3">13.2</span> Creating List Literals</h3>
+  <div class="outline-text-3" id="text-13-2">
   <p>
   Like numbers, string, <code>true</code> and <code>false</code>, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
   </p>
@@ -874,8 +911,8 @@
   </p>
   </div>
   <div id="outline-container-org3d1facf" class="outline-4">
-  <h4 id="org3d1facf"><span class="section-number-4">12.2.1.</span> Parsing Lists</h4>
-  <div class="outline-text-4" id="text-12-2-1">
+  <h4 id="org3d1facf"><span class="section-number-4">13.2.1</span> Parsing Lists</h4>
+  <div class="outline-text-4" id="text-13-2-1">
   <p>
   Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the <code>]</code> and wraps the vector in a AST node.
   </p>
@@ -901,8 +938,8 @@
   </div>
   </div>
   <div id="outline-container-org95889f9" class="outline-4">
-  <h4 id="org95889f9"><span class="section-number-4">12.2.2.</span> Interpreting Lists</h4>
-  <div class="outline-text-4" id="text-12-2-2">
+  <h4 id="org95889f9"><span class="section-number-4">13.2.2</span> Interpreting Lists</h4>
+  <div class="outline-text-4" id="text-13-2-2">
   <p>
   To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime&rsquo;s representation of a list. Finally, like interpreting any other kind of expression, the runtime&rsquo;s value is returned. 
   </p>
@@ -920,10 +957,10 @@
   </div>
   </div>
   <div id="outline-container-org913883c" class="outline-3">
-  <h3 id="org913883c"><span class="section-number-3">12.3.</span> Handling Subscript Expressions</h3>
-  <div class="outline-text-3" id="text-12-3">
+  <h3 id="org913883c"><span class="section-number-3">13.3</span> Handling Subscript Expressions</h3>
+  <div class="outline-text-3" id="text-13-3">
   <p>
-  Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.4" class="footref" href="#fn.4" role="doc-backlink">4</a></sup>.
+  Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup>.
   </p>
 
   <p>
@@ -931,8 +968,8 @@
   </p>
   </div>
   <div id="outline-container-orgef81dca" class="outline-4">
-  <h4 id="orgef81dca"><span class="section-number-4">12.3.1.</span> Parsing Subscripts</h4>
-  <div class="outline-text-4" id="text-12-3-1">
+  <h4 id="orgef81dca"><span class="section-number-4">13.3.1</span> Parsing Subscripts</h4>
+  <div class="outline-text-4" id="text-13-3-1">
   <p>
   Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. <code>subscript()</code> calls <code>finishSubscript()</code> each time it sees a <code>[</code> to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a <code>nullptr</code> in the place of value expression to let the interpreter know that it is a r-value. 
   </p>
@@ -980,10 +1017,10 @@
   </div>
   </div>
   <div id="outline-container-org578bc7a" class="outline-4">
-  <h4 id="org578bc7a"><span class="section-number-4">12.3.2.</span> Interpreting Subscripts</h4>
-  <div class="outline-text-4" id="text-12-3-2">
+  <h4 id="org578bc7a"><span class="section-number-4">13.3.2</span> Interpreting Subscripts</h4>
+  <div class="outline-text-4" id="text-13-3-2">
   <p>
-  To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.5" class="footref" href="#fn.5" role="doc-backlink">5</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
+  To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
   </p>
 
   <p>
@@ -1088,15 +1125,19 @@
   <h2 class="footnotes">Footnotes: </h2>
   <div id="text-footnotes">
 
-    <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Maybe there is an efficient and elegant way to implement this but I cannot figure it out.</p></div></div>
+    <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara"><a href="https://github.com/rust-lang/rust/blob/0824b300eb0dae5d9ed59719d3f2732016683d66/compiler/rustc_hir_typeck/src/op.rs#L238-L254">https://github.com/rust-lang/rust/blob/0824b300eb0dae5d9ed59719d3f2732016683d66/compiler/rustc_hir_typeck/src/op.rs#L238-L254</a></p></div></div>
 
-    <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Posting here with his permission.</p></div></div>
+    <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara"><a href="https://doc.rust-lang.org/stable/nightly-rustc/rustc_middle/traits/select/enum.SelectionCandidate.html">https://doc.rust-lang.org/stable/nightly-rustc/rustc_middle/traits/select/enum.SelectionCandidate.html</a></p></div></div>
 
-    <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3" role="doc-backlink">3</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Statically typed languages have this requirement because the algorithm cannot determine which branch will get executed during runtime but it has to assign a type for the entire expression. In contrast, dynamically typed languages are more flexible as they can assign the type of conditional expression to the type of the branch that will get executed.</p></div></div>
+    <div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">Maybe there is an efficient and elegant way to implement this but I cannot figure it out.</p></div></div>
 
-    <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4" role="doc-backlink">4</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">I'm not sure if this would work when classes and methods are implemented.</p></div></div>
+    <div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">Posting here with his permission.</p></div></div>
 
-    <div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5" role="doc-backlink">5</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">This is actually a bug because index number should not be of type <code>double</code></p></div></div>
+    <div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">Statically typed languages have this requirement because the algorithm cannot determine which branch will get executed during runtime but it has to assign a type for the entire expression. In contrast, dynamically typed languages are more flexible as they can assign the type of conditional expression to the type of the branch that will get executed.</p></div></div>
+
+    <div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">I'm not sure if this would work when classes and methods are implemented.</p></div></div>
+
+    <div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">This is actually a bug because index number should not be of type <code>double</code></p></div></div>
 
 
   </div>

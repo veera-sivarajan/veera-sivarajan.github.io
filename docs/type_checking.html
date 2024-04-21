@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-Jan-27 -->
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 2024-Apr-21 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boba Devlog #1: Sliding in a Type Checker</title>
-<meta name="author" content="Veera Sivarajan" />
-<meta name="generator" content="Org Mode" />
+<meta name="generator" content="Org mode">
+<meta name="author" content="Veera Sivarajan">
 <link rel="stylesheet" type="text/css" href="./css/style.css"/>
 </head>
 <body>
@@ -18,10 +18,10 @@
   <a href="mailto:sveera.2001@gmail.com">Email</a>
 </nav>  
 </header>
-<main id="content" class="content">
+<main id="content">
 <header>
 <h1 class="title">Boba Devlog #1: Sliding in a Type Checker</h1>
-<p class="subtitle" role="doc-subtitle">2023-Jul-31</p>
+<p class="subtitle">2023-Jul-31</p>
 </header><p>
 <a href="https://github.com/veera-sivarajan/boba/tree/main">Boba</a> is a compiler project I&rsquo;m working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. Check out the <a href="https://github.com/veera-sivarajan/boba/blob/main/language.org">language documentation</a> to know more about syntax and semantics of the language.
 </p>
@@ -30,7 +30,7 @@
 This month I implemented a type checker and it helped me to make a number of improvements to the language. Now, the compiler can handle more primitive data types and also a Rust style format string for print statements. In this post, I will explain everything I learnt over the month.
 </p>
 <section id="outline-container-orga29aa19" class="outline-2">
-<h2 id="orga29aa19"><span class="section-number-2">1.</span> Learning x86-64 Assembly</h2>
+<h2 id="orga29aa19"><span class="section-number-2">1</span> Learning x86-64 Assembly</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Before starting this project, I did not know anything about assembly. So, to learn how various language constructs can be expressed in assembly, I&rsquo;d write a simple C program and compile it using <code>gcc -O0 -fverbose-asm -S</code>. The assembly file produced by this command shows each line of the source code (in comments) and its equivalent unoptimized assembly right below it. This helped me a lot to understand how function call and stack alignment work at the assembly level.
@@ -38,7 +38,7 @@ Before starting this project, I did not know anything about assembly. So, to lea
 </div>
 </section>
 <section id="outline-container-orgfe01b4f" class="outline-2">
-<h2 id="orgfe01b4f"><span class="section-number-2">2.</span> Type Checking</h2>
+<h2 id="orgfe01b4f"><span class="section-number-2">2</span> Type Checking</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Initially, I thought I should implement Hindley-Milner type inference algorithm to infer the types of all expressions because the language is implicitly typed. But, after reading a <a href="https://lobste.rs/s/ewxw1i/less_technical_introductions_type#c_hotmwn">comment</a> by matklad, I realized I don&rsquo;t need that since there are no generics in my language. 
@@ -50,7 +50,7 @@ Therefore, my current implementation walks through every node in the AST like a 
 </div>
 </section>
 <section id="outline-container-org9f81221" class="outline-2">
-<h2 id="org9f81221"><span class="section-number-2">3.</span> Fancy Print Statement</h2>
+<h2 id="org9f81221"><span class="section-number-2">3</span> Fancy Print Statement</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Additionally, implementing a type checker paved way for Rust style fancy format strings in print statements even though the compiler calls <code>printf()</code> to display values to <code>stdout</code>.
@@ -65,7 +65,7 @@ Since the compiler can infer the types of both <code>some_number</code> and <cod
 </div>
 </section>
 <section id="outline-container-org4d58f98" class="outline-2">
-<h2 id="org4d58f98"><span class="section-number-2">4.</span> Fixing Stack Alignment</h2>
+<h2 id="org4d58f98"><span class="section-number-2">4</span> Fixing Stack Alignment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 I first encountered this bug when calling <code>printf()</code>. The program would abruptly crash when a function has a certain number of local variables and it was very confusing because there wasn&rsquo;t anything wrong in the generated assembly in terms of space allocated on the stack or using the correct instructions.
@@ -82,10 +82,10 @@ This solved the issue and now the programs don&rsquo;t crash for any number of l
 </section>
 </main>
 <footer id="postamble" class="status">
-<script id="umaring_js" src="https://umaring.hamy.cc/ring.js?id=veera"></script>
+<script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=veera"></script>
 <div id="umaring"></div>
 <div class='footer'>
-  Last updated on 2024-Jan-27 Sat 11:21. <br>
+  Last updated on 2024-Apr-21 Sun 18:54. <br>
 </div>
 </footer>
 </body>

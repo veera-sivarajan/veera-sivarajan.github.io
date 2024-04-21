@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-Jan-27 -->
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 2024-Apr-21 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Adding Features To Lox</title>
-<meta name="author" content="Veera Sivarajan" />
-<meta name="generator" content="Org Mode" />
+<meta name="generator" content="Org mode">
+<meta name="author" content="Veera Sivarajan">
 <link rel="stylesheet" type="text/css" href="./css/style.css"/>
 </head>
 <body>
@@ -18,10 +18,10 @@
   <a href="mailto:sveera.2001@gmail.com">Email</a>
 </nav>  
 </header>
-<main id="content" class="content">
+<main id="content">
 <header>
 <h1 class="title">Adding Features To Lox</h1>
-<p class="subtitle" role="doc-subtitle">2021-Aug-19</p>
+<p class="subtitle">2021-Aug-19</p>
 </header><p>
 Finally, I got time to sit down and implement a tree-walk interpreter following Bob Nystrom&rsquo;s <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>. In this post, I&rsquo;m going to explain some of the features I have added to the language. You can find my complete implementation <a href="https://github.com/veera-sivarajan/lang0">here</a>. I have also made a <a href="https://youtu.be/0P6VPOIKATg">video</a> demoing the features listed below.
 </p>
@@ -30,7 +30,7 @@ Finally, I got time to sit down and implement a tree-walk interpreter following 
 <b>Note:</b> This post assumes that the reader has read Part II of Crafting Interpreters and is familiar with the implementation details. 
 </p>
 <section id="outline-container-org90f2666" class="outline-2">
-<h2 id="org90f2666"><span class="section-number-2">1.</span> Anonymous Functions</h2>
+<h2 id="org90f2666"><span class="section-number-2">1</span> Anonymous Functions</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 By definition, anonymous functions or lambdas are functions without an associated name. They are used when the user wants to invoke a piece of code but don&rsquo;t want to reuse it. This feature also solves challenge #2 in chapter 10 <i>Functions</i>. In my implementation, a lambda can be written by using the <code>lambda</code> keyword followed by the parameters inside parentheses and the body of the function in braces.
@@ -76,14 +76,14 @@ Since these expressions don&rsquo;t have a name and cannot be reused like a vari
 </div>
 </section>
 <section id="outline-container-org422a5cc" class="outline-2">
-<h2 id="org422a5cc"><span class="section-number-2">2.</span> Lists</h2>
+<h2 id="org422a5cc"><span class="section-number-2">2</span> Lists</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 To add a list data type into the language, the task can be divided into three small tasks:
 </p>
 </div>
 <div id="outline-container-org2a99f80" class="outline-3">
-<h3 id="org2a99f80"><span class="section-number-3">2.1.</span> Scanning</h3>
+<h3 id="org2a99f80"><span class="section-number-3">2.1</span> Scanning</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Introduce two new tokens to make the scanner handle list expressions and subscripts.
@@ -96,7 +96,7 @@ case ']': addToken(TokenType::RIGHT_BRACKET); break;
 </div>
 </div>
 <div id="outline-container-org0e472f2" class="outline-3">
-<h3 id="org0e472f2"><span class="section-number-3">2.2.</span> Creating List Literals</h3>
+<h3 id="org0e472f2"><span class="section-number-3">2.2</span> Creating List Literals</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Like numbers, string, <code>true</code> and <code>false</code>, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
@@ -107,7 +107,7 @@ To learn about the grammar for lists, I found Caleb&rsquo;s blog <a href="https:
 </p>
 </div>
 <div id="outline-container-orgd141659" class="outline-4">
-<h4 id="orgd141659"><span class="section-number-4">2.2.1.</span> Parsing Lists</h4>
+<h4 id="orgd141659"><span class="section-number-4">2.2.1</span> Parsing Lists</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <p>
 Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the <code>]</code> and wraps the vector in a AST node.
@@ -134,7 +134,7 @@ Parsing a list literal is exactly like parsing the arguments of a function call 
 </div>
 </div>
 <div id="outline-container-orgf485816" class="outline-4">
-<h4 id="orgf485816"><span class="section-number-4">2.2.2.</span> Interpreting Lists</h4>
+<h4 id="orgf485816"><span class="section-number-4">2.2.2</span> Interpreting Lists</h4>
 <div class="outline-text-4" id="text-2-2-2">
 <p>
 To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime&rsquo;s representation of a list. Finally, like interpreting any other kind of expression, the runtime&rsquo;s value is returned. 
@@ -153,10 +153,10 @@ To interpret a list literal, the interpreter iterates through each element in th
 </div>
 </div>
 <div id="outline-container-orgc40945a" class="outline-3">
-<h3 id="orgc40945a"><span class="section-number-3">2.3.</span> Handling Subscript Expressions</h3>
+<h3 id="orgc40945a"><span class="section-number-3">2.3</span> Handling Subscript Expressions</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
-Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>.
+Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
 </p>
 
 <p>
@@ -164,7 +164,7 @@ From the interpreter&rsquo;s point of view, the only difference between the two 
 </p>
 </div>
 <div id="outline-container-orgb0c1450" class="outline-4">
-<h4 id="orgb0c1450"><span class="section-number-4">2.3.1.</span> Parsing Subscripts</h4>
+<h4 id="orgb0c1450"><span class="section-number-4">2.3.1</span> Parsing Subscripts</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <p>
 Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. <code>subscript()</code> calls <code>finishSubscript()</code> each time it sees a <code>[</code> to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a <code>nullptr</code> in the place of value expression to let the interpreter know that it is a r-value. 
@@ -213,10 +213,10 @@ As you may have noticed in the formal grammar, for parsing a l-value expression,
 </div>
 </div>
 <div id="outline-container-orgee02d4a" class="outline-4">
-<h4 id="orgee02d4a"><span class="section-number-4">2.3.2.</span> Interpreting Subscripts</h4>
+<h4 id="orgee02d4a"><span class="section-number-4">2.3.2</span> Interpreting Subscripts</h4>
 <div class="outline-text-4" id="text-2-3-2">
 <p>
-To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.2" class="footref" href="#fn.2" role="doc-backlink">2</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
+To interpret a subscript expression, the interpreter first evaluates the list&rsquo;s name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list&rsquo;s name to the runtime&rsquo;s representation of a list and the index to <code>int</code> from <code>double</code><sup><a id="fnr.2" class="footref" href="#fn.2">2</a></sup>. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
 </p>
 
 <p>
@@ -282,7 +282,7 @@ for (var i = 0; list[i] != nil; i = i + 1) {
 </div>
 </section>
 <section id="outline-container-org5a84e1f" class="outline-2">
-<h2 id="org5a84e1f"><span class="section-number-2">3.</span> Unused Variable Warnings</h2>
+<h2 id="org5a84e1f"><span class="section-number-2">3</span> Unused Variable Warnings</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 I also made the resolver throw warnings when there are unused variables in the local scope. This also solves challenge #3 in chapter 11 <i>Resolving and Binding</i>.
@@ -305,7 +305,7 @@ To implement this feature, a vector of <code>std::map</code> is used like a stac
 </div>
 </section>
 <section id="outline-container-org4a3d1c9" class="outline-2">
-<h2 id="org4a3d1c9"><span class="section-number-2">4.</span> Epilogue</h2>
+<h2 id="org4a3d1c9"><span class="section-number-2">4</span> Epilogue</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 I had so much fun working on this project and learnt a lot about programming languages and interpreters. Before reading this book, I did not know what actually happens when I run or compile my programs but now I have a better understanding of the underlying ideas and visualize a interpreter as follows:
@@ -334,18 +334,18 @@ Next, I&rsquo;m looking forward to start working on the bytecode interpreter.
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">I&rsquo;m not sure if this would work when classes and methods are implemented.</p></div></div>
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">I&rsquo;m not sure if this would work when classes and methods are implemented.</p></div></div>
 
-<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2" role="doc-backlink">2</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">This is actually a bug because index number should not be of type <code>double</code></p></div></div>
+<div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">This is actually a bug because index number should not be of type <code>double</code></p></div></div>
 
 
 </div>
 </div></main>
 <footer id="postamble" class="status">
-<script id="umaring_js" src="https://umaring.hamy.cc/ring.js?id=veera"></script>
+<script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=veera"></script>
 <div id="umaring"></div>
 <div class='footer'>
-  Last updated on 2024-Jan-27 Sat 11:21. <br>
+  Last updated on 2024-Apr-21 Sun 18:54. <br>
 </div>
 </footer>
 </body>

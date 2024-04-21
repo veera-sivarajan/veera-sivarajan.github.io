@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-Jan-27 -->
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- 2024-Apr-21 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boba Devlog #2: Compiling Arrays</title>
-<meta name="author" content="Veera Sivarajan" />
-<meta name="generator" content="Org Mode" />
+<meta name="generator" content="Org mode">
+<meta name="author" content="Veera Sivarajan">
 <link rel="stylesheet" type="text/css" href="./css/style.css"/>
 </head>
 <body>
@@ -18,15 +18,15 @@
   <a href="mailto:sveera.2001@gmail.com">Email</a>
 </nav>  
 </header>
-<main id="content" class="content">
+<main id="content">
 <header>
 <h1 class="title">Boba Devlog #2: Compiling Arrays</h1>
-<p class="subtitle" role="doc-subtitle">2023-Sep-04</p>
+<p class="subtitle">2023-Sep-04</p>
 </header><p>
 <a href="https://github.com/veera-sivarajan/boba">Boba</a> is a compiler project I&rsquo;m working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. In this post, I&rsquo;d like to explain how it compiles arrays.
 </p>
 <section id="outline-container-org2297acc" class="outline-2">
-<h2 id="org2297acc"><span class="section-number-2">1.</span> Syntax and Semantics of Arrays</h2>
+<h2 id="org2297acc"><span class="section-number-2">1</span> Syntax and Semantics of Arrays</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The syntax for arrays resembles that of Rust and the semantics follow that of C.
@@ -54,14 +54,14 @@ fn main() {
 </div>
 </section>
 <section id="outline-container-orga35b583" class="outline-2">
-<h2 id="orga35b583"><span class="section-number-2">2.</span> Memory Layout</h2>
+<h2 id="orga35b583"><span class="section-number-2">2</span> Memory Layout</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 To understand how arrays can be expressed in assembly, it helped me a lot to visualize the memory layout of arrays.
 </p>
 </div>
 <div id="outline-container-org7405730" class="outline-3">
-<h3 id="org7405730"><span class="section-number-3">2.1.</span> One-dimensional Array</h3>
+<h3 id="org7405730"><span class="section-number-3">2.1</span> One-dimensional Array</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The code <code>let a = [1, 2, 3, 4];</code> will have the following memory representation:
@@ -75,7 +75,7 @@ Each number in the array is stored in a four byte interval between <code>rbp</co
 </div>
 </div>
 <div id="outline-container-org53ef992" class="outline-3">
-<h3 id="org53ef992"><span class="section-number-3">2.2.</span> Two-dimensional Array</h3>
+<h3 id="org53ef992"><span class="section-number-3">2.2</span> Two-dimensional Array</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 The representation of a two-dimensional array is similar to an one-dimensional array but there is a level of indirection to take care of. For example, the code <code>let a = [[1, 2], [3, 4]];</code> will be represented as:
@@ -86,7 +86,7 @@ The first element in the array is a pointer to the first array and the second el
 </div>
 </section>
 <section id="outline-container-orga58beb6" class="outline-2">
-<h2 id="orga58beb6"><span class="section-number-2">3.</span> Subscript Expressions</h2>
+<h2 id="orga58beb6"><span class="section-number-2">3</span> Subscript Expressions</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 A subscript expression <code>numbers[i]</code> is used to access the element at index <code>i</code> in array <code>numbers</code>. On the assembly level, this is expressed by dereferencing the pointer obtained by adding the pointer to the first element in <code>numbers</code> with the product of <code>i</code> and the size of an element in <code>numbers</code>.
@@ -98,7 +98,7 @@ Internally, this gets compiled to the <code>lea</code> instruction to obtain the
 </div>
 </section>
 <section id="outline-container-org154b844" class="outline-2">
-<h2 id="org154b844"><span class="section-number-2">4.</span> Printing Arrays</h2>
+<h2 id="org154b844"><span class="section-number-2">4</span> Printing Arrays</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 An array is just a pointer but when it is passed into a print statement, the programmer, for the most part, expects all the elements in the array to be printed rather than the pointer address. Also, since the length of the array and the type of each element in the array is known at compile time, the compiler can easily access all the elements of the array given its base pointer.
@@ -120,7 +120,7 @@ The print statement can be transformed into:
 </div>
 
 <p>
-A small obstruction to express the transformation in assembly is the System V ABI calling convention where the first six arguments to a function are passed in registers and the rest are pushed onto the stack in reverse order. But, for an array where the first few elements are passed in registers and the rest are pushed onto the stack, it is complicated for the compiler to evaluate the first few elements in left-to-right order and then evaluate the rest that goes onto the stack in right-to-left order<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>. 
+A small obstruction to express the transformation in assembly is the System V ABI calling convention where the first six arguments to a function are passed in registers and the rest are pushed onto the stack in reverse order. But, for an array where the first few elements are passed in registers and the rest are pushed onto the stack, it is complicated for the compiler to evaluate the first few elements in left-to-right order and then evaluate the rest that goes onto the stack in right-to-left order<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>. 
 </p>
 
 <p>
@@ -132,16 +132,16 @@ So, I decided to evaluate all arguments to a print statement (including an array
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Maybe there is an efficient and elegant way to implement this but I cannot figure it out.</p></div></div>
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">Maybe there is an efficient and elegant way to implement this but I cannot figure it out.</p></div></div>
 
 
 </div>
 </div></main>
 <footer id="postamble" class="status">
-<script id="umaring_js" src="https://umaring.hamy.cc/ring.js?id=veera"></script>
+<script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=veera"></script>
 <div id="umaring"></div>
 <div class='footer'>
-  Last updated on 2024-Jan-27 Sat 11:21. <br>
+  Last updated on 2024-Apr-21 Sun 18:54. <br>
 </div>
 </footer>
 </body>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-Jan-27 -->
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rena's Memory Model</title>
-<meta name="author" content="Veera Sivarajan" />
-<meta name="generator" content="Org Mode" />
+<!-- 2024-Apr-21 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rena&rsquo;s Memory Model</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="Veera Sivarajan">
 <link rel="stylesheet" type="text/css" href="./css/style.css"/>
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -28,7 +28,8 @@
              }
 });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
 <header id="top" class="status">
@@ -39,15 +40,15 @@
   <a href="mailto:sveera.2001@gmail.com">Email</a>
 </nav>  
 </header>
-<main id="content" class="content">
+<main id="content">
 <header>
 <h1 class="title">Rena&rsquo;s Memory Model</h1>
-<p class="subtitle" role="doc-subtitle">2021-Nov-25</p>
+<p class="subtitle">2021-Nov-25</p>
 </header><p>
 <a href="https://github.com/veera-sivarajan/rena">Rena</a> is my implementation of lox tree-walk interpreter in Rust. I&rsquo;m rewriting it in Rust to familiarize myself with the borrow checker and the fancy toolchain it offers. In this post, I&rsquo;ll explain how I implemented a simple environment for the interpreter. 
 </p>
 <section id="outline-container-org013ab46" class="outline-2">
-<h2 id="org013ab46"><span class="section-number-2">1.</span> Structure</h2>
+<h2 id="org013ab46"><span class="section-number-2">1</span> Structure</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 The environment is structured as a vector of hashmaps and is initialized with an empty hashmap to represent the global scope. Every new block in the source code inserts an empty hashmap at the head of the vector and exiting out of a block removes a hashmap from the head. The environment combines these three properties to support nesting and shadowing of values in the memory.  
@@ -78,7 +79,7 @@ pub fn exit_scope(&amp;mut self) {
 </div>
 </section>
 <section id="outline-container-orgeddbd0c" class="outline-2">
-<h2 id="orgeddbd0c"><span class="section-number-2">2.</span> Declaring New Values</h2>
+<h2 id="orgeddbd0c"><span class="section-number-2">2</span> Declaring New Values</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 When the interpreter encounters a new block in the parsed source code, it first calls <code>new_scope()</code> to initialize a new hashmap for the block. So when new values are declared inside the block, they can be safely inserted in the first hashmap of the vector which represents the innermost scope. 
@@ -97,7 +98,7 @@ When the interpreter encounters a new block in the parsed source code, it first 
 </div>
 </section>
 <section id="outline-container-org0d130f3" class="outline-2">
-<h2 id="org0d130f3"><span class="section-number-2">3.</span> Fetching and Assigning Values</h2>
+<h2 id="org0d130f3"><span class="section-number-2">3</span> Fetching and Assigning Values</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 <code>fetch()</code> is used to fetch a value from the environment and <code>assign()</code> is used to assign a new value to a predefined key. Both the functions are required to climb up from the starting scope to the global scope until a hashmap containing the given key is found. This is accomplished by iterating through each hashmap in the vector and performing the fetch or assign operation only if a hashmap contains the key. If the key is not found in any hashmap, the value being searched for has not been declared.
@@ -130,7 +131,7 @@ pub fn assign(&amp;mut self, name: String, value: Value) -&gt; Result&lt;Value, 
 </div>
 </section>
 <section id="outline-container-orgd5042f7" class="outline-2">
-<h2 id="orgd5042f7"><span class="section-number-2">4.</span> The End</h2>
+<h2 id="orgd5042f7"><span class="section-number-2">4</span> The End</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 Here&rsquo;s a pictorial representation of the environment for the source code below. The first element represents the innermost scope and the following elements represent the enclosing outer scopes. 
@@ -163,7 +164,7 @@ Now, back to hacking :^)
 </section>
 
 <section id="outline-container-orgd7e8679" class="outline-2">
-<h2 id="orgd7e8679"><span class="section-number-2">5.</span> Edit</h2>
+<h2 id="orgd7e8679"><span class="section-number-2">5</span> Edit</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 A comment by <a href="https://www.reddit.com/r/rust/comments/r2tblf/comment/hm84mvq/?utm_source=share&amp;utm_medium=web2x&amp;context=3">u/Training-Ad-9425</a> mentioned that my implementation is inefficient and after referring to the <a href="https://doc.rust-lang.org/std/collections/index.html#sequences">documentation</a>, I realized that inserting and removing an element from the head of a <code>Vec</code> is a \(O(n)\) operation.
@@ -185,10 +186,10 @@ I implemented the first option as it would give me a chance to play with iterato
 </section>
 </main>
 <footer id="postamble" class="status">
-<script id="umaring_js" src="https://umaring.hamy.cc/ring.js?id=veera"></script>
+<script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=veera"></script>
 <div id="umaring"></div>
 <div class='footer'>
-  Last updated on 2024-Jan-27 Sat 11:21. <br>
+  Last updated on 2024-Apr-21 Sun 18:54. <br>
 </div>
 </footer>
 </body>
