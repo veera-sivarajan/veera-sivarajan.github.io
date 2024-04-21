@@ -7,7 +7,7 @@ Recently, I ran into [[https://github.com/rust-lang/rust/issues/122595][rust-lan
   fn add<T>() where
       u32: std::ops::Add<T, Output = T>
   {
-      let _ = 1_u32 + 1_u32;
+      let _ = 1_u32 + 1_u32; // error[E0308]: mismatched types
   }
 #+END_SRC
 

@@ -30,7 +30,7 @@ Recently, I ran into <a href="https://github.com/rust-lang/rust/issues/122595">r
 <pre class="src src-rust">fn add&lt;T&gt;() where
     u32: std::ops::Add&lt;T, Output = T&gt;
 {
-    let _ = 1_u32 + 1_u32;
+    let _ = 1_u32 + 1_u32; // error[E0308]: mismatched types
 }
 </pre>
 </div>
@@ -65,7 +65,7 @@ Guess, this is an other instance where a compiler leans towards soundness over c
 <script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=veera"></script>
 <div id="umaring"></div>
 <div class='footer'>
-  Last updated on 2024-Apr-21 Sun 19:20. <br>
+  Last updated on 2024-Apr-21 Sun 19:50. <br>
 </div>
 </footer>
 </body>
