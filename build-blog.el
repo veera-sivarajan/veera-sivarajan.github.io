@@ -114,6 +114,8 @@ PROJECT: `posts in this case."
          :publishing-function org-html-publish-to-html
          :publishing-directory "~/projects/blog/docs/"
          :exclude ,(regexp-opt '("README.org" "draft" "404.org" "rss.org"))
+         :html-head-include-scripts nil
+         :html-head-include-default-style nil
          :html-preamble me/website-html-preamble
          :html-postamble me/website-html-postamble
          :auto-sitemap t
