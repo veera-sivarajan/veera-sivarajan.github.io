@@ -1,5 +1,7 @@
 #+TITLE: Core Dump
 
+- 2024-Apr-21:
+  *[[file:trait_selection_bug.org][Understanding a Trait Selection Bug]]*
 - 2024-Jan-24:
   *[[file:mesh_allocator.org][Understanding Mesh Allocator]]*
 - 2023-Sep-04:

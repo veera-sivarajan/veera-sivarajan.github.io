@@ -1,0 +1,20 @@
+#+SETUPFILE: ../basic-setup.org 
+#+TITLE: Understanding a Trait Selection Bug
+#+DATE: <2024-04-21 Sun>
+Recently, I ran into [[https://github.com/rust-lang/rust/issues/122595][rust-lang/issues/#24066]] and spent some time analysing the underlying trait selection mechanism. In this blog post, I'll briefly explain why this bug prevents the following snippet from compiling.
+
+#+BEGIN_SRC rust
+  fn add<T>() where
+      u32: std::ops::Add<T, Output = T>
+  {
+      let _ = 1_u32 + 1_u32;
+  }
+#+END_SRC
+
+Inside the compiler, the ~rustc_hir_typeck~ crate handles lookup of methods for binary operations. When it encounters the expression ~1_u32 + 1_u32~, it does something peculiar: instead of directly looking up for a method that adds an ~u32~ to another ~u32~, it searches for a method that can add an ~u32~ to a type inference variable ~$0~. This allows the compiler to either borrow or take ownership of the value on the RHS of the binary expression based on the available methods[fn:: https://github.com/rust-lang/rust/blob/0824b300eb0dae5d9ed59719d3f2732016683d66/compiler/rustc_hir_typeck/src/op.rs#L238-L254].
+
+The request "find a method to add an ~u32~ with the type inference variable ~$0~" is handled by the ~rustc_trait_selection~ crate, which selects an appropriate method from a collection of candidates. Here, traits specified in the where clause are given a higher precedence over other candidates[fn:: https://doc.rust-lang.org/stable/nightly-rustc/rustc_middle/traits/select/enum.SelectionCandidate.html]. I believe this heuristic is followed as the programmer is expected to specify only the necessary traits in the where clause.
+
+Thus, for the expression ~1_u32 + 1_u32~, the method which adds an ~u32~ and a type variable ~T~ is chosen because any type can be unified with the type inference variable ~$0~. This attempts to unify the ~u32~ on the RHS with type variable ~T~ and emits a type mismatch error.
+
+Guess, this is an other instance where a compiler leans towards soundness over completeness.
