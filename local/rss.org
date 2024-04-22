@@ -4,7 +4,7 @@
 :PROPERTIES:
 :RSS_PERMALINK: trait_selection_bug.html
 :PUBDATE:  2024-04-21
-:ID:       9eb4142e-d9e6-46ce-8d38-fd1be617fcce
+:ID:       89c732d4-6f54-42fb-b0e0-d9568bab7664
 :END:
 #+setupfile: ../basic-setup.org
 Recently, I ran into [[https://github.com/rust-lang/rust/issues/24066][rust-lang/issues/#24066]] and spent some time analysing the underlying trait selection mechanism. In this blog post, I'll briefly explain why this bug prevents the following snippet from compiling.
@@ -28,7 +28,7 @@ Guess, this is an other instance where a compiler leans towards soundness over c
 :PROPERTIES:
 :RSS_PERMALINK: mesh_allocator.html
 :PUBDATE:  2024-01-24
-:ID:       94742f52-9a0e-45fe-a39a-43369e19a906
+:ID:       59afcb5d-b833-44a2-904e-446327cd66ed
 :END:
 #+setupfile: ../basic-setup.org
 I recently read about the [[https://github.com/plasma-umass/Mesh][Mesh memory allocator]] and was fascinated by its ability to perform compaction without changing the addresses of allocated objects.
@@ -46,19 +46,19 @@ The Mesh allocator performs compaction without relocation by taking advantage of
 There are three core concepts behind the Mesh allocator:
 ** Meshing
 :PROPERTIES:
-:ID:       d5d5dcc3-f64e-4b88-b140-0d7e08fa56a2
+:ID:       33cee529-ea6e-44f9-a3fd-269d890a299f
 :END:
 Meshing is the phase where objects are relocated in physical memory. It randomly selects physical memory pages with objects allocated at non-overlapping offsets and merges (meshes) them together by copying all objects from one page to another. The copied objects retain their original offsets. Then, the page from which content was moved is given back to the operating system; effectively reducing memory consumption.
 
 This does not affect performance as meshing is performed concurrently without stopping program execution.
 ** Updating Virtual to Physical Address Mapping
 :PROPERTIES:
-:ID:       326f9e95-8bfb-46ac-bb6e-6c1d04981c1b
+:ID:       4db13997-946f-4be7-8ece-43f0d23b9c4e
 :END:
 After meshing, the process's page table is updated to remap the virtual memory addresses of moved objects to the new physical addresses. However, the program is unaware of this change because the virtual memory addresses (pointers) remain the same since the offsets of objects have not changed.
 ** Randomized Allocation
 :PROPERTIES:
-:ID:       bdd9f237-fad8-4bfa-9c54-6b31511eb221
+:ID:       1d65b2b8-46fa-4ccd-a120-a67cb99589f7
 :END:
 Memory allocation is randomly spread throughout a page to facilitate meshing by increasing the chances of pages having objects allocated at non-overlapping offsets. This doesn't [[https://news.ycombinator.com/item?id=19182779#19185084][seem]] to affect cache performance as allocations returned from popular memory allocators are not contiguous either.
 Conclusion
@@ -69,7 +69,7 @@ I'm amazed at how simple and easy-to-understand techniques can significantly red
 :PROPERTIES:
 :RSS_PERMALINK: array.html
 :PUBDATE:  2023-09-04
-:ID:       7a304b68-e6d5-42d1-b299-f235ae80c1c5
+:ID:       9dd96c50-a830-49ca-aa3b-9e89a12c0a51
 :END:
 #+setupfile: ../basic-setup.org
 [[https://github.com/veera-sivarajan/boba][Boba]] is a compiler project I'm working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. In this post, I'd like to explain how it compiles arrays.
@@ -96,7 +96,7 @@ Memory Layout
 To understand how arrays can be expressed in assembly, it helped me a lot to visualize the memory layout of arrays.
 ** One-dimensional Array
 :PROPERTIES:
-:ID:       c4ecb460-13ca-479e-8a75-db8dffbf36e6
+:ID:       0e7ea682-2e08-47a7-b07e-de965b93b1dd
 :END:
 The code ~let a = [1, 2, 3, 4];~ will have the following memory representation:
 [[file:./imgs/one-d-array.png]]
@@ -105,7 +105,7 @@ Here, ~rbp~ is the base pointer of the current stack frame and ~-4[rbp]~ can be 
 Each number in the array is stored in a four byte interval between ~rbp~ and ~-16[rbp]~ and the variable ~a~ (pointer to the first element in the array) takes up the eight bytes immediately after ~-16[rbp]~. The address of each value decreases since the stack grows downward.
 ** Two-dimensional Array
 :PROPERTIES:
-:ID:       8925d5a2-566f-44bf-a27f-bcdcb47ee603
+:ID:       7e74165b-f6e8-45ab-bbbe-3547dd6becfe
 :END:
 The representation of a two-dimensional array is similar to an one-dimensional array but there is a level of indirection to take care of. For example, the code ~let a = [[1, 2], [3, 4]];~ will be represented as:
 [[file:./imgs/two-d-array.png]]
@@ -133,7 +133,7 @@ So, I decided to evaluate all arguments to a print statement (including an array
 :PROPERTIES:
 :RSS_PERMALINK: type_checking.html
 :PUBDATE:  2023-07-31
-:ID:       0e8ad3c9-fbae-4dad-8e94-2c55c60dd2c7
+:ID:       a78acbef-6b6c-4fb2-ac4d-64c9d3278c14
 :END:
 #+setupfile: ../basic-setup.org
 [[https://github.com/veera-sivarajan/boba/tree/main][Boba]] is a compiler project I'm working on to learn how to implement type system, code optimization passes and code generation. It compiles a language with Rust-like syntax and C-like semantics to x86-64 assembly. Check out the [[https://github.com/veera-sivarajan/boba/blob/main/language.org][language documentation]] to know more about syntax and semantics of the language.
@@ -161,7 +161,7 @@ This solved the issue and now the programs don't crash for any number of local v
 :PROPERTIES:
 :RSS_PERMALINK: codegen.html
 :PUBDATE:  2023-06-30
-:ID:       ab7c2264-59b5-4bd8-994e-06ff763a65be
+:ID:       57b1a5da-9203-4edb-9e15-bcd26c8f5d92
 :END:
 #+setupfile: ../basic-setup.org
 [[https://github.com/veera-sivarajan/boba][Boba]] is a compiler I'm writing to learn how high-level language constructs can be expressed in assembly. It compiles Rust-like source code to 64-bit x86 instruction set. This post will describe the current status of the project.
@@ -203,7 +203,7 @@ Chapters 10 - 12 in [[https://www3.nd.edu/~dthain/compilerbook/][Introduction to
 :PROPERTIES:
 :RSS_PERMALINK: idempotence.html
 :PUBDATE:  2023-05-07
-:ID:       ed9a1456-369e-400f-898b-cd3cacb229d7
+:ID:       cd7260ba-5a97-4817-a117-7c8619642258
 :END:
 #+setupfile: ../basic-setup.org
 I learned about /idempotence/ when reading some blog post about Lisp. It is used to denote operations which have the same effect for any number of times they are executed. For example, emptying a glass of water.
@@ -217,7 +217,7 @@ I came across a neat real-life example of an idempotent system on my bus ride to
 :PROPERTIES:
 :RSS_PERMALINK: clu.html
 :PUBDATE:  2023-04-06
-:ID:       c6a601ac-0f98-48ef-82fd-ff2c623bca3e
+:ID:       90147c1c-f854-46b5-923b-3b31b5ebeb0f
 :END:
 #+setupfile: ../basic-setup.org
 In the 1970s, Barbara Liskov, along with her graduate students, Eliot Moss and others created the CLU programming language. Its ideas has been adopted in every programming language we use today.
@@ -282,7 +282,7 @@ Cheers - E
 :PROPERTIES:
 :RSS_PERMALINK: tracking_music_history.html
 :PUBDATE:  2023-03-25
-:ID:       35c125a1-610d-41ee-960e-f388108af0a3
+:ID:       6d8428f9-f36f-4b33-9369-6fbddaa39f68
 :END:
 #+setupfile: ../basic-setup.org
 I have all my music downloaded on the computer and listen to them using a lightweight music player. This setup worked fine for a while but soon I felt a need for a way to track my music listening history. I wanted a simple tool to log all the music I listen to and view it through an interface that allows me to query using different parameters. 
@@ -296,7 +296,7 @@ To conclude, despite it being a [[https://github.com/veera-sivarajan/music-daemo
 :PROPERTIES:
 :RSS_PERMALINK: type_inference.html
 :PUBDATE:  2023-01-31
-:ID:       2597dcda-64c1-4e05-84b0-03c0604f9705
+:ID:       88740110-7bb7-42f7-86fd-ac8cbf8362f2
 :END:
 #+setupfile: ../basic-setup.org
 Dabbling with Haskell inspired me to learn about type inference. So this last week I spent some time reading through literature on type systems and [[https://github.com/veera-sivarajan/type-inferencer][implemented]] the Hindley-Milner algorithm for a toy expression language using Rust. In this post, I will give an implementation focused explanation of the algorithm. 
@@ -304,7 +304,7 @@ Hindley-Milner
 The type inference algorithm takes the AST as input and outputs the type for each expression in the tree. Much like a detective, who solves a case by collecting all the available evidence and then finding the relation between them to come to a conclusion, the algorithm creates a mapping between each expression and its expected type and then finds the types for all expressions using the relation between the generated mappings. Formally, the first step is termed as /constraint generation/ and the latter is /unification/.
 ** Constraint Generation
 :PROPERTIES:
-:ID:       675fd24f-4e56-45af-a735-cd2e96ec8498
+:ID:       a6451c89-8331-40fe-9c56-9c98775dbcaa
 :END:
 A constraint is a mapping between an expression and its expected type. To generate constraints for an AST, the algorithm recursively visits every expression in the tree and maps it to an expected type. Primitive expressions like numbers, booleans and identifiers, can be straightforwardly mapped to their respective types since any symbol parsed as, for example, a number is guaranteed to be of type number. It gets more interesting when generating constraints for nested expressions. 
 
@@ -313,7 +313,7 @@ Each sub-expression is constrained to an expected type based on its value. For e
 All sub-expressions and the root expression are mapped to their expected types based on their position in the AST.  For example, if there is a sub-expression ~1~ in the condition part of conditional expression, it will be mapped to type ~Bool~.
 *** Binary Add Expression
 :PROPERTIES:
-:ID:       3fdba17c-5838-4c9b-bd1e-198f244ef772
+:ID:       79bbaa85-be6d-44ae-b28e-033b4e944c4f
 :END:
 For the binary add expression, generate constraints for the left and right operands and then map each operand and the add expression to type number. For example, the following are the constraints generated for the incorrect expression ~1 + false~.
 #+begin_src shell
@@ -325,7 +325,7 @@ For the binary add expression, generate constraints for the left and right opera
 #+end_src
 *** Conditional Expression
 :PROPERTIES:
-:ID:       b2750107-3d0d-4020-998e-93f268cabbcd
+:ID:       4267ed8e-9026-4c8a-ada8-69a908d20b24
 :END:
 For conditional expressions, there are three expectations for its types:
 Condition should be of type boolean.
@@ -343,7 +343,7 @@ To express these expectations in terms of constraints, start by generating const
 #+end_src
 *** Functions
 :PROPERTIES:
-:ID:       86435de8-884d-40fa-96e7-729b8d5f24f6
+:ID:       3398c790-60d4-4c07-964e-7abbbcb1e060
 :END:
 A function definition is constrained as an arrow type with parameters as domain and body as range. As you may be familiar by now, start by generating constraints for parameters and body to determine their types. Then, map the function definition to an arrow type with parameters as domain and body as range. For the expression ~lambda(x) x + 2~, the constraints are:
 #+begin_src shell
@@ -368,12 +368,12 @@ Similarly, a function call is also constrained as an arrow type with arguments a
 #+end_src
 ** Unification
 :PROPERTIES:
-:ID:       cd62306a-d7e7-4d0d-867c-369188ae1c54
+:ID:       a22e7acf-7cf4-486b-a8e3-5c102dd52cdb
 :END:
 The meat of type inference happens during unification. In this step, the algorithm iterates through the list of constraints and outputs either a type error, if any, or the type for each expression.
 *** Substitution
 :PROPERTIES:
-:ID:       979fba95-26b4-4e15-998b-d6f74ebfcb25
+:ID:       c234b0b1-0612-4a3d-8443-60467fea1aa5
 :END:
 The core idea of unification is a simple concept called substitution. Assume we have the following set of constraints for a function definition ~(lambda(x) x + 2)~.
 #+begin_src shell
@@ -388,12 +388,12 @@ After unification, the RHS of constraint #4 will be substituted with types asser
 #+end_src
 *** Occurs Check
 :PROPERTIES:
-:ID:       498df841-00ff-4640-aab2-d2f92f6f487b
+:ID:       7da8aeef-dc3b-4c87-8902-5e159475a18c
 :END:
 We substitute a term A with term B to ensure that expressions progressively get mapped to a more specific type. But if term B contains term A, the replacement is redundant and can lead to infinite unifications. To prevent this, ensure that term B does not contain term A anywhere in its nested structure before each substitution.
 *** Algorithm
 :PROPERTIES:
-:ID:       ed94c2d6-9c8d-4f3a-bbe8-f9eb9163b72c
+:ID:       3871d89e-dbb2-46ce-b743-33375a8295f2
 :END:
 The goal of unification is to make the required substitution for each constraint. The algorithm to accomplish this can be better explained through psuedocode:
 #+begin_src python
@@ -429,7 +429,7 @@ Chapter 15.3.2 in [[https://cs.brown.edu/courses/cs173/2012/book/types.html#%28p
 :PROPERTIES:
 :RSS_PERMALINK: a_programmer's_utopia.html
 :PUBDATE:  2022-08-15
-:ID:       0c38dd31-79fe-4f54-8ffd-021d0be0bb6e
+:ID:       59f17ee6-4386-410f-8a68-6192f8a333d0
 :END:
 #+setupfile: ../basic-setup.org
 Amidst all the chaos in the world there is a community of passionate programmers who are constantly working on interesting projects, learning new topics and have a great sense of camaraderie. People in this community, driven by their self motivation to become better programmers, do a lot of pair programming, meet with people who share interests to brainstorm ideas and give talks about their projects. This beautiful community is called as [[https://www.recurse.com/][Recurse Center]]. 
@@ -443,29 +443,29 @@ First six weeks
 In the first six weeks of my batch, I spent most of the time interacting with the community and reading [[https://www.cs.rochester.edu/~scott/pragmatics/][Programming Language Pragmatics]]. I also contributed to [[https://github.com/SerenityOS/jakt][Jakt]] programming language and was happy to have a few commits merged into a popular open source project. Finally, I gave a couple of talks about my interpreter project and [[https://youtu.be/ZgEDMpxWvN4][scanner theory]] to improve my presentation skills. 
 ** Compilers and Interpreters Implementation
 :PROPERTIES:
-:ID:       c3dfc914-bd52-4847-aa61-85d97969640f
+:ID:       470c0da1-ec61-4cb4-932c-0f480f4a7340
 :END:
 In this weekly event, I met other Recursers interested in writing compilers and we discussed about Haskell, OCaml, Rust, logic languages, parser combinators, and interesting research papers in the field. This event introduced me to a number of other resources I could use to build upon what I learnt so far from reading Crafting Interpreters. By the end, I was grateful to have met people who share my interests. 
 ** Music Consumption Group 
 :PROPERTIES:
-:ID:       6f3d26de-6662-4dfa-9367-f56f315e4486
+:ID:       a5a70663-579a-40e5-9beb-d0641ab8d707
 :END:
 A weekly social event where a bunch of Recursers hop on a Zoom call, queue a track of their choice and the host will play each track in order. The event was late in the evening so it was fun to listen to a variety of music while cooking dinner or fixing a gnarly bug. 
 Last six weeks
 I spent most of the time working on [[https://github.com/veera-sivarajan/bessy][Bessy]], a bytecode interpreter written in Rust. I frequently sought help from other Recursers and their guidance helped me to write tests for I/O functions and to add a [[https://veera.app/bessy/][web interface]] for my interpreter by compiling it to Wasm.
 ** Rust Rodeo
 :PROPERTIES:
-:ID:       55e0c7c6-5181-41cb-b43b-be8e87fdb0af
+:ID:       7fc0ca39-28d4-4de4-a689-80a2d8da4d98
 :END:
 A weekly event to discuss everything related to Rust. Here we helped each other get unstuck on compiler errors and read through popular Rust code bases to improve our knowledge about the language and its ecosystem. Occasionally, someone gave a talk on something cool they learnt about Rust. Through the course of this event, I found myself learning more about generic types and trait system which in turn helped me to write more idiomatic Rust for Bessy.
 ** Zig Zones
 :PROPERTIES:
-:ID:       4f3f3dff-c541-41b9-88c3-946ba96f5e7f
+:ID:       d93aff17-bfcc-4bdd-b7b8-5119aaad6ad9
 :END:
 This was an interest group for Zig programming. Initially, I was curious to learn what Zig has to offer in terms of an improvement over C and was fascinated by its C interoperability as a first class feature. I played with the toolchain and, with the help of Recursers, I was able to compile a existing C code base using ~zig cc~ and also transpile it to Zig. You can read more about our process to translate a C project into Zig in Jeff Fowler's [[https://blog.jfo.click/zig-translate-c-and-linking-equal-best-friends/]["Zig translate-c and linking equal best friends"]].
 ** Scone Production and Consumption Group
 :PROPERTIES:
-:ID:       a4a6111b-98d9-4be7-9eef-b34223839e2f
+:ID:       66807919-eaa7-44a7-b0f4-cc98435e7622
 :END:
 This was an occasional social event where I baked Scones along with other Recursers by following the [[https://www.seriouseats.com/bakery-style-cream-scones-with-chocolate-recipe][recipe]] written by Stella Parks. This was my first attempt at baking and I really enjoyed the process even though my Scones ended up looking like giant cookies because I did not follow the recipe word for word :). Nevertheless, I see strong parallels between programming and cooking/baking and, for me, both the art forms evoke the same creative feeling.
 Never Graduate
@@ -476,7 +476,7 @@ As a proud alumni of RC, I'll carry the spirit of RC everywhere I go and look fo
 :PROPERTIES:
 :RSS_PERMALINK: rena's_memory_model.html
 :PUBDATE:  2021-11-25
-:ID:       9412d9c0-662b-4e61-87e3-7a224ba3ef3e
+:ID:       32856908-996c-45d3-81a9-db31dac2efb7
 :END:
 #+setupfile: ../basic-setup.org
 [[https://github.com/veera-sivarajan/rena][Rena]] is my implementation of lox tree-walk interpreter in Rust. I'm rewriting it in Rust to familiarize myself with the borrow checker and the fancy toolchain it offers. In this post, I'll explain how I implemented a simple environment for the interpreter. 
@@ -575,7 +575,7 @@ I implemented the first option as it would give me a chance to play with iterato
 :PROPERTIES:
 :RSS_PERMALINK: game_of_light.html
 :PUBDATE:  2021-11-01
-:ID:       b22d8855-64f7-4e6f-9f75-b3c7734a9d28
+:ID:       9a8a7a95-af46-4d61-8342-195cd5d31f9b
 :END:
 #+setupfile: ../basic-setup.org
 For our final project, Hayden and I are building [[https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life][Conway's Game of Life]] simulator on a LED matrix. We will also add a controller which the audience can use to pause and play the simulation. With this project, we aim to understand how interesting patterns emerge from a small set of rules. The coordinates for the simulation will be computed on an Arduino board which will be connected to both the simulator and the controller. Along the way, we might also add features that tickles our fancy. Check this page by December, 2021 to view the final product.   
@@ -587,7 +587,7 @@ CICS 256 has been a great learning experience as we got to work on a project of 
 :PROPERTIES:
 :RSS_PERMALINK: adding_features_to_lox.html
 :PUBDATE:  2021-08-19
-:ID:       d94abf3d-d27a-4ab8-9e4e-495eeab528c8
+:ID:       07ef7e1b-b073-4420-a6ed-0be2cd31d24d
 :END:
 #+setupfile: ../basic-setup.org
 Finally, I got time to sit down and implement a tree-walk interpreter following Bob Nystrom's [[https://craftinginterpreters.com/][Crafting Interpreters]]. In this post, I'm going to explain some of the features I have added to the language. You can find my complete implementation [[https://github.com/veera-sivarajan/lang0][here]]. I have also made a [[https://youtu.be/0P6VPOIKATg][video]] demoing the features listed below.
@@ -630,7 +630,7 @@ Lists
 To add a list data type into the language, the task can be divided into three small tasks:
 ** Scanning
 :PROPERTIES:
-:ID:       c5d265b9-669a-4f04-ae47-8e7aced6287f
+:ID:       654883aa-5bd1-4ed5-814f-a5f475128067
 :END:
 Introduce two new tokens to make the scanner handle list expressions and subscripts.
 #+begin_src cpp
@@ -639,14 +639,14 @@ Introduce two new tokens to make the scanner handle list expressions and subscri
 #+end_src
 ** Creating List Literals
 :PROPERTIES:
-:ID:       f3f4aa12-2a36-4a71-8581-c841755e078c
+:ID:       c1fa3703-4489-4be8-9706-3c0832f36dc6
 :END:
 Like numbers, string, ~true~ and ~false~, a list is a primary expression which can contain any number of comma seperated expressions. Since Lox is a dynamically typed language, these expressions can be of any type. 
 
 To learn about the grammar for lists, I found Caleb's blog [[https://calebschoepp.com/blog/2020/adding-a-list-data-type-to-lox/][post]] to be helpful. It explained all the details related to implementing lists in a clear and concise way.
 *** Parsing Lists
 :PROPERTIES:
-:ID:       f8dfef68-155e-4600-b470-021d26504fce
+:ID:       6b9a884d-5254-4eb7-b997-f22e6e0f1830
 :END:
  Parsing a list literal is exactly like parsing the arguments of a function call but here square brackets replaces the parentheses. Internally, the parser stores a list as a vector containing expressions. The function first checks if it is a empty list. If its not, it parses each expression in the scanned list and appends it to the internal representation. In the end, it consumes the ~]~ and wraps the vector in a AST node.
 #+begin_src cpp
@@ -669,7 +669,7 @@ To learn about the grammar for lists, I found Caleb's blog [[https://calebschoep
 #+end_src
 *** Interpreting Lists
 :PROPERTIES:
-:ID:       2cb4d24f-c927-4711-a3c5-1ecc4a1fe994
+:ID:       0cc8f545-b19d-45b9-9646-5b26293703af
 :END:
 To interpret a list literal, the interpreter iterates through each element in the parsed expression, evaluates it and appends the value to runtime's representation of a list. Finally, like interpreting any other kind of expression, the runtime's value is returned. 
 #+begin_src cpp
@@ -683,14 +683,14 @@ To interpret a list literal, the interpreter iterates through each element in th
 #+end_src
 ** Handling Subscript Expressions
 :PROPERTIES:
-:ID:       81bcfde4-f29a-4ced-ae60-de0b3ffa0614
+:ID:       fcd53ada-88b9-4859-b2b1-3b5815fb8b24
 :END:
 Subscript expressions are used to get and set an element at a particular index in the list. In other words, they can be used both as a l-value and a r-value and to diffrentiate between the two and also to avoid repetition of code I have used a simple trick[fn::I'm not sure if this would work when classes and methods are implemented.].
 
 From the interpreter's point of view, the only difference between the two is the presence of a value expression. If the AST node has a value, it should assign it at index. Otherwise, it should return the value at index. So the trick is to make the parser pass a =nullptr= in the place of value expression when parsing a r-value and pass a value only when parsing a l-value. This allows the interpreter to easily differentiate between the two kinds of subscript expressions.
 *** Parsing Subscripts
 :PROPERTIES:
-:ID:       6ea40302-6cb3-4edf-94ee-aedc06696048
+:ID:       e33304ee-2c46-40d1-bb26-2db56ef327b2
 :END:
 Parsing the r-value is, once again, similar to parsing a function call. But instead of parsing any number of arguments, the parser will only parse a single value between the square brackets. ~subscript()~ calls ~finishSubscript()~ each time it sees a ~[~ to support indexing list of lists. Lastly, to wrap everything in a node, the parser stores a =nullptr= in the place of value expression to let the interpreter know that it is a r-value. 
 #+begin_src cpp
@@ -732,7 +732,7 @@ As you may have noticed in the formal grammar, for parsing a l-value expression,
 #+end_src
 *** Interpreting Subscripts
 :PROPERTIES:
-:ID:       d0e21986-a515-4831-ad28-05df1551b880
+:ID:       f04e1fb0-2ff3-4796-9fc8-9d31404901e2
 :END:
 To interpret a subscript expression, the interpreter first evaluates the list's name and index and checks if they are of the correct type. If they pass the type checks, the interpreter casts the list's name to the runtime's representation of a list and the index to ~int~ from ~double~[fn::This is actually a bug because index number should not be of type ~double~]. Checking if the index is out of range is done at the last moment as they should be handled differently for l-value and r-value. 
 
