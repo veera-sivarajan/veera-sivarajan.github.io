@@ -14,8 +14,8 @@
   <link>https://veera.app/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Sun, 21 Apr 2024 19:50:49 -0400</pubDate>
-  <lastBuildDate>Sun, 21 Apr 2024 19:50:49 -0400</lastBuildDate>
+  <pubDate>Sun, 21 Apr 2024 21:24:32 -0400</pubDate>
+  <lastBuildDate>Sun, 21 Apr 2024 21:24:32 -0400</lastBuildDate>
   <generator>Emacs 27.1 Org-mode 9.3</generator>
   <webMaster>sveera.2001@gmail.com (Veera Sivarajan)</webMaster>
   <image>
@@ -54,7 +54,7 @@
     </p>
 
     <p>
-    Thus, for the expression <code>1_u32 + 1_u32</code>, the method which adds an <code>u32</code> and a type variable <code>T</code> is chosen because any type can be unified with the type inference variable <code>$0</code>. This attempts to unify the <code>u32</code> on the RHS with type variable <code>T</code> and emits a type mismatch error.
+    Thus, for the expression <code>1_u32 + 1_u32</code>, a method which adds an <code>u32</code> and a type variable <code>T</code> is chosen because it's mentioned in the where clause and <code>T</code> unifies with the type inference variable <code>$0</code>. This attempts to unify the <code>u32</code> on the RHS with type variable <code>T</code>, resulting in a type mismatch error.
     </p>
 
     <p>

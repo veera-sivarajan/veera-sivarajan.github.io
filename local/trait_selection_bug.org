@@ -15,6 +15,6 @@ Inside the compiler, the ~rustc_hir_typeck~ crate handles lookup of methods for 
 
 The request "find a method to add an ~u32~ with the type inference variable ~$0~" is handled by the ~rustc_trait_selection~ crate, which selects an appropriate method from a collection of candidates. Here, traits specified in the where clause are given a higher precedence over other candidates[fn:: https://doc.rust-lang.org/stable/nightly-rustc/rustc_middle/traits/select/enum.SelectionCandidate.html]. I believe this heuristic is followed as the programmer is expected to specify only the necessary traits in the where clause.
 
-Thus, for the expression ~1_u32 + 1_u32~, the method which adds an ~u32~ and a type variable ~T~ is chosen because any type can be unified with the type inference variable ~$0~. This attempts to unify the ~u32~ on the RHS with type variable ~T~ and emits a type mismatch error.
+Thus, for the expression ~1_u32 + 1_u32~, a method which adds an ~u32~ and a type variable ~T~ is chosen because it's mentioned in the where clause and ~T~ unifies with the type inference variable ~$0~. This attempts to unify the ~u32~ on the RHS with type variable ~T~, resulting in a type mismatch error.
 
 Guess, this is an other instance where a compiler leans towards soundness over completeness.

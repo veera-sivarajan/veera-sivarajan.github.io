@@ -44,7 +44,7 @@ The request &ldquo;find a method to add an <code>u32</code> with the type infere
 </p>
 
 <p>
-Thus, for the expression <code>1_u32 + 1_u32</code>, the method which adds an <code>u32</code> and a type variable <code>T</code> is chosen because any type can be unified with the type inference variable <code>$0</code>. This attempts to unify the <code>u32</code> on the RHS with type variable <code>T</code> and emits a type mismatch error.
+Thus, for the expression <code>1_u32 + 1_u32</code>, a method which adds an <code>u32</code> and a type variable <code>T</code> is chosen because it&rsquo;s mentioned in the where clause and <code>T</code> unifies with the type inference variable <code>$0</code>. This attempts to unify the <code>u32</code> on the RHS with type variable <code>T</code>, resulting in a type mismatch error.
 </p>
 
 <p>
@@ -65,7 +65,7 @@ Guess, this is an other instance where a compiler leans towards soundness over c
 <script id="umaring_js" src="https://umaring.mkr.cx/ring.js?id=veera"></script>
 <div id="umaring"></div>
 <div class='footer'>
-  Last updated on 2024-Apr-21 Sun 19:50. <br>
+  Last updated on 2024-Apr-21 Sun 21:24. <br>
 </div>
 </footer>
 </body>
