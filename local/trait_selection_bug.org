@@ -1,7 +1,7 @@
 #+SETUPFILE: ../basic-setup.org 
 #+TITLE: Understanding a Trait Selection Bug
 #+DATE: <2024-04-21 Sun>
-Recently, I ran into [[https://github.com/rust-lang/rust/issues/122595][rust-lang/issues/#24066]] and spent some time analysing the underlying trait selection mechanism. In this blog post, I'll briefly explain why this bug prevents the following snippet from compiling.
+Recently, I ran into [[https://github.com/rust-lang/rust/issues/24066][rust-lang/issues/#24066]] and spent some time analysing the underlying trait selection mechanism. In this blog post, I'll briefly explain why this bug prevents the following snippet from compiling.
 
 #+BEGIN_SRC rust
   fn add<T>() where
