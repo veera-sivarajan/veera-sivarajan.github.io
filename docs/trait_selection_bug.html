@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2024-Apr-22 -->
+<!-- 2024-May-14 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Understanding a Trait Selection Bug</title>
@@ -36,7 +36,7 @@ Recently, I ran into <a href="https://github.com/rust-lang/rust/issues/24066">ru
 </div>
 
 <p>
-Inside the compiler, the <code>rustc_hir_typeck</code> crate handles lookup of methods for binary operations. When it encounters the expression <code>1_u32 + 1_u32</code>, it does something peculiar: instead of directly looking up for a method that adds an <code>u32</code> to another <code>u32</code>, it searches for a method that can add an <code>u32</code> to a type inference variable <code>$0</code>. This allows the compiler to either borrow or take ownership of the value on the RHS of the binary expression based on the available methods<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
+Inside the compiler, the <code>rustc_hir_typeck</code> crate handles lookup of methods for binary operations. When it encounters the expression <code>1_u32 + 1_u32</code>, it does something peculiar: instead of directly looking up for a method that adds an <code>u32</code> to another <code>u32</code>, it searches for a method that can add an <code>u32</code> to a type inference variable <code>$0</code>. This allows the compiler to either borrow or take ownership (refer to <a href="#org2423565">1</a>) of the value on the RHS of the binary expression based on the available methods<sup><a id="fnr.1" class="footref" href="#fn.1">1</a></sup>.
 </p>
 
 <p>
@@ -50,6 +50,23 @@ Thus, for the expression <code>1_u32 + 1_u32</code>, a method which adds an <cod
 <p>
 Guess, this is an other instance where a compiler leans towards soundness over completeness.
 </p>
+<section id="outline-container-orgc3a61dc" class="outline-2">
+<h2 id="orgc3a61dc"><span class="section-number-2">1</span> <a id="org2423565"></a>Edit (May 14, 2024)</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+My understanding is incorrect. The real reason, as pointed by SkiFire13 on Reddit:
+</p>
+<blockquote>
+<p>
+Addition always takes ownership of the rhs. It may be a bit confusing because in case the rhs is a reference this means taking ownership of the reference, not the referenced value (because references are values as well!)
+</p>
+
+<p>
+The reason the inference variable is used is due to coercions. If you&rsquo;re trying to sum a <code>String</code> with a <code>&amp;String</code> there&rsquo;s no impl that applies, so it would normally fail. However <code>&amp;String</code> coerces to <code>&amp;str</code>, for which there is an applicable impl. Using an inference variable allows to resolve the type of the rhs to <code>&amp;str</code> and then check that <code>&amp;String</code> coerces to <code>&amp;str</code>, instead of immediately erroring because there&rsquo;s no <code>impl Add&lt;&amp;String&gt;</code> for <code>String</code>. 
+</p>
+</blockquote>
+</div>
+</section>
 <div id="footnotes">
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
@@ -63,7 +80,7 @@ Guess, this is an other instance where a compiler leans towards soundness over c
 </div></main>
 <footer id="postamble" class="status">
 <div class='footer'>
-  Last updated on 2024-Apr-22 Mon 19:28. <br>
+  Last updated on 2024-May-14 Tue 17:49. <br>
 </div>
 </footer>
 </body>

@@ -11,10 +11,17 @@ Recently, I ran into [[https://github.com/rust-lang/rust/issues/24066][rust-lang
   }
 #+END_SRC
 
-Inside the compiler, the ~rustc_hir_typeck~ crate handles lookup of methods for binary operations. When it encounters the expression ~1_u32 + 1_u32~, it does something peculiar: instead of directly looking up for a method that adds an ~u32~ to another ~u32~, it searches for a method that can add an ~u32~ to a type inference variable ~$0~. This allows the compiler to either borrow or take ownership of the value on the RHS of the binary expression based on the available methods[fn:: https://github.com/rust-lang/rust/blob/0824b300eb0dae5d9ed59719d3f2732016683d66/compiler/rustc_hir_typeck/src/op.rs#L238-L254].
+Inside the compiler, the ~rustc_hir_typeck~ crate handles lookup of methods for binary operations. When it encounters the expression ~1_u32 + 1_u32~, it does something peculiar: instead of directly looking up for a method that adds an ~u32~ to another ~u32~, it searches for a method that can add an ~u32~ to a type inference variable ~$0~. This allows the compiler to either borrow or take ownership (refer to [[edit]]) of the value on the RHS of the binary expression based on the available methods[fn:: https://github.com/rust-lang/rust/blob/0824b300eb0dae5d9ed59719d3f2732016683d66/compiler/rustc_hir_typeck/src/op.rs#L238-L254].
 
 The request "find a method to add an ~u32~ with the type inference variable ~$0~" is handled by the ~rustc_trait_selection~ crate, which selects an appropriate method from a collection of candidates. Here, traits specified in the where clause are given a higher precedence over other candidates[fn:: https://doc.rust-lang.org/stable/nightly-rustc/rustc_middle/traits/select/enum.SelectionCandidate.html]. I believe this heuristic is followed as the programmer is expected to specify only the necessary traits in the where clause.
 
 Thus, for the expression ~1_u32 + 1_u32~, a method which adds an ~u32~ and a type variable ~T~ is chosen because it's mentioned in the where clause and ~T~ unifies with the type inference variable ~$0~. This attempts to unify the ~u32~ on the RHS with type variable ~T~, resulting in a type mismatch error.
 
 Guess, this is an other instance where a compiler leans towards soundness over completeness.
+* <<edit>>Edit (May 14, 2024)
+My understanding is incorrect. The real reason, as pointed by SkiFire13 on Reddit:
+#+BEGIN_QUOTE
+Addition always takes ownership of the rhs. It may be a bit confusing because in case the rhs is a reference this means taking ownership of the reference, not the referenced value (because references are values as well!)
+
+The reason the inference variable is used is due to coercions. If you're trying to sum a ~String~ with a ~&String~ there's no impl that applies, so it would normally fail. However ~&String~ coerces to ~&str~, for which there is an applicable impl. Using an inference variable allows to resolve the type of the rhs to ~&str~ and then check that ~&String~ coerces to ~&str~, instead of immediately erroring because there's no ~impl Add<&String>~ for ~String~. 
+#+END_QUOTE
