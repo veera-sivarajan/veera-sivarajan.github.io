@@ -1,9 +1,6 @@
 #+TITLE: About Me
 #+DATE: <2022-04-12 Tue>  
 
-I'm Veera (he/him), a computer science undergraduate passionate about compilers, programming languages and developer tools. I enjoy rewriting [[https://github.com/veera-sivarajan][tools]] from scratch as it allows me to understand all the layers of abstraction in the system. 
+I'm Veera (he/him), a programmer passionate about compilers, programming languages and developer tools. I enjoy contributing to [[https://github.com/llvm/llvm-project/pulls?q=is%3Apr+author%3Aveera-sivarajan][middle-end optimizations in LLVM]] and the [[https://github.com/rust-lang/rust/pulls?q=is%3Apr+author%3Aveera-sivarajan][Rust compiler]].
 
-Outside of programming, I love to run long distances or play [[https://youtu.be/I7XNeGwZhj4][Table Tennis]].
-* Hire Me
-I'm looking for a job involving compilers or developer tools. I worked as an IOS developer for the past two years and have experience using Rust and C++ for my personal projects. Here is my [[https://veera.app/imgs/veera-sivarajan-resume-dt.pdf][curriculum vitae]].
-
+Outside of programming, I enjoy running and playing [[https://youtu.be/I7XNeGwZhj4][Table Tennis]].
